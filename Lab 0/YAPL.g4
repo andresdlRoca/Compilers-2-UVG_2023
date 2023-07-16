@@ -1,118 +1,115 @@
 grammar YAPL;
 
-/* Lexer rules */
-CLASS : 'class';
-INHERITS : 'inherits';
-BOOL : 'Bool';
-INT : 'Int';
-STRING : 'String';
-IO : 'IO';
-OBJECT : 'Object';
-SELF_TYPE : 'SELF_TYPE';
-IF : 'if';
-THEN : 'then';
-ELSE : 'else';
-FI : 'fi';
-WHILE : 'while';
-LOOP : 'loop';
-POOL : 'pool';
-LET : 'let';
-IN : 'in';
-CASE : 'case';
-OF : 'of';
-ESAC : 'esac';
-NEW : 'new';
-ISVOID : 'isvoid';
-NOT : 'not';
+// -- Reglas Lexicas --
+ID: [a-zA-Z][a-zA-Z0-9_]*; // Identificadores
+INT_CONST: [0-9]+;
+STR_CONST: '"' (~["\r\n\\] | '\\' [\\"'\r\n]) '"';
 
-ID : [a-zA-Z][a-zA-Z0-9_]*;
-INT_CONST : [0-9]+;
-STR_CONST : '"' (~["\r\n\\] | '\\' [\\"'\r\n]) '"';
-WS : [ \t\r\n]+ -> skip;
+// Espacios en blanco y saltos de linea se ignoran
+WS: [ \t\r\n]+ -> skip;
 
-/* Parser rules */
-program : class_list;
+BOOL: 'Bool';
+INT: 'Int';
+STRING: 'String';
+IO: 'IO';
+OBJECT: 'Object';
+SELF_TYPE: 'SELF_TYPE';
 
-class_list : class_item+;
+class: 'class';
+inherits: 'inherits';
 
-class_item : CLASS TYPE (INHERITS TYPE)? '{' feature_list '}';
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
+FI: 'fi';
+WHILE: 'while';
+LOOP: 'loop';
+POOL: 'pool';
+LET: 'let';
+IN: 'in';
+CASE: 'case';
+OF: 'of';
+ESAC: 'esac';
+NEW: 'new';
+ISVOID: 'isvoid';
+NOT: 'not';
 
-feature_list : feature_item*;
+type: ID | BOOL | INT | STRING | IO | OBJECT | SELF_TYPE;
+binary_op: '+' | '-' | '*' | '/' | '<' | '<=' | '=' | '@';
+unary_op: '~' | NOT;
 
-feature_item : attribute | method;
+ASSIGN: '<-';
+ARROW: '=>';
+SEMI: ';';
+COLON: ':';
+COMMA: ',';
+DOT: '.';
+LPAREN: '(';
+RPAREN: ')';
+LBRACE: '{';
+RBRACE: '}';
 
-attribute : ID ':' TYPE (ASSIGN expr)?;
+// -- Reglas sintacticas --
+program:
+	'class' ID ('inherits' type)? LBRACE (feature_list) RBRACE SEMI;
 
-method : ID '(' param_list? ')' ':' TYPE '{' expr '}';
+feature_list: feature* | formal*;
 
-param_list : formal_param (',' formal_param)*;
+feature: attribute_definition | method_definition;
 
-formal_param : ID ':' TYPE;
+attribute_definition: ID COLON type SEMI;
+method_definition:
+	ID LBRACE parameter_list? RBRACE COLON type LBRACE block RBRACE SEMI;
 
-expr : if_expr;
+block: statement*;
 
-if_expr : if_expr_tail;
+statement:
+	assignment_statement
+	| if_statement
+	| while_statement; // Statements
 
-if_expr_tail : while_expr (THEN expr ELSE if_expr_tail)?;
+formal: ID COLON type;
 
-while_expr : block_expr;
+assignment_statement: ID ASSIGN expr SEMI;
+if_statement: IF expr THEN block (ELSE block)? FI;
+while_statement: WHILE expr LOOP block POOL;
 
-block_expr : block_expr_tail;
+parameter_list: formal (COMMA formal)*;
 
-block_expr_tail : let_expr;
+let_declaration: let_binding (COMMA let_binding)*;
+let_binding: ID COLON type ( ASSIGN expr)?;
 
-let_expr : let_expr_tail;
+expr:
+	ID ASSIGN expr
+	| expr '.' ID
+	| IF expr THEN expr ELSE expr FI
+	| WHILE expr LOOP expr POOL
+	| NEW type
+	| ISVOID expr
+	| expr '-' expr
+	| expr '+' expr
+	| expr '<' expr
+	| expr '>' expr
+	| expr '=' expr
+	| expr '+' expr
+	| expr '-' expr
+	| expr '*' expr
+	| expr '/' expr
+	| expr '%' expr
+	| expr '^' expr
+	| expr '<=' expr
+	| NOT expr
+	| LPAREN expr RPAREN
+	| ID
+	| INT_CONST
+	| STR_CONST
+	| 'true'
+	| 'false'
+	| 'void'
+	| if_statement
+	| while_statement
+	| ISVOID expr
+	| block
+	| NEW type
+	| LET let_declaration IN expr;
 
-let_expr_tail : case_expr;
-
-case_expr : case_expr_tail;
-
-case_expr_tail : new_expr;
-
-new_expr : new_expr_tail;
-
-new_expr_tail : isvoid_expr;
-
-isvoid_expr : isvoid_expr_tail;
-
-isvoid_expr_tail : binary_expr;
-
-binary_expr : unary_expr (binary_op unary_expr)*;
-
-unary_expr : primary_expr;
-
-primary_expr : ID
-             | INT_CONST
-             | STR_CONST
-             | BOOL
-             | '(' expr ')'
-             | ID '(' arg_list? ')'
-             | SELF_TYPE '.' ID '(' arg_list? ')'
-             ;
-
-arg_list : expr (',' expr)*;
-
-binary_op : '+' | '-' | '*' | '/' | '<' | '<=' | '=' | '@';
-
-TYPE : [A-Z][a-zA-Z0-9_]*;
-
-ASSIGN : '<-';
-
-ARROW : '=>';
-
-SEMI : ';';
-
-COMMA : ',';
-
-DOT : '.';
-
-LPAREN : '(';
-
-RPAREN : ')';
-
-LBRACE : '{';
-
-RBRACE : '}';
-
-/* Ignored tokens */
-COMMENT : '--' ~[\r\n]* -> skip;

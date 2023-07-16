@@ -1,17 +1,5 @@
-class Cons inherits List {
-    xcar : Int;
-    xcdr : List;
+class Cons inherits string {
+    xcar : int;
+    xcdr : bool;
 };
 
-class Silly {
-    copy() : SELF_TYPE {self};
-};
-
-class Sally inherits Silly { };
-
-class Main{
-    x : Sally <- (new Sally).copy();
-
-    main() : Sally { x };
-
-}
