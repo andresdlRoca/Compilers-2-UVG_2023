@@ -50,21 +50,24 @@ LBRACE: '{';
 RBRACE: '}';
 
 // -- Reglas sintacticas --
-program:
-	'class' ID ('inherits' type)? LBRACE (feature_list) RBRACE SEMI;
+program: clas_list;
+
+clas_list:
+	'class' type ('inherits' type)? LBRACE (feature_list) RBRACE SEMI;
 
 feature_list: feature* | formal*;
 
 feature: attribute_definition | method_definition;
 
-attribute_definition: ID COLON type SEMI;
+attribute_definition: ID COLON type SEMI | ID ASSIGN expr SEMI;
 method_definition:
-	ID LBRACE parameter_list? RBRACE COLON type LBRACE block RBRACE SEMI;
+	ID LPAREN parameter_list? RPAREN COLON type LBRACE block RBRACE SEMI;
 
 block: statement*;
 
 statement:
-	assignment_statement
+	ID
+	| assignment_statement
 	| if_statement
 	| while_statement; // Statements
 

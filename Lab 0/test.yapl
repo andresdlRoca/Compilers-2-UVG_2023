@@ -1,5 +1,5 @@
-class Cons inherits string {
-    xcar : int;
-    xcdr : bool;
-};
 
+class Main {
+    x : Sally <- (new Sally).copy();
+    main() : Sally { x };
+};
