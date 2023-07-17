@@ -64,7 +64,7 @@ feature: attribute_definition | method_definition;
 
 attribute_definition: ID COLON type ('<-' expr)? SEMI;
 method_definition:
-	ID LPAREN parameter_list? RPAREN COLON type LBRACE block RBRACE SEMI;
+	ID LPAREN parameter_list? RPAREN COLON type LBRACE block RBRACE;
 
 block: statement*;
 
