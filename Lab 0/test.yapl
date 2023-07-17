@@ -4,3 +4,8 @@ class Main {
     main : Sally;
 };
 // Comentario
+
+class ejemplo {
+    zom : Int;
+    kid : String;
+};
