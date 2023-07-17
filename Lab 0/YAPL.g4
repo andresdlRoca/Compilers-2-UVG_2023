@@ -88,6 +88,9 @@ let_binding: ID COLON type ( ASSIGN expr)?;
 expr:
 	ID ASSIGN expr
 	| expr '.' ID
+	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
+	| expr DOT ID LPAREN expr (SEMI expr)* RPAREN
+	| expr '~'
 	| IF expr THEN expr ELSE expr FI
 	| WHILE expr LOOP expr POOL
 	| NEW type
