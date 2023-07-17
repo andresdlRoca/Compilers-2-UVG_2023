@@ -62,7 +62,7 @@ feature_list: feature* | formal*;
 
 feature: attribute_definition | method_definition;
 
-attribute_definition: ID COLON type SEMI | ID ASSIGN expr SEMI;
+attribute_definition: ID COLON type ('<-' expr)? SEMI;
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE block RBRACE SEMI;
 
@@ -80,7 +80,7 @@ assignment_statement: ID ASSIGN expr SEMI;
 if_statement: IF expr THEN block (ELSE block)? FI;
 while_statement: WHILE expr LOOP block POOL;
 
-parameter_list: formal (COMMA formal)*;
+parameter_list: formal (COMMA formal)?;
 
 let_declaration: let_binding (COMMA let_binding)*;
 let_binding: ID COLON type ( ASSIGN expr)?;
