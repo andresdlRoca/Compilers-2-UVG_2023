@@ -1,6 +1,6 @@
 
 class Main {
-    x : Sally 
-    main : Sally { x };
+    x : Sally; 
+    main : Sally;
 };
-
+// Comentario

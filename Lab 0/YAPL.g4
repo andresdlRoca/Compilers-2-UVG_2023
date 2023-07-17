@@ -48,6 +48,9 @@ LPAREN: '(';
 RPAREN: ')';
 LBRACE: '{';
 RBRACE: '}';
+LINE_COMMENT:
+	'//' .*? '\n' -> skip; // skip single line comments starting from // and ending with new line
+COMMENT: '/*' .*? '*/' -> skip; // skip mutliple comments
 
 // -- Reglas sintacticas --
 program: clas_list?;
