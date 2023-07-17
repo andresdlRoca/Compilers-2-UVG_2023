@@ -50,7 +50,7 @@ LBRACE: '{';
 RBRACE: '}';
 
 // -- Reglas sintacticas --
-program: clas_list;
+program: clas_list?;
 
 clas_list:
 	'class' type ('inherits' type)? LBRACE (feature_list) RBRACE SEMI;
