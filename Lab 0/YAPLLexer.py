@@ -196,6 +196,9 @@ class YAPLLexer(Lexer):
     RBRACE = 53
     LINE_COMMENT = 54
     COMMENT = 55
+    CLASS = 56
+    INHERITS = 57
+    EOF = -1
 
     channelNames = [ u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN" ]
 
