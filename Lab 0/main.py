@@ -86,4 +86,4 @@ class Compile():
         elif tokenType == self.lexer.WS:
             return "WS"
 
-compile = Compile("test.yapl")
+compile = Compile("test3.yapl")
