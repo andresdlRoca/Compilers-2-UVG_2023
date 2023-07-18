@@ -6,7 +6,7 @@ class Main {
 // Comentario
 
 class Silly {
-    copy() : SELF_TYPE { self }
+    copy() : SELF_TYPE { self; };
 };
 
 // Clase de ejemplo
@@ -16,11 +16,11 @@ class ejemplo inherits Silly {
 
     x : Service <- (new Service).copy();
 
-    isNil() : Bool { False }
+    isNil() : Bool { false; };
     
     // Comentario de prueba
     init(hd: Int, tl : List) : Cons {
         xcar <- hd;
-    }
+    };
 
 };

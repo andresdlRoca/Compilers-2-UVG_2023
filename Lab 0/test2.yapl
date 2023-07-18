@@ -2,22 +2,19 @@ class Point inherits Object {
     x : Int;
     y : Int;
     init(x : Int, y : Int) : SELF_TYPE {
-        {
+        
             self.x <- x;
             self.y <- y;
             self;
-        };
     };
 };
 
 class Circle inherits Point {
     radius : Int;
     init(x : Int, y : Int, r : Int) : SELF_TYPE {
-        {
             self.x <- x;
             self.y <- y;
             self.radius <- r;
             self;
-        };
     };
 };

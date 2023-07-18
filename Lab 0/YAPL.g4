@@ -60,41 +60,45 @@ clas_list:
 
 feature_list: feature* | formal*;
 
-feature: attribute_definition | method_definition;
+feature: attribute_definition | method_definition | simple_method_definition;
 
-attribute_definition: ID COLON type ('<-' expr)? SEMI;
+attribute_definition: ID COLON type ('<-' expr)? (LPAREN expr SEMI RPAREN)? SEMI;
 method_definition:
-	ID LPAREN parameter_list? RPAREN COLON type LBRACE block RBRACE;
+	ID LPAREN parameter_list? RPAREN COLON type LBRACE (block SEMI)*  RBRACE SEMI;
 
-block: statement*;
+block: if_statement | while_statement | expr+;
 
-statement:
-	ID
-	| assignment_statement
-	| if_statement
-	| while_statement; // Statements
+simple_method_definition:
+	ID LPAREN parameter_list? RPAREN SEMI;
 
 formal: ID COLON type;
-
-assignment_statement: ID ASSIGN expr SEMI;
-if_statement: IF expr THEN block (ELSE block)? FI;
-while_statement: WHILE expr LOOP block POOL;
 
 parameter_list: formal (COMMA formal)?;
 
 let_declaration: let_binding (COMMA let_binding)*;
 let_binding: ID COLON type ( ASSIGN expr)?;
 
+if_statement: IF LBRACE expr THEN expr (ELSE expr)? FI;
+while_statement: WHILE expr LOOP expr POOL;
+
 expr:
 	ID ASSIGN expr
-	| expr '.' ID
-	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
-	| expr DOT ID LPAREN expr (SEMI expr)* RPAREN
-	| expr '~'
-	| IF expr THEN expr ELSE expr FI
-	| WHILE expr LOOP expr POOL
+	| NEW ID
 	| NEW type
 	| ISVOID expr
+	| INT_CONST
+	| STR_CONST
+	| NOT expr
+	| LPAREN expr+? RPAREN
+	| ISVOID expr
+	| LET let_declaration IN expr
+	| 'self'
+	| 'true'
+	| 'false'
+	| 'void'
+	| expr DOT ID LPAREN expr? RPAREN
+	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
+	| expr '~'
 	| expr '-' expr
 	| expr '+' expr
 	| expr '<' expr
@@ -107,18 +111,5 @@ expr:
 	| expr '%' expr
 	| expr '^' expr
 	| expr '<=' expr
-	| NOT expr
-	| LPAREN expr RPAREN
-	| ID
-	| INT_CONST
-	| STR_CONST
-	| 'true'
-	| 'false'
-	| 'void'
-	| if_statement
-	| while_statement
-	| ISVOID expr
-	| block
-	| NEW type
-	| LET let_declaration IN expr;
+	| ID;
 

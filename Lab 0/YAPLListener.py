@@ -107,24 +107,6 @@ class YAPLListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by YAPLParser#block.
-    def enterBlock(self, ctx:YAPLParser.BlockContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#block.
-    def exitBlock(self, ctx:YAPLParser.BlockContext):
-        pass
-
-
-    # Enter a parse tree produced by YAPLParser#statement.
-    def enterStatement(self, ctx:YAPLParser.StatementContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#statement.
-    def exitStatement(self, ctx:YAPLParser.StatementContext):
-        pass
-
-
     # Enter a parse tree produced by YAPLParser#formal.
     def enterFormal(self, ctx:YAPLParser.FormalContext):
         pass
@@ -140,24 +122,6 @@ class YAPLListener(ParseTreeListener):
 
     # Exit a parse tree produced by YAPLParser#assignment_statement.
     def exitAssignment_statement(self, ctx:YAPLParser.Assignment_statementContext):
-        pass
-
-
-    # Enter a parse tree produced by YAPLParser#if_statement.
-    def enterIf_statement(self, ctx:YAPLParser.If_statementContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#if_statement.
-    def exitIf_statement(self, ctx:YAPLParser.If_statementContext):
-        pass
-
-
-    # Enter a parse tree produced by YAPLParser#while_statement.
-    def enterWhile_statement(self, ctx:YAPLParser.While_statementContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#while_statement.
-    def exitWhile_statement(self, ctx:YAPLParser.While_statementContext):
         pass
 
 
