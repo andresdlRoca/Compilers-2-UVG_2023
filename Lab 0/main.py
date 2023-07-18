@@ -21,13 +21,14 @@ class Compile():
         tree = parser.program()
         print(tree.toStringTree(recog=parser))
 
-        # Scanner / Lexer
-        # token = self.lexer.nextToken()
-        # print(token)
-        # # while token.type != self.lexer.EOF:
-        # #     print(f'\n{self.getType(token.type)}: {token.text}')
-        # #     token = self.lexer.nextToken()
-
+    def print_tokens(self):
+        # Tokenize the input
+        self.lexer.reset()
+        token = self.lexer.nextToken()
+        # Iterate over all the tokens
+        while not token.type == Token.EOF:
+            print(f"Token type: {self.getType(token.type)}, Token text: {token.text}")
+            token = self.lexer.nextToken()
     
     def getType(self, tokenType):
         # Match the YAPLLexer.tokens to the tokenType with ifs
@@ -86,4 +87,5 @@ class Compile():
         elif tokenType == self.lexer.WS:
             return "WS"
 
-compile = Compile("test3.yapl")
+compile = Compile("test.yapl")
+compile.print_tokens()
