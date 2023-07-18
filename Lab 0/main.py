@@ -26,17 +26,14 @@ class Compile():
         self.lexer.reset()
         token = self.lexer.nextToken()
         # Iterate over all the tokens
-        while not token.type == Token.EOF:
+        while token.type != Token.EOF:
+            print(token.type)
             print(f"Token type: {self.getType(token.type)}, Token text: {token.text}")
             token = self.lexer.nextToken()
     
     def getType(self, tokenType):
         # Match the YAPLLexer.tokens to the tokenType with ifs
-        if tokenType == self.lexer.CLASS:
-            return "CLASS"
-        elif tokenType == self.lexer.INHERITS:
-            return "INHERITS"
-        elif tokenType == self.lexer.BOOL:
+        if tokenType == self.lexer.BOOL:
             return "BOOL"
         elif tokenType == self.lexer.INT:
             return "INT"
@@ -48,24 +45,6 @@ class Compile():
             return "OBJECT"
         elif tokenType == self.lexer.SELF_TYPE:
             return "SELF_TYPE"
-        elif tokenType == self.lexer.IF:
-            return "IF"
-        elif tokenType == self.lexer.THEN:
-            return "THEN"
-        elif tokenType == self.lexer.ELSE:
-            return "ELSE"
-        elif tokenType == self.lexer.FI:
-            return "FI"
-        elif tokenType == self.lexer.WHILE:
-            return "WHILE"
-        elif tokenType == self.lexer.LOOP:
-            return "LOOP"
-        elif tokenType == self.lexer.POOL:
-            return "POOL"
-        elif tokenType == self.lexer.LET:
-            return "LET"
-        elif tokenType == self.lexer.IN:
-            return "IN"
         elif tokenType == self.lexer.CASE:
             return "CASE"
         elif tokenType == self.lexer.OF:
@@ -86,6 +65,8 @@ class Compile():
             return "STR_CONST"
         elif tokenType == self.lexer.WS:
             return "WS"
+        else:
+            return "ERROR"
 
 compile = Compile("test.yapl")
 compile.print_tokens()

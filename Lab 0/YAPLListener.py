@@ -107,33 +107,6 @@ class YAPLListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by YAPLParser#formal.
-    def enterFormal(self, ctx:YAPLParser.FormalContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#formal.
-    def exitFormal(self, ctx:YAPLParser.FormalContext):
-        pass
-
-
-    # Enter a parse tree produced by YAPLParser#assignment_statement.
-    def enterAssignment_statement(self, ctx:YAPLParser.Assignment_statementContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#assignment_statement.
-    def exitAssignment_statement(self, ctx:YAPLParser.Assignment_statementContext):
-        pass
-
-
-    # Enter a parse tree produced by YAPLParser#parameter_list.
-    def enterParameter_list(self, ctx:YAPLParser.Parameter_listContext):
-        pass
-
-    # Exit a parse tree produced by YAPLParser#parameter_list.
-    def exitParameter_list(self, ctx:YAPLParser.Parameter_listContext):
-        pass
-
-
     # Enter a parse tree produced by YAPLParser#let_declaration.
     def enterLet_declaration(self, ctx:YAPLParser.Let_declarationContext):
         pass
@@ -149,6 +122,60 @@ class YAPLListener(ParseTreeListener):
 
     # Exit a parse tree produced by YAPLParser#let_binding.
     def exitLet_binding(self, ctx:YAPLParser.Let_bindingContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#if_statement.
+    def enterIf_statement(self, ctx:YAPLParser.If_statementContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#if_statement.
+    def exitIf_statement(self, ctx:YAPLParser.If_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#while_statement.
+    def enterWhile_statement(self, ctx:YAPLParser.While_statementContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#while_statement.
+    def exitWhile_statement(self, ctx:YAPLParser.While_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#block.
+    def enterBlock(self, ctx:YAPLParser.BlockContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#block.
+    def exitBlock(self, ctx:YAPLParser.BlockContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#simple_method_definition.
+    def enterSimple_method_definition(self, ctx:YAPLParser.Simple_method_definitionContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#simple_method_definition.
+    def exitSimple_method_definition(self, ctx:YAPLParser.Simple_method_definitionContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#formal.
+    def enterFormal(self, ctx:YAPLParser.FormalContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#formal.
+    def exitFormal(self, ctx:YAPLParser.FormalContext):
+        pass
+
+
+    # Enter a parse tree produced by YAPLParser#parameter_list.
+    def enterParameter_list(self, ctx:YAPLParser.Parameter_listContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#parameter_list.
+    def exitParameter_list(self, ctx:YAPLParser.Parameter_listContext):
         pass
 
 
