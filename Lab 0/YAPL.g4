@@ -18,10 +18,10 @@ SELF_TYPE: 'SELF_TYPE';
 class: 'class';
 inherits: 'inherits';
 
-IF: 'if';
-THEN: 'then';
-ELSE: 'else';
-FI: 'fi';
+// IF: 'if';
+// THEN: 'then';
+// ELSE: 'else';
+// FI: 'fi';
 WHILE: 'while';
 LOOP: 'loop';
 POOL: 'pool';
@@ -66,7 +66,7 @@ attribute_definition: ID COLON type ('<-' expr)? (LPAREN expr SEMI RPAREN)? SEMI
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (block SEMI)*  RBRACE SEMI;
 
-block: if_statement | while_statement | expr+;
+block: if_statement* | while_statement* | expr*;
 
 simple_method_definition:
 	ID LPAREN parameter_list? RPAREN SEMI;
@@ -78,11 +78,14 @@ parameter_list: formal (COMMA formal)?;
 let_declaration: let_binding (COMMA let_binding)*;
 let_binding: ID COLON type ( ASSIGN expr)?;
 
-if_statement: IF LBRACE expr THEN expr (ELSE expr)? FI;
+// if_statement: IF expr (THEN expr)* (ELSE expr)? FI;
+// if_statement: IF FI;
+if_statement: 'if' expr ('then' expr)* ('else' expr)? 'fi';
 while_statement: WHILE expr LOOP expr POOL;
 
 expr:
 	ID ASSIGN expr
+	| ID '(' parameter_list? ')'
 	| NEW ID
 	| NEW type
 	| ISVOID expr
