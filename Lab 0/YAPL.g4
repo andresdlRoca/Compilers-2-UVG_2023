@@ -22,9 +22,9 @@ inherits: 'inherits';
 // THEN: 'then';
 // ELSE: 'else';
 // FI: 'fi';
-WHILE: 'while';
-LOOP: 'loop';
-POOL: 'pool';
+// WHILE: 'while';
+// LOOP: 'loop';
+// POOL: 'pool';
 LET: 'let';
 IN: 'in';
 CASE: 'case';
@@ -78,10 +78,8 @@ parameter_list: formal (COMMA formal)?;
 let_declaration: let_binding (COMMA let_binding)*;
 let_binding: ID COLON type ( ASSIGN expr)?;
 
-// if_statement: IF expr (THEN expr)* (ELSE expr)? FI;
-// if_statement: IF FI;
 if_statement: 'if' expr ('then' expr)* ('else' expr)? 'fi';
-while_statement: WHILE expr LOOP expr POOL;
+while_statement: 'while' expr 'loop' expr 'pool';
 
 expr:
 	ID ASSIGN expr
