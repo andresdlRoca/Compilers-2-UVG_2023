@@ -12,7 +12,15 @@ class Arithmetic inherits Object {
     };
 
     divide(x : Int, y : Int) : Int {
-            if y = 0 then abort() else x / y fi;
-            while x loop y / x pool;
+            if y = 0 then 
+                abort() 
+            else 
+                x / y 
+            fi;
+            
+            while x 
+            loop 
+                y / x 
+            pool;
     };
 };

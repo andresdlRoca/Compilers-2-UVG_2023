@@ -3,7 +3,7 @@ grammar YAPL;
 // -- Reglas Lexicas --
 ID: [a-zA-Z][a-zA-Z0-9_]*; // Identificadores
 INT_CONST: [0-9]+;
-STR_CONST: '"' (~["\r\n\\] | '\\' [\\"'\r\n]) '"';
+STR_CONST: '"' ( '\\' [\\"] | ~[\\"\r\n] )* '"';
 
 // Espacios en blanco y saltos de linea se ignoran
 WS: [ \t\r\n]+ -> skip;
@@ -18,15 +18,6 @@ SELF_TYPE: 'SELF_TYPE';
 class: 'class';
 inherits: 'inherits';
 
-// IF: 'if';
-// THEN: 'then';
-// ELSE: 'else';
-// FI: 'fi';
-// WHILE: 'while';
-// LOOP: 'loop';
-// POOL: 'pool';
-LET: 'let';
-IN: 'in';
 CASE: 'case';
 OF: 'of';
 ESAC: 'esac';
@@ -66,24 +57,32 @@ attribute_definition: ID COLON type ('<-' expr)? (LPAREN expr SEMI RPAREN)? SEMI
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (block SEMI)*  RBRACE SEMI;
 
-block: if_statement* | while_statement* | expr*;
+let_declaration: 'let' let_binding (',' let_binding)* ('in' LBRACE (expr SEMI)* RBRACE)?;
+let_binding: ID ':' type ('<-' expr)? (type)?;
+
+if_statement: 'if' expr ('then' expr)* ('else' expr)? 'fi';
+while_statement: 'while' expr 'loop' expr 'pool';
+
+block: if_statement* | while_statement* | let_declaration* | expr*;
 
 simple_method_definition:
 	ID LPAREN parameter_list? RPAREN SEMI;
 
 formal: ID COLON type;
 
-parameter_list: formal (COMMA formal)?;
+parameter_list: formal (COMMA formal)*;
 
-let_declaration: let_binding (COMMA let_binding)*;
-let_binding: ID COLON type ( ASSIGN expr)?;
 
-if_statement: 'if' expr ('then' expr)* ('else' expr)? 'fi';
-while_statement: 'while' expr 'loop' expr 'pool';
 
 expr:
 	ID ASSIGN expr
+	| ID '(' expr ')'
 	| ID '(' parameter_list? ')'
+	| '{' expr '}'
+	| STR_CONST
+	| ID '(' STR_CONST ')'
+	| '(' STR_CONST ')'
+	| INT_CONST
 	| NEW ID
 	| NEW type
 	| ISVOID expr
@@ -92,12 +91,12 @@ expr:
 	| NOT expr
 	| LPAREN expr+? RPAREN
 	| ISVOID expr
-	| LET let_declaration IN expr
 	| 'self'
 	| 'true'
 	| 'false'
 	| 'void'
 	| expr DOT ID LPAREN expr? RPAREN
+	| expr DOT ID ASSIGN expr
 	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
 	| expr '~'
 	| expr '-' expr
