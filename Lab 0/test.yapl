@@ -21,6 +21,6 @@ class ejemplo inherits Silly {
     // Comentario de prueba
     init(hd: Int, tl : List) : Cons {
         xcar <- hd;
-    };
+    }; 
 
 };

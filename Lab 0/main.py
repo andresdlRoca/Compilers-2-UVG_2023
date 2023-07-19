@@ -7,6 +7,20 @@ from YAPLListener import YAPLListener
 from YAPLParser import YAPLParser
 from itertools import groupby
 
+class errorListener(ErrorListener):
+    def __init__(self):
+        self.hasError = False
+        self.lexicalErrors = []
+        pass
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        self.hasError = True
+        errorMsg = f'=> Se encontro un error en {line}:{column} de tipo {msg}'
+        self.lexicalErrors.append(errorMsg)
+    
+    def getHasError(self):
+        return self.hasError
+
 class Compile():
     def __init__(self, url):
         self.printer = None
@@ -15,11 +29,19 @@ class Compile():
         self.lexer = YAPLLexer(input)
         stream = CommonTokenStream(self.lexer)
         parser = YAPLParser(stream)
-        self.myError = None # TODO: Agregar un Error listener
+        self.myError = errorListener() 
         parser.removeErrorListeners()
-        # parser.addErrorListener(self.myError)
+        parser.addErrorListener(self.myError)
         tree = parser.program()
-        print(tree.toStringTree(recog=parser))
+        # print(tree.toStringTree(recog=parser))
+
+        if not self.myError.getHasError():
+            self.printer = YAPLListener()
+            walker = ParseTreeWalker()
+            walker.walk(self.printer, tree)
+            self.print_tokens()
+        else:
+            print(self.myError.lexicalErrors)
 
     def print_tokens(self):
         # Tokenize the input
@@ -92,4 +114,4 @@ class Compile():
             return "ERROR"
 
 compile = Compile("test.yapl")
-compile.print_tokens()
+# compile.print_tokens()
