@@ -27,22 +27,27 @@ class Compile():
         token = self.lexer.nextToken()
         # Iterate over all the tokens
         while token.type != Token.EOF:
-            print(token.type)
             print(f"Token type: {self.getType(token.type)}, Token text: {token.text}")
             token = self.lexer.nextToken()
     
     def getType(self, tokenType):
         # Match the YAPLLexer.tokens to the tokenType with ifs
-        if tokenType == self.lexer.BOOL:
+        if tokenType == self.lexer.ID:
+            return "ID"
+        elif tokenType == self.lexer.STR_CONST:
+            return "STR_CONST"
+        elif tokenType == self.lexer.INT_CONST:
+            return "INT_CONST"
+        elif tokenType == self.lexer.WS:
+            return "WS"
+        elif tokenType == self.lexer.BOOL:
             return "BOOL"
-        elif tokenType == self.lexer.INT:
-            return "INT"
         elif tokenType == self.lexer.STRING:
             return "STRING"
+        elif tokenType == self.lexer.INT:
+            return "INT"
         elif tokenType == self.lexer.IO:
             return "IO"
-        elif tokenType == self.lexer.OBJECT:
-            return "OBJECT"
         elif tokenType == self.lexer.SELF_TYPE:
             return "SELF_TYPE"
         elif tokenType == self.lexer.CASE:
@@ -57,14 +62,32 @@ class Compile():
             return "ISVOID"
         elif tokenType == self.lexer.NOT:
             return "NOT"
-        elif tokenType == self.lexer.ID:
-            return "ID"
-        elif tokenType == self.lexer.INT_CONST:
-            return "INT_CONST"
-        elif tokenType == self.lexer.STR_CONST:
-            return "STR_CONST"
-        elif tokenType == self.lexer.WS:
-            return "WS"
+        elif tokenType == self.lexer.ASSIGN:
+            return "ASSIGN"
+        elif tokenType == self.lexer.ARROW:
+            return "ARROW"
+        elif tokenType == self.lexer.SEMI:
+            return "SEMI"
+        elif tokenType == self.lexer.COLON:
+            return "COLON"
+        elif tokenType == self.lexer.COMMA:
+            return "COMMA"
+        elif tokenType == self.lexer.DOT:
+            return "DOT"
+        elif tokenType == self.lexer.LPAREN:
+            return "LPAREN"
+        elif tokenType == self.lexer.RPAREN:
+            return "RPAREN"
+        elif tokenType == self.lexer.LBRACE:
+            return "LBRACE"
+        elif tokenType == self.lexer.RBRACE:
+            return "RBRACE"
+        elif tokenType == self.lexer.LINE_COMMENT:
+            return "LINE_COMMENT"
+        elif tokenType == self.lexer.COMMENT:
+            return "COMMENT"
+        elif self.lexer.T__0 <= tokenType <= self.lexer.T__26:
+            return "KEYWORD"
         else:
             return "ERROR"
 
