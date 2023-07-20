@@ -60,8 +60,8 @@ method_definition:
 let_declaration: 'let' let_binding (',' let_binding)* ('in' LBRACE (expr SEMI)* RBRACE)?;
 let_binding: ID ':' type ('<-' expr)? (type)?;
 
-if_statement: 'if' expr ('then' expr)* ('else' expr)? 'fi';
-while_statement: 'while' expr 'loop' expr 'pool';
+if_statement: 'if' expr ('then' (expr|while_statement|if_statement)*)* ('else' (expr|while_statement|if_statement))? 'fi';
+while_statement: 'while' (expr|while_statement|if_statement)* 'loop' (expr|while_statement|if_statement)* 'pool';
 
 block: if_statement* | while_statement* | let_declaration* | expr*;
 
@@ -95,21 +95,23 @@ expr:
 	| 'true'
 	| 'false'
 	| 'void'
+	| expr DOT ID
 	| expr DOT ID LPAREN expr? RPAREN
 	| expr DOT ID ASSIGN expr
 	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
 	| expr '~'
-	| expr '-' expr
-	| expr '+' expr
-	| expr '<' expr
-	| expr '>' expr
+	| expr ('-' expr)+
+	| expr ('+' expr)+
+	| expr ('<' expr)+
+	| expr ('>' expr)+
 	| expr '=' expr
-	| expr '+' expr
-	| expr '-' expr
-	| expr '*' expr
-	| expr '/' expr
-	| expr '%' expr
+	| expr ('+' expr)+
+	| expr ('-' expr)+
+	| expr ('*' expr)+
+	| expr ('/' expr)+
+	| expr ('%' expr)+
 	| expr '^' expr
 	| expr '<=' expr
 	| ID;
 
+ErrorChar : . ;

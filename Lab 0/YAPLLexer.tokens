@@ -53,6 +53,7 @@ LBRACE=52
 RBRACE=53
 LINE_COMMENT=54
 COMMENT=55
+ErrorChar=56
 'class'=1
 'inherits'=2
 '+'=3

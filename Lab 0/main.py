@@ -10,13 +10,13 @@ from itertools import groupby
 class errorListener(ErrorListener):
     def __init__(self):
         self.hasError = False
-        self.lexicalErrors = []
+        self.listErrors = []
         pass
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         self.hasError = True
-        errorMsg = f'=> Se encontro un error en {line}:{column} de tipo {msg}'
-        self.lexicalErrors.append(errorMsg)
+        errorMsg = f'=> Se encontro un error en {line}:{column}. El caracter causante es: {offendingSymbol.text}'
+        self.listErrors.append(errorMsg)
     
     def getHasError(self):
         return self.hasError
@@ -24,24 +24,32 @@ class errorListener(ErrorListener):
 class Compile():
     def __init__(self, url):
         self.printer = None
-
         input = FileStream(url)
         self.lexer = YAPLLexer(input)
+        self.lexer.removeErrorListeners()
         stream = CommonTokenStream(self.lexer)
         parser = YAPLParser(stream)
         self.myError = errorListener() 
         parser.removeErrorListeners()
         parser.addErrorListener(self.myError)
         tree = parser.program()
-        # print(tree.toStringTree(recog=parser))
 
-        if not self.myError.getHasError():
+        print("\nTokens encontrados: ")
+        self.print_tokens()
+
+        if self.myError.getHasError():
+            print("\nReporte de errores: ")
+            for i in self.myError.listErrors:
+                print(i)
+        else:
             self.printer = YAPLListener()
             walker = ParseTreeWalker()
             walker.walk(self.printer, tree)
-            self.print_tokens()
-        else:
-            print(self.myError.lexicalErrors)
+            print("\nArbol de parseo en string: ")
+            print(tree.toStringTree(recog=parser))
+
+
+
 
     def print_tokens(self):
         # Tokenize the input
@@ -49,7 +57,7 @@ class Compile():
         token = self.lexer.nextToken()
         # Iterate over all the tokens
         while token.type != Token.EOF:
-            print(f"Token type: {self.getType(token.type)}, Token text: {token.text}")
+            print(f"Tipo de token: {self.getType(token.type)}, Valor: {token.text}")
             token = self.lexer.nextToken()
     
     def getType(self, tokenType):
@@ -114,4 +122,3 @@ class Compile():
             return "ERROR"
 
 compile = Compile("test.yapl")
-# compile.print_tokens()
