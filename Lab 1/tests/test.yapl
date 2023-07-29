@@ -1,26 +1,5 @@
 
-class Main i {
+class Main {
     x : String; 
     main : Int;
-};
-// Comentario
-
-class Silly {
-    copy() : SELF_TYPE { self; };
-};
-
-// Clase de ejemplo
-class ejemplo inherits Silly {
-    zom : Int;
-    kid : String;
-
-    x : Service <- (new Service).copy();
-
-    isNil() : Bool { false; };
-    
-    // Comentario de prueba
-    init(hd: Int, tl : List) : Cons {
-        xcar <- hd;
-    };
-
 };

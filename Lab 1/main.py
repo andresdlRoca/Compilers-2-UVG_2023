@@ -6,6 +6,7 @@ from YAPLLexer import YAPLLexer
 from YAPLListener import YAPLListener
 from YAPLParser import YAPLParser
 from itertools import groupby
+from YAPL_Printer import YAPLPrinter
 
 class errorListener(ErrorListener):
     def __init__(self):
@@ -42,11 +43,11 @@ class Compile():
             for i in self.myError.listErrors:
                 print(i)
         else:
-            self.printer = YAPLListener()
+            self.printer = YAPLPrinter()
             walker = ParseTreeWalker()
             walker.walk(self.printer, tree)
-            print("\nArbol de parseo en string: ")
-            print(tree.toStringTree(recog=parser))
+            # print("\nArbol de parseo en string: ")
+            # print(tree.toStringTree(recog=parser))
 
 
 
@@ -121,4 +122,4 @@ class Compile():
         else:
             return "ERROR"
 
-compile = Compile("test.yapl")
+compile = Compile("./tests/test.yapl")
