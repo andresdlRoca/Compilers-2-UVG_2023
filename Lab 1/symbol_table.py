@@ -67,49 +67,33 @@ class ParameterTable():
         self.totable()
         self._symbols = []
 
-# class StructTable():
 
-#     def __init__(self) -> None:
-#         self.pretty_table = PrettyTable()
-#         self._symbols = []
+class ClassTable():
+    def __init__(self) -> None:
+        self.pretty_table = PrettyTable()
+        self._classes = []
+        print(" -- Iniciando nuevo ambito/scope -- ")
+    def add(self,type, id, inheritance):
+        self._classes.append({
+            'Type': type,
+            'ID': id,
+            'Inheritance': inheritance
+        })
+    def lookup(self, type):
+        for _class in self._classes:
+            if _class['Type'] == type:
+                return _class
+        return 0
+    
+    def totable(self):
+        self.pretty_table.field_names = ['Type', 'ID', 'Inheritance']
+        for i in self._classes:
+            self.pretty_table.add_row(list(i.values()))
 
-#     def add(self, parent, type, id, description):
-#         self._symbols.append({
-#             'Parent': parent,
-#             'Type': type,
-#             'ID': id,
-#             'Description': description
-#         })
-    
-#     def lookup(self, variable):
-#         symbols_copy = self._symbols.copy()
-#         symbols_copy.reverse()
-#         for symbol in symbols_copy:
-#             if symbol['id'] == id:
-#                 return symbol
-#         return 0
-    
-#     def totable(self):
-#         self.pretty_table.field_names = ['Parent', 'Type', 'ID', 'Description']
-#         for i in self._symbols:
-#             self.pretty_table.add_row(list(i.values()))
+        print(" -- Clases -- ")
+        print(self.pretty_table)
+        self.pretty_table.clear_rows()
 
-#         print(" -- Structs -- ")
-#         print(self.pretty_table)
-#         self.pretty_table.clear_rows()
-    
-#     def extract(self, parent, scope, type_table):
-#         for i in scope._symbols:
-#             type = type_table.lookup(i['Type'])
-#             self.add(parent, type['Type'], i['ID'], type['Description'])
-    
-#     def getchild(self, type, name):
-#         symbols_copy = self._symbols.copy()
-#         symbols_copy.reverse()
-#         for symbol in symbols_copy:
-#             if symbol['Parent'] == type and symbol['ID'] == name:
-#                 return symbol
-#         return 0
 
 class MethodTable():
 
@@ -172,7 +156,19 @@ class TypeTable():
 class SemanticError():
     def __init__(self) -> None:
         self._errors = []
-        # TODO: Agregar errores semanticos
+        self.IDENTIFICADOR_DECLARADO_MULTIPLES_VECES = 'El identificador ya fue declarado'
+        self.PARAMETROS_INCORRECTOS_METODO = 'Los parametros del metodo no coinciden'
+        self.TIPO_INCORRECTO = 'El tipo de dato del parametro no coincide'
+        self.EQ_OPS = 'El tipo de datos de operandos no es el mismo para los operadores de igualacion'
+        self.ARITH_OP = 'El tipo de dato de operando debe ser INT para operadores aritméticos.'
+        self.REL_OP = 'El tipo de dato de operando debe ser INT para operadores de relación.'
+        self.COND_OP = 'El tipo de dato en operación condicional debe ser boolean.'
+        self.IF_BOOLEAN = 'El tipo de dato dentro de condición de IF debe ser boolean.'
+        self.WHILE_BOOLEAN = 'El tipo de dato dentro de condición de WHILE debe ser boolean.'
+        self.ASIGNACION = 'La asignación de dos valores deben ser del mismo tipo.'
+        self.RETURN_TYPE = 'El valor de retorno debe de ser del mismo tipo con que fue declarado el método.'
+        self.METHOD_NOT_DECLARED = 'El método no existe o no hay definición del método previamente a ser invocado.'
+
     
     def add(self, line, col, msg):
         self._errors.append({
@@ -182,11 +178,11 @@ class SemanticError():
         })
 
     def ToString(self):
-        for error in self.errores:
-            print(' => Line ' + str(error['Line']) + ':' + str(error['Col']) + ' ' + error['Msg'])
+        for error in self._errors:
+            print(' => Line ' + str(error['Line']) + ':' + str(error['Column']) + ' ' + error['Description'])
 
     def GetErrores(self):
         errors = []
-        for error in self.errores:
-            errors.append(' => Line ' + str(error['Line']) + ':' + str(error['Col']) + ' ' + error['Msg'])
+        for error in self._errors:
+            errors.append(' => Line ' + str(error['Line']) + ':' + str(error['Column']) + ' ' + error['Description'])
         return errors

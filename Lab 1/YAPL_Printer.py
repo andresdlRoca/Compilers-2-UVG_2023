@@ -1,6 +1,8 @@
 from YAPLListener import YAPLListener
 from YAPLParser import YAPLParser
 from itertools import groupby
+from antlr4.tree.Trees import TerminalNode
+from antlr4.error.ErrorListener import ErrorListener
 from symbol_table import *
 
 class YAPLPrinter(YAPLListener):
@@ -28,6 +30,7 @@ class YAPLPrinter(YAPLListener):
         self.type_table = TypeTable()
         self.errors = SemanticError()
         self.method_table = MethodTable()
+        self.class_table = ClassTable()
         self.parameter_table = ParameterTable()
 
         self.node_type = {}
@@ -71,127 +74,61 @@ class YAPLPrinter(YAPLListener):
         print(" --- INICIO PROGRAMA --- ")
         self.root = ctx
         self.current_scope = SymbolTable()
-
-    def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        method = ctx.ID().getText()
-        parameters = []
-        if self.method_table.lookup(method) == 0:
-            if ctx.type_() != None:
-                type = "void"
-            else:
-                type = ctx.type_().getText()
-            print("Entrando a metodo: " + method)
-            children = ctx.getChildCount()
-
-            for i in range(children):
-                if isinstance(ctx.getChild(i), YAPLParser.TypeContext):
-                    typeparameter = self.data_type[ctx.getChild(i).getText()]
-                    idparameter = ctx.getChild(i+1).getText()
-                    if idparameter in [i['ID'] for i in parameters]:
-                        line = ctx.getChild(i+1).start.line
-                        col = ctx.getChild(i+1).start.column
-                        # TODO: Agregar error semantico respecto a Identificardor declarado muchas veces
-
-                    parameters.append({
-                        'Type': typeparameter,
-                        'ID': idparameter
-                    })
-                    self.parameter_table.add(typeparameter, idparameter)
-            self.method_table.add(type, method, parameters, None)
-        else:
-            line = ctx.start.line
-            col = ctx.start.column
-            # TODO: Agregar error semantico respecto a identificador declarado muchas veces
-        
-        self.newscope()
-
-        for parameter in parameters:
-            type_symbol = self.type_table.lookup(parameter['Type'])
-            print(type_symbol)
-            description = type_symbol['Description']
-            self.current_scope.add(parameter['Type'], parameter['ID'], description, True)
     
-    def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        method = ctx.ID().getText()
-        self.parameter_table.Clear()
-        self.popscope()
-        print("Saliendo de metodo: " + method)
+    def enterClas_list(self, ctx: YAPLParser.Clas_listContext):
+        class_type = ctx.type_()[0].getText()
+        try:
+            inheritance = ctx.type_()[1].getText()
+        except:
+            inheritance = None
+        # print(class_type, inheritance)
+        if self.class_table.lookup(class_type) == 0:
+            hijos = ctx.getChildCount()
 
-        return_type = ctx.type_().getText()
-        block_type = self.node_type[ctx.block()]
+            # for i in range(hijos):
+            #     if isinstance(ctx.getChild(i)): # TODO: Agregar chequeo de declaracion de variables
+            #         pass
+        
+            self.class_table.add(class_type, class_type, inheritance)
+        
+        else: # Error si hay clases duplicadas
+            line = ctx.type_()[0].start.line
+            col = ctx.type_()[0].start.column
+            self.errors.add(line, col, "Clase duplicada: " + class_type)
 
-        if return_type == self.VOID and block_type != self.VOID and block_type != self.ERROR:
+    def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
+        class_type = ctx.type_()[0].getText()
+        self.parameter_table.clear()
+        # self.popscope()
+        print('Saliendo de la clase: ' + class_type)
+
+        if class_type == self.VOID:
             self.node_type[ctx] = self.ERROR
-            line = ctx.type_().start.line
-            col = ctx.type_().start.column
-            self.errors.add(line, col, "El metodo no retorna nada")
+            line = ctx.type_()[0].start.line
+            col = ctx.type_()[0].start.column
+            self.errors.add(line, col, "Clase no puede ser tipo void")
             return
-
-        if return_type != block_type:
-            if block_type == self.ERROR:
-                self.node_type[ctx] = self.ERROR
-                return
-            self.node_type[ctx] = self.ERROR
-            line = ctx.block().start.line
-            col = ctx.block().start.column
-            self.errors.add(line, col, "El tipo de retorno no coincide con el tipo de la funcion")
         
-        self.node_type[ctx] = return_type
+        self.node_type[ctx] = self.VOID
 
-    def enterFormal(self, ctx: YAPLParser.FormalContext):
-        type = ctx.type_().getText()
-
-        if ctx.type_() is not None:
-            id = ctx.ID().getText()
-
-            if self.parameter_table.lookup(id) != 0:
-                self.node_type[ctx] = self.ERROR
-                self.node_type[ctx.ID] = self.ERROR
-                self.errors.add(ctx.ID().start.line, ctx.ID().start.column, "El tipo no existe previamente")
-            
-            if self.current_scope.lookup(id) == 0:
-                # TODO: Agregar error semantico respecto a identificador no existente previamente
-                pass
-            else:
-                # TODO: Agregar error semantico respecto a identificador declarado muchas veces
-                pass
-                
-        elif ctx.ID is not None:
-            id = ctx.ID().getText()
-            if self.current_scope.lookup(id) != 0:
-                # TODO: Error shadow parameter
-                pass
-            if self.parameter_table.lookup(id) == 0:
-                # TODO: Agregar error semantico respecto a identificador no existente previamente
-                pass
-            
-    
-    def enterBlock(self, ctx: YAPLParser.BlockContext):
-        parent = ctx.parentCtx
-
-        if not isinstance(parent, YAPLParser.Method_definitionContext):
-            self.newscope()
-    
-    def exitBlock(self, ctx: YAPLParser.BlockContext):
-        parent = ctx.parentCtx
-
-        if not isinstance(parent, YAPLParser.Method_definitionContext):
-            self.popscope()
-        
-        for child in ctx.children:
-            if not isinstance(child, YAPLParser.StatementContext):
-                continue # TODO: error semantico
-    
     def exitProgram(self, ctx: YAPLParser.ProgramContext):
         main_class = self.method_table.lookup("main")
         if main_class != 0:
-            pass # TODO: errores semanticos
+            hasError = self.childrenhaserror(ctx)
+            if hasError:
+                print("El programa contiene errores")
+                # self.errors.add(0,0,"El programa contiene errores")
 
-        self.current_scope.totable()
+
+        # self.current_scope.totable()
         print(" --- FIN PROGRAMA --- ")
 
+        self.class_table.totable()
         self.method_table.totable()
-    
+
+        if len(self.errors.GetErrores()) > 0:
+            print(" --- ERRORES --- ")
+            print(self.errors.GetErrores())
 
 
 

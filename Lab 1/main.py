@@ -122,4 +122,4 @@ class Compile():
         else:
             return "ERROR"
 
-compile = Compile("./tests/test.yapl")
+compile = Compile("./tests/test2.yapl")
