@@ -6,11 +6,11 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, description, isParameter):
+    def add(self, type, id, size, isParameter):
         self._symbols.append({
             'Type': type,
             'ID': id,
-            'Description': description,
+            'Size': size,
             'IsParameter': isParameter
         })
     
@@ -18,7 +18,7 @@ class SymbolTable():
         symbols_copy = self._symbols.copy()
         symbols_copy.reverse()
         for symbol in symbols_copy:
-            if symbol['id'] == id:
+            if symbol['ID'] == id:
                 return symbol
         return 0
 
@@ -50,7 +50,7 @@ class ParameterTable():
         symbols_copy = self._symbols.copy()
         symbols_copy.reverse()
         for symbol in symbols_copy:
-            if symbol['id'] == id:
+            if symbol['ID'] == variable:
                 return symbol
         return 0
 
@@ -102,22 +102,21 @@ class MethodTable():
         self._methods = []
         print(" -- Iniciando nuevo ambito/scope -- ")
 
-    def add(self, type, id, parameters, returnvariable):
+    def add(self, type, id, parameters):
         self._methods.append({
             'Type': type,
             'ID': id,
             'Parameters': parameters,
-            'Return': returnvariable
         })
     
     def lookup(self, variable):
         for method in self._methods:
-            if method['id'] == id:
+            if method['ID'] == variable:
                 return method
         return 0
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Return']
+        self.pretty_table.field_names = ['Type', 'ID', 'Parameters']
         for i in self._methods:
             self.pretty_table.add_row(list(i.values()))
 
