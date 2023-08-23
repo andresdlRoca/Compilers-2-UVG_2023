@@ -1,0 +1,10 @@
+class Point inherits Object {
+    x : Int;
+    y : Int;
+    init(g : Int, z : Int) : SELF_TYPE {
+            self.x <- x;
+            self.y <- y;
+            self;
+    };
+};
+
