@@ -128,6 +128,11 @@ class YAPLPrinter(YAPLListener):
         parameters = []
         position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
 
+        parameter_list = ctx.parameter_list()
+        formal_list = parameter_list.formal() # Parametros
+        for formal in formal_list:
+            parameters.append(formal.getText())
+
         if self.method_table.lookup(method_id) == 0:
             self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
         else:
