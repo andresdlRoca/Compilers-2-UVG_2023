@@ -107,13 +107,14 @@ class MethodTable():
         self._methods = []
         print(" -- Iniciando nuevo ambito/scope -- ")
 
-    def add(self, type, id, parameters, scope, position):
+    def add(self, type, id, parameters, scope, address, position):
         self._methods.append({
             'Type': type,
             'ID': id,
             'Parameters': parameters,
             'Scope': scope,
-            'Position': position,
+            'Address': address,
+            'Position': position
         })
     
     def lookup(self, variable):
@@ -123,7 +124,7 @@ class MethodTable():
         return 0
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Position']
+        self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Address', 'Position']
         for i in self._methods:
             self.pretty_table.add_row(list(i.values()))
 

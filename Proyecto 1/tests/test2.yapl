@@ -2,17 +2,28 @@ class Point inherits Object {
 
     x : Int;
     y : Int;
+    init(g : int, z : int) : SELF_TYPE {
+        self.x <= x;
+        self.y <- y;
+        self;
+    };
 
 };
 
 class Circle inherits Point {
 
+    abc : String;
+    efg : Bool;
+
 };
 
 class Square inherits Point {
+    abc : String;
+    efg : Bool;
 
 };
 
 class main {
-
+    abc : String;
+    efg : Bool;
 };

@@ -27,7 +27,7 @@ class YAPLPrinter(YAPLListener):
 
         self.scopes = []
         self.current_scope = None
-        self.current_scope_name = None
+        self.current_scope_statement = None
         self.type_table = TypeTable()
         self.errors = SemanticError()
         self.method_table = MethodTable()
@@ -114,16 +114,31 @@ class YAPLPrinter(YAPLListener):
                 line = ctx.type_().start.line
                 col = ctx.type_().start.column
                 self.errors.add(line, col, "Variable duplicada: " + ctx_id)
+                
     
     def exitAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
         print('Saliendo de la declaracion de atributo: ' + ctx.ID().getText())
 
     
     def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        return super().enterMethod_definition(ctx)
+        self.current_scope_statement = "local"
+        method_id = ctx.ID().getText()
+        method_type = ctx.type_().getText()
+        address = hex(id(ctx))
+        parameters = []
+        position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
+
+        if self.method_table.lookup(method_id) == 0:
+            self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
+        else:
+            line = ctx.type_().start.line
+            col = ctx.type_().start.column
+            self.errors.add(line, col, "Metodo duplicado: " + method_id)
+
+        self.newscope()
     
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        return super().exitMethod_definition(ctx)
+        self.popscope()
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
         class_type = ctx.type_()[0].getText()
