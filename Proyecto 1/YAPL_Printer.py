@@ -27,6 +27,7 @@ class YAPLPrinter(YAPLListener):
 
         self.scopes = []
         self.current_scope = None
+        self.current_scope_name = None
         self.type_table = TypeTable()
         self.errors = SemanticError()
         self.method_table = MethodTable()
@@ -74,8 +75,10 @@ class YAPLPrinter(YAPLListener):
         print(" --- INICIO PROGRAMA --- ")
         self.root = ctx
         self.current_scope = SymbolTable()
+        self.current_scope_statement = "global"
     
     def enterClas_list(self, ctx: YAPLParser.Clas_listContext):
+        address = hex(id(ctx))
         class_type = ctx.type_()[0].getText()
         line = ctx.type_()[0].start.line
         col = ctx.type_()[0].start.column
@@ -87,43 +90,56 @@ class YAPLPrinter(YAPLListener):
             inheritance = None
 
         if self.class_table.lookup(class_type) == 0:
-            self.class_table.add(class_type, class_type, position, inheritance)
+            self.class_table.add(class_type, class_type, self.current_scope_statement, position, inheritance, address)
         
         else: # Error si hay clases duplicadas
             line = ctx.type_()[0].start.line
             col = ctx.type_()[0].start.column
             self.errors.add(line, col, "Clase duplicada: " + class_type)
-
-    # def enterClas_list(self, ctx: YAPLParser.Clas_listContext):
-    #     class_type = ctx.type_()[0].getText()
-    #     try:
-    #         inheritance = ctx.type_()[1].getText()
-    #     except:
-    #         inheritance = None
-
-    #     if self.class_table.lookup(class_type) == 0:
-    #         self.class_table.add(class_type, class_type, inheritance)
         
-    #     else: # Error si hay clases duplicadas
-    #         line = ctx.type_()[0].start.line
-    #         col = ctx.type_()[0].start.column
-    #         self.errors.add(line, col, "Clase duplicada: " + class_type)
+        self.current_scope_statement = "global -> " + class_type
+        self.newscope()
 
-    # def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
-    #     class_type = ctx.type_()[0].getText()
-    #     self.parameter_table.clear()
-    #     # self.popscope()
-    #     print('Saliendo de la clase: ' + class_type)
+    # Entrando a declaraciones de variables
+    def enterAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
+        tipo = ctx.type_().getText()
+        address = hex(id(ctx))
+        position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
 
-    #     if class_type == self.VOID:
-    #         self.node_type[ctx] = self.ERROR
-    #         line = ctx.type_()[0].start.line
-    #         col = ctx.type_()[0].start.column
-    #         self.errors.add(line, col, "Clase no puede ser tipo void")
-    #         return
+        if ctx.ID() is not None:
+            ctx_id = ctx.ID().getText()
+            if self.current_scope.lookup(ctx_id) == 0:
+                self.current_scope.add(tipo, ctx_id, self.current_scope_statement, position, address, False)
+            else:
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line, col, "Variable duplicada: " + ctx_id)
+    
+    def exitAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
+        print('Saliendo de la declaracion de atributo: ' + ctx.ID().getText())
+
+    
+    def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
+        return super().enterMethod_definition(ctx)
+    
+    def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
+        return super().exitMethod_definition(ctx)
+
+    def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
+        class_type = ctx.type_()[0].getText()
+        self.popscope()
+        self.current_scope_statement = "global"
+        print('Saliendo de la clase: ' + class_type)
+
+        if class_type == self.VOID:
+            self.node_type[ctx] = self.ERROR
+            line = ctx.type_()[0].start.line
+            col = ctx.type_()[0].start.column
+            self.errors.add(line, col, "Clase no puede ser tipo void")
+            return
         
-    #     self.node_type[ctx] = self.VOID
 
+        
     # def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
     #     method_type = ctx.type_().getText()
     #     method_name = ctx.ID().getText()
@@ -152,18 +168,6 @@ class YAPLPrinter(YAPLListener):
 
     #     self.newscope()
     #     print('Entrando al metodo: ' + method_name)
-
-    # def enterFormal(self, ctx: YAPLParser.FormalContext):
-    #     tipo = ctx.type_().getText()
-
-    #     if ctx.ID() is not None:
-    #         id = ctx.ID().getText()
-    #         if self.current_scope.lookup(id) == 0:
-    #             self.current_scope.add(tipo, id, 0, False)
-    #         else:
-    #             line = ctx.type_().start.line
-    #             col = ctx.type_().start.column
-    #             self.errors.add(line, col, "Variable duplicada: " + id)
             
 
 

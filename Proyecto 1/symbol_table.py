@@ -6,13 +6,13 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, scope, position, size, isParameter):
+    def add(self, type, id, scope, position, address, isParameter):
         self._symbols.append({
             'Type': type,
             'ID': id,
             'Scope': scope,
             'Position': position,
-            'Size': size,
+            'Address': address,
             'IsParameter': isParameter,
         })
     
@@ -28,7 +28,7 @@ class SymbolTable():
         return sum(symbol['size'] for symbol in self._symbols)
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Position', 'Size','IsParameter']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Position', 'Address', 'IsParameter']
         for i in self._symbols:
             self.pretty_table.add_row(list(i.values()))
 
@@ -75,13 +75,14 @@ class ClassTable():
         self.pretty_table = PrettyTable()
         self._classes = []
         print(" -- Iniciando nuevo ambito/scope -- ")
-    def add(self,type, id, position, inheritance):
+    def add(self,type, id, scope, position, inheritance, address):
         self._classes.append({
             'Type': type,
             'ID': id,
+            'Scope': scope,
             'Inheritance': inheritance,
             'Position': position,
-            'Scope': "Class",
+            'Memory Address': address
         })
     def lookup(self, type):
         for _class in self._classes:
@@ -90,7 +91,7 @@ class ClassTable():
         return 0
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Inheritance', 'Position', 'Scope']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Inheritance', 'Position', 'Memory Address']
         for i in self._classes:
             self.pretty_table.add_row(list(i.values()))
 
