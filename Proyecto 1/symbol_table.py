@@ -36,40 +36,6 @@ class SymbolTable():
         print(self.pretty_table)
         self.pretty_table.clear_rows()
 
-class ParameterTable():
-    def __init__(self) -> None:
-        self.pretty_table = PrettyTable()
-        self._symbols = []
-        print(" -- Iniciando nuevo ambito/scope -- ")
-    
-    def add(self, type, id):
-        self._symbols.append({
-            'Type': type,
-            'ID': id,
-        })
-    
-    def lookup(self, variable):
-        symbols_copy = self._symbols.copy()
-        symbols_copy.reverse()
-        for symbol in symbols_copy:
-            if symbol['ID'] == variable:
-                return symbol
-        return 0
-
-    def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID']
-        for i in self._symbols:
-            self.pretty_table.add_row(list(i.values()))
-
-        print(" -- Parametros -- ")
-        print(self.pretty_table)
-        self.pretty_table.clear_rows()
-    
-    def clear(self):
-        self.totable()
-        self._symbols = []
-
-
 class ClassTable():
     def __init__(self) -> None:
         self.pretty_table = PrettyTable()

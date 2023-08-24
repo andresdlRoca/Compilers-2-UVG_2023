@@ -30,9 +30,11 @@ class YAPLPrinter(YAPLListener):
         self.current_scope_statement = None
         self.type_table = TypeTable()
         self.errors = SemanticError()
+        self.global_method_table = MethodTable() # Saves all the methods
+        self.global_method_call_table = MethodTable() # Saves all the method calls
         self.method_table = MethodTable()
+        self.method_call_table = MethodTable()
         self.class_table = ClassTable()
-        self.parameter_table = ParameterTable()
 
         self.node_type = {}
 
@@ -134,6 +136,7 @@ class YAPLPrinter(YAPLListener):
             parameters.append(formal.getText())
 
         if self.method_table.lookup(method_id) == 0:
+            self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
             self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
         else:
             line = ctx.type_().start.line
@@ -143,6 +146,34 @@ class YAPLPrinter(YAPLListener):
         self.newscope()
     
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
+        self.method_table = MethodTable()
+        self.popscope()
+    
+    def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
+        self.current_scope_statement = "local"
+        method_id = ctx.ID().getText()
+        # method_type = ctx.type_().getText()
+        address = hex(id(ctx))
+        parameters = []
+        position = "Linea: " + str(ctx.start.line) + " Columna: " + str(ctx.start.column)
+
+        parameter_list = ctx.parameter_list()
+        formal_list = parameter_list.formal() # Parametros
+        for formal in formal_list:
+            parameters.append(formal.getText())
+
+        if self.method_call_table.lookup(method_id) == 0:
+            self.global_method_call_table.add(None, method_id, parameters, self.current_scope_statement, address, position)
+            self.method_call_table.add(None, method_id, parameters, self.current_scope_statement, address, position)
+        else:
+            line = ctx.start.line
+            col = ctx.start.column
+            self.errors.add(line, col, "Metodo duplicado: " + method_id)
+
+        self.newscope()
+
+    def exitSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
+        self.method_call_table = MethodTable()
         self.popscope()
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
@@ -157,38 +188,6 @@ class YAPLPrinter(YAPLListener):
             col = ctx.type_()[0].start.column
             self.errors.add(line, col, "Clase no puede ser tipo void")
             return
-        
-
-        
-    # def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-    #     method_type = ctx.type_().getText()
-    #     method_name = ctx.ID().getText()
-    #     parameters = []
-
-    #     hijos = ctx.getChildCount()
-
-    #     for i in range(hijos):
-    #         print(ctx.getChild(i).getText())
-    #         if isinstance(ctx.getChild(i), YAPLParser.FormalContext):
-    #             idParameter = ctx.getChild(i).ID().getText()
-    #             typeParameter = self.data_type[ctx.getChild(i).type_().getText()]
-    #             if idParameter in [i['ID'] for i in parameters]:
-    #                 line = ctx.getChild(i).ID().start.line
-    #                 col = ctx.getChild(i).ID().start.column
-    #                 self.errors.add(line, col, "Parametro duplicado: " + idParameter)
-    #             parameters.append({'type': typeParameter, 'ID': idParameter})
-    #             self.parameter_table.add(typeParameter, idParameter)
-
-    #     if self.method_table.lookup(method_name) == 0:
-    #         self.method_table.add(method_type, method_name, parameters)
-    #     else:
-    #         line = ctx.type_().start.line
-    #         col = ctx.type_().start.column
-    #         self.errors.add(line, col, "Metodo duplicado: " + method_name)
-
-    #     self.newscope()
-    #     print('Entrando al metodo: ' + method_name)
-            
 
 
     def exitProgram(self, ctx: YAPLParser.ProgramContext):
@@ -203,8 +202,11 @@ class YAPLPrinter(YAPLListener):
         self.current_scope.totable()
         print(" --- FIN PROGRAMA --- ")
 
+        print("\n --- Resumen de tablas --- ")
         self.class_table.totable()
-        self.method_table.totable()
+        self.global_method_table.totable()
+        print(" --- Llamadas a metodos --- ")
+        self.global_method_call_table.totable()
 
         if len(self.errors.GetErrores()) > 0:
             print(" --- ERRORES --- ")
