@@ -144,7 +144,32 @@ class YAPLPrinter(YAPLListener):
             self.errors.add(line, col, "Metodo duplicado: " + method_id)
 
         self.newscope()
+
     
+    def enterIf_statement(self, ctx: YAPLParser.If_statementContext):
+        return super().enterIf_statement(ctx)
+    
+    def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
+        return super().exitIf_statement(ctx)
+    
+    def enterWhile_statement(self, ctx: YAPLParser.While_statementContext):
+        return super().enterWhile_statement(ctx)
+    
+    def exitWhile_statement(self, ctx: YAPLParser.While_statementContext):
+        return super().exitWhile_statement(ctx)
+    
+    def enterLet_declaration(self, ctx: YAPLParser.Let_declarationContext):
+        return super().enterLet_declaration(ctx)
+    
+    def exitLet_declaration(self, ctx: YAPLParser.Let_declarationContext):
+        return super().exitLet_declaration(ctx)
+    
+    def enterExpr(self, ctx: YAPLParser.ExprContext):
+        return super().enterExpr(ctx)
+    
+    def exitExpr(self, ctx: YAPLParser.ExprContext):
+        return super().exitExpr(ctx)
+
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         self.method_table = MethodTable()
         self.popscope()
