@@ -80,16 +80,22 @@ class YAPLPrinter(YAPLListener):
         self.current_scope_statement = "global"
     
     def enterClas_list(self, ctx: YAPLParser.Clas_listContext):
-        address = hex(id(ctx))
-        class_type = ctx.type_()[0].getText()
         line = ctx.type_()[0].start.line
         col = ctx.type_()[0].start.column
+        address = hex(id(ctx))
+        class_type = ctx.type_()[0].getText()            
+
 
         position = "Linea: " + str(line) + " Columna: " + str(col)
         try:
             inheritance = ctx.type_()[1].getText()
         except:
             inheritance = None
+
+        if class_type.lower() == 'main':
+            if inheritance is not None:
+                self.errors.add(line, col, "Main no puede heredar de otra clase")
+
 
         if self.class_table.lookup(class_type) == 0:
             self.class_table.add(class_type, class_type, self.current_scope_statement, position, inheritance, address)
@@ -131,9 +137,10 @@ class YAPLPrinter(YAPLListener):
         position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
 
         parameter_list = ctx.parameter_list()
-        formal_list = parameter_list.formal() # Parametros
-        for formal in formal_list:
-            parameters.append(formal.getText())
+        if parameter_list is not None: # Si hay parametros
+            formal_list = parameter_list.formal() # Parametros
+            for formal in formal_list:
+                parameters.append(formal.getText())
 
         if self.method_table.lookup(method_id) == 0:
             self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
@@ -161,7 +168,6 @@ class YAPLPrinter(YAPLListener):
         return super().exitExpr(ctx)
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        self.method_table = MethodTable()
         self.popscope()
     
     def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
@@ -193,26 +199,38 @@ class YAPLPrinter(YAPLListener):
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
         class_type = ctx.type_()[0].getText()
+        line = ctx.type_()[0].start.line
+        col = ctx.type_()[0].start.column
+
+        # Verificar que haya un metodo main en clase main sin parametros
+        if class_type.lower() == 'main':
+            main_method = self.method_table.lookup("main")
+            if main_method == 0:
+                self.errors.add(line,col,"No se encontro metodo main")
+            else:
+                if len(main_method['Parameters']) > 0:
+                    line = main_method['Position'].split(" ")[1]
+                    col = main_method['Position'].split(" ")[3]
+                    self.errors.add(line,col,"Metodo main no puede tener parametros")
+
+        self.method_table = MethodTable()
+
+
         self.popscope()
         self.current_scope_statement = "global"
         print('Saliendo de la clase: ' + class_type)
 
         if class_type == self.VOID:
             self.node_type[ctx] = self.ERROR
-            line = ctx.type_()[0].start.line
-            col = ctx.type_()[0].start.column
             self.errors.add(line, col, "Clase no puede ser tipo void")
             return
-
+        
+        
 
     def exitProgram(self, ctx: YAPLParser.ProgramContext):
-        main_class = self.method_table.lookup("main")
-        if main_class != 0:
-            hasError = self.childrenhaserror(ctx)
-            if hasError:
-                print("El programa contiene errores")
-                # self.errors.add(0,0,"El programa contiene errores")
-
+        main_class = self.class_table.lookup("main")
+        if main_class == 0: # Error si no hay clase main
+            self.errors.add(0,0,"No se encontro clase main")
 
         self.current_scope.totable()
         print(" --- FIN PROGRAMA --- ")

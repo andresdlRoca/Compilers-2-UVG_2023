@@ -1,4 +1,4 @@
-class Point inherits Object {
+class Point inherits Int {
 
     x : Int;
     y : Int;
@@ -36,6 +36,10 @@ class Square inherits Point {
 };
 
 class main {
-    abc : String;
-    efg : Bool;
+
+    main() : main {
+
+    };
+
 };
+
