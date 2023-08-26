@@ -7,7 +7,6 @@ import sys
 
 from main import Compile
 
-
 # Creating main window class
 class MainWindow(QMainWindow):
 
@@ -286,23 +285,14 @@ class MainWindow(QMainWindow):
 			compilado = Compile(input)
 
 			if compilado.myError.getHasError():
-				pass
-
-				# TODO: Agregar funcionalidad de mostrar errores lexicos en UI
-				# print('tiene errores lexicos', compilado.myError.lexicalErrors)
-				# errores = '\n'.join(compilado.myError.lexicalErrors)
-				# self.showErrors.setText(errores)
-				
+				self.showErrors.setText("\n".join(compilado.myError.listErrors))
 			else:
-				pass
-				# if compilado.printer.node_type[compilado.printer.root] == 'error' or len(compilado.printer.errores.errores) > 0:
-				# 	# print(compilado.printer.errores.GetErrores())
-				# 	errores = '\n'.join(compilado.printer.errores.GetErrores())
-				# 	self.showErrors.setText(errores)
-				# else:
-				self.showErrors.setText('Sin errores :)')
+				if compilado.printer.errors:
+					self.showErrors.setText("\n".join(compilado.printer.errors.GetErrores()))
+				else:
+					self.showErrors.setText("Sin errores")
 			self.tabs.setCurrentIndex(1)
-
+			
 	# save to path method
 	def _save_to_path(self, path):
 
