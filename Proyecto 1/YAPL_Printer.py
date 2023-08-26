@@ -9,20 +9,17 @@ class YAPLPrinter(YAPLListener):
     def __init__(self) -> None:
         self.root = None
 
-        self.STRING = "String"
-        self.INT = "Int"
-        self.BOOL = "Bool"
+        self.STRING = "string"
+        self.INT = "int"
+        self.BOOL = "bool"
         self.IO = "io"
         self.VOID = "Void"
         self.ERROR = "error"
 
-        self.data_type = {
-            'String': self.STRING,
-            'Int': self.INT,
-            'Bool': self.BOOL,
-            'io': self.IO,
-            'void': self.VOID,
-            'error': self.ERROR
+        self.basic_data_type = {
+            'string': self.STRING,
+            'int': self.INT,
+            'bool': self.BOOL,
         }
 
         self.scopes = []
@@ -92,7 +89,7 @@ class YAPLPrinter(YAPLListener):
         except:
             inheritance = None
 
-        if class_type.lower() == 'main':
+        if class_type.lower() == 'main': # Error si clase main hereda de otra clase
             if inheritance is not None:
                 self.errors.add(line, col, "Main no puede heredar de otra clase")
 
@@ -231,6 +228,20 @@ class YAPLPrinter(YAPLListener):
         main_class = self.class_table.lookup("main")
         if main_class == 0: # Error si no hay clase main
             self.errors.add(0,0,"No se encontro clase main")
+
+        for i in self.class_table._classes:
+            if i['Inheritance'] is not None:
+                if self.class_table.lookup(i['Inheritance']) == 0:
+
+                    # Check if it is basic data type
+                    if i['Inheritance'].lower() in self.basic_data_type:
+                        line = i['Position'].split(" ")[1]
+                        col = i['Position'].split(" ")[3]
+                        self.errors.add(line,col,"Clase heredada no puede ser tipo basico: " + i['Inheritance'])
+                    else:
+                        line = i['Position'].split(" ")[1]
+                        col = i['Position'].split(" ")[3]
+                        self.errors.add(line,col,"Clase heredada no existe: " + i['Inheritance'])
 
         self.current_scope.totable()
         print(" --- FIN PROGRAMA --- ")
