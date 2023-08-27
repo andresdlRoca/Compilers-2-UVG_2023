@@ -89,6 +89,12 @@ class YAPLPrinter(YAPLListener):
         except:
             inheritance = None
 
+        # Check for recursive inheritance
+        if inheritance is not None:
+            if inheritance == class_type:
+                self.errors.add(line, col, "Herencia recursiva no permitida: " + inheritance)
+
+
         if class_type.lower() == 'main': # Error si clase main hereda de otra clase
             if inheritance is not None:
                 self.errors.add(line, col, "Main no puede heredar de otra clase")

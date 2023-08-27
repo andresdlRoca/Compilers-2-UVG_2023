@@ -36,6 +36,10 @@ class Square inherits Point {
 
 };
 
+class test1 inherits test1 {
+
+};
+
 class main {
 
     main_circle : Circle;
