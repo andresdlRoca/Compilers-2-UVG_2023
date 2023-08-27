@@ -98,6 +98,15 @@ class YAPLListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by YAPLParser#var_assign.
+    def enterVar_assign(self, ctx:YAPLParser.Var_assignContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#var_assign.
+    def exitVar_assign(self, ctx:YAPLParser.Var_assignContext):
+        pass
+
+
     # Enter a parse tree produced by YAPLParser#method_definition.
     def enterMethod_definition(self, ctx:YAPLParser.Method_definitionContext):
         pass

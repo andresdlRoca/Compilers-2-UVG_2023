@@ -6,11 +6,12 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, scope, position, address, isParameter):
+    def add(self, type, id, scope, value, position, address, isParameter):
         self._symbols.append({
             'Type': type,
             'ID': id,
             'Scope': scope,
+            'Value': value,
             'Position': position,
             'Address': address,
             'IsParameter': isParameter,
@@ -28,7 +29,7 @@ class SymbolTable():
         return sum(symbol['size'] for symbol in self._symbols)
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Position', 'Address', 'IsParameter']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Value','Position', 'Address', 'IsParameter']
         for i in self._symbols:
             self.pretty_table.add_row(list(i.values()))
 
@@ -97,34 +98,6 @@ class MethodTable():
         print(" -- Metodos -- ")
         print(self.pretty_table)
         self.pretty_table.clear_rows()
-    
-    
-class TypeTable():
-    def __init__(self) -> None:
-        self.PRIMITIVE = 'primitive'
-        self.OBJECT = 'object'
-        self.IO = 'io'
-
-        self._types = []
-        self.add('int', self.PRIMITIVE, 0);
-        self.add('string', self.PRIMITIVE, '""')
-        self.add('bool', self.PRIMITIVE, False)
-        self.add('void', self.PRIMITIVE, None)
-    
-    def add(self, type, description, default_value):
-        self._types.append({
-            'Type': type,
-            'Description': description,
-            'Default': default_value
-        })
-    
-    def lookup(self, type):
-        types_copy = self._types.copy()
-        types_copy.reverse()
-        for type in types_copy:
-            if type['Type'] == type:
-                return type
-        return 0
 
 class SemanticError():
     def __init__(self) -> None:

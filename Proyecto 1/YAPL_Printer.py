@@ -25,7 +25,7 @@ class YAPLPrinter(YAPLListener):
         self.scopes = []
         self.current_scope = None
         self.current_scope_statement = None
-        self.type_table = TypeTable()
+        # self.type_table = TypeTable()
         self.errors = SemanticError()
         self.global_method_table = MethodTable() # Saves all the methods
         self.global_method_call_table = MethodTable() # Saves all the method calls
@@ -110,11 +110,30 @@ class YAPLPrinter(YAPLListener):
         tipo = ctx.type_().getText()
         address = hex(id(ctx))
         position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
+        
+        value = ctx.expr().pop().getText() if len(ctx.expr()) > 0 else None
+
+        if value is not None: # Si hay valor convertir a tipo de dato esperado
+            if tipo.lower() == self.basic_data_type['string']:
+                value = str(value)
+            elif tipo.lower() == self.basic_data_type['int']:
+                value = int(value)
+            elif tipo.lower() == self.basic_data_type['bool']:
+                value = bool(value)
+
+        # Valores default si no se ha asignado previamente un valor a la variable
+        if tipo.lower() in self.basic_data_type and value is None:
+            if tipo.lower() == self.basic_data_type['string']:
+                value = ""
+            elif tipo.lower() == self.basic_data_type['int']:
+                value = 0
+            elif tipo.lower() == self.basic_data_type['bool']:
+                value = False
 
         if ctx.ID() is not None:
             ctx_id = ctx.ID().getText()
             if self.current_scope.lookup(ctx_id) == 0:
-                self.current_scope.add(tipo, ctx_id, self.current_scope_statement, position, address, False)
+                self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False)
             else:
                 line = ctx.type_().start.line
                 col = ctx.type_().start.column
