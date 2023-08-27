@@ -120,6 +120,12 @@ class YAPLPrinter(YAPLListener):
                 value = int(value)
             elif tipo.lower() == self.basic_data_type['bool']:
                 value = bool(value)
+        
+        if tipo.lower() not in self.basic_data_type: # Buscar en tabla de clases si no es tipo basico
+            if self.class_table.lookup(tipo) == 0:
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line, col, "Tipo no existe: " + tipo)
 
         # Valores default si no se ha asignado previamente un valor a la variable
         if tipo.lower() in self.basic_data_type and value is None:
@@ -145,7 +151,6 @@ class YAPLPrinter(YAPLListener):
 
     
     def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        self.current_scope_statement = "local"
         method_id = ctx.ID().getText()
         method_type = ctx.type_().getText()
         address = hex(id(ctx))
@@ -165,6 +170,8 @@ class YAPLPrinter(YAPLListener):
             line = ctx.type_().start.line
             col = ctx.type_().start.column
             self.errors.add(line, col, "Metodo duplicado: " + method_id)
+
+        self.current_scope_statement = "local"
 
         self.newscope()
     
@@ -188,20 +195,51 @@ class YAPLPrinter(YAPLListener):
     
     def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
         self.current_scope_statement = "local"
-        method_id = ctx.ID().getText()
-        # method_type = ctx.type_().getText()
+
+        method_id = None
+        variable_name = None
+        variable_type = None
+
+        # Check if ctx.ID is array or not
+        if type(ctx.ID()) is TerminalNode:
+            method_id = ctx.ID().getText()
+        else:
+            if len(ctx.ID()) > 1:
+                variable_name = ctx.ID()[0].getText()
+                method_id = ctx.ID()[1].getText()
+            else:
+                method_id = ctx.ID()[0].getText()
+
+        # Check if variable exists
+        if variable_name is not None:
+            if self.current_scope.lookup(variable_name) == 0:
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line,col,"Variable no existe: " + variable_name)
+            else:
+                variable_type = self.current_scope.lookup(variable_name)['Type']     
+
+
+
         address = hex(id(ctx))
         parameters = []
         position = "Linea: " + str(ctx.start.line) + " Columna: " + str(ctx.start.column)
 
-        parameter_list = ctx.parameter_list()
-        formal_list = parameter_list.formal() # Parametros
-        for formal in formal_list:
-            parameters.append(formal.getText())
+        parameter_list = ctx.expr()
+        for parameter in parameter_list:
+            parameters.append(parameter.getText())
+
+        # Check if number of parameters is the same
+        method = self.global_method_table.lookup(method_id)
+        if method != 0:
+            if len(method['Parameters']) != len(parameters):
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + method_id)
 
         if self.method_call_table.lookup(method_id) == 0:
-            self.global_method_call_table.add(None, method_id, parameters, self.current_scope_statement, address, position)
-            self.method_call_table.add(None, method_id, parameters, self.current_scope_statement, address, position)
+            self.global_method_call_table.add(variable_type, method_id, parameters, self.current_scope_statement, address, position)
+            self.method_call_table.add(variable_type, method_id, parameters, self.current_scope_statement, address, position)
         else:
             line = ctx.start.line
             col = ctx.start.column
@@ -212,6 +250,22 @@ class YAPLPrinter(YAPLListener):
     def exitSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
         self.method_call_table = MethodTable()
         self.popscope()
+
+        # Check if ctx.ID is array or not
+        if type(ctx.ID()) is TerminalNode:
+            method_id = ctx.ID().getText()
+        else:
+            if len(ctx.ID()) > 1:
+                method_id = ctx.ID()[1].getText()
+            else:
+                method_id = ctx.ID()[0].getText()
+
+
+        # Check if method exists
+        if self.global_method_table.lookup(method_id) == 0:
+            line = ctx.start.line
+            col = ctx.start.column
+            self.errors.add(line,col,"Metodo no existe: " + method_id)
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
         class_type = ctx.type_()[0].getText()

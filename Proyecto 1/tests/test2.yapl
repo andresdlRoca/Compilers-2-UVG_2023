@@ -10,7 +10,7 @@ class Point {
         y <- 10;
     };
 
-    init(x:int, y:int);
+    init(x, y);
 
 };
 
@@ -26,19 +26,21 @@ class Circle inherits Point {
         y <- 10;
     };
 
-    init(x:int, y:int);
-
 };
 
 class Square inherits Point {
     abc : String;
     efg : Bool;
 
-	abc : String;
+	// abc : String;
 
 };
 
 class main {
+
+    main_circle : Circle;
+
+    main_circle.init(10, 20);
 
     main() : main {
 

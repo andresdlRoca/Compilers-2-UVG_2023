@@ -87,7 +87,9 @@ block:
 	| let_declaration*
 	| expr*;
 
-simple_method_definition: ID LPAREN parameter_list? RPAREN SEMI;
+simple_method_definition:
+	ID LPAREN expr? (COMMA expr)* RPAREN SEMI
+	| ID DOT ID LPAREN expr (COMMA expr)* RPAREN SEMI;
 
 formal: ID COLON type;
 
