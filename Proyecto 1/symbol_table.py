@@ -6,7 +6,7 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, scope, value, position, address, isParameter):
+    def add(self, type, id, scope, value, position, address, isParameter, isInherited):
         self._symbols.append({
             'Type': type,
             'ID': id,
@@ -15,6 +15,7 @@ class SymbolTable():
             'Position': position,
             'Address': address,
             'IsParameter': isParameter,
+            'IsInherited': isInherited
         })
     
     def lookup(self, id):
@@ -29,13 +30,19 @@ class SymbolTable():
         return sum(symbol['size'] for symbol in self._symbols)
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Value','Position', 'Address', 'IsParameter']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Value','Position', 'Address', 'IsParameter', 'IsInherited']
         for i in self._symbols:
             self.pretty_table.add_row(list(i.values()))
 
         print(" -- Simbolos -- ")
         print(self.pretty_table)
         self.pretty_table.clear_rows()
+
+    # Delete certain symbols from the table
+    def delete(self, ID):
+        for symbol in self._symbols:
+            if symbol['ID'] == ID:
+                self._symbols.remove(symbol)
 
 class ClassTable():
     def __init__(self) -> None:

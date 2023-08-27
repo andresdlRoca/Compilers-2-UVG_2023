@@ -26,6 +26,7 @@ class YAPLPrinter(YAPLListener):
         self.current_scope = None
         self.current_scope_statement = None
         # self.type_table = TypeTable()
+        self.global_symbol_table = SymbolTable()
         self.errors = SemanticError()
         self.global_method_table = MethodTable() # Saves all the methods
         self.global_method_call_table = MethodTable() # Saves all the method calls
@@ -94,11 +95,9 @@ class YAPLPrinter(YAPLListener):
             if inheritance == class_type:
                 self.errors.add(line, col, "Herencia recursiva no permitida: " + inheritance)
 
-
         if class_type.lower() == 'main': # Error si clase main hereda de otra clase
             if inheritance is not None:
                 self.errors.add(line, col, "Main no puede heredar de otra clase")
-
 
         if self.class_table.lookup(class_type) == 0:
             self.class_table.add(class_type, class_type, self.current_scope_statement, position, inheritance, address)
@@ -110,6 +109,16 @@ class YAPLPrinter(YAPLListener):
         
         self.current_scope_statement = "global -> " + class_type
         self.newscope()
+
+        # Add inherited variables to current scope
+        if inheritance is not None:
+            inherited_symbols = self.global_symbol_table._symbols.copy()
+            # print('inherited_symbols', inherited_symbols)
+            for symbol in inherited_symbols:
+                if symbol['Scope'] == 'global -> ' + inheritance:
+                    self.current_scope.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
+                    self.global_symbol_table.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
+            
 
     # Entrando a declaraciones de variables
     def enterAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
@@ -145,11 +154,18 @@ class YAPLPrinter(YAPLListener):
         if ctx.ID() is not None:
             ctx_id = ctx.ID().getText()
             if self.current_scope.lookup(ctx_id) == 0:
-                self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False)
+                self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
             else:
-                line = ctx.type_().start.line
-                col = ctx.type_().start.column
-                self.errors.add(line, col, "Variable duplicada: " + ctx_id)
+                if self.current_scope.lookup(ctx_id)['IsInherited'] == True: # Overriding de variable heredada
+                    self.current_scope.delete(ctx_id)
+                    self.global_symbol_table.delete(ctx_id)
+                    self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                    self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                else: # Error si hay variables duplicadas
+                    line = ctx.type_().start.line
+                    col = ctx.type_().start.column
+                    self.errors.add(line, col, "Variable duplicada: " + ctx_id)
                 
     
     def exitAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
@@ -330,6 +346,8 @@ class YAPLPrinter(YAPLListener):
         self.global_method_table.totable()
         print(" --- Llamadas a metodos --- ")
         self.global_method_call_table.totable()
+        print(" --- Tabla de simbolos (Todos los simbolos) --- ")
+        self.global_symbol_table.totable()
 
         if len(self.errors.GetErrores()) > 0:
             print(" --- ERRORES --- ")

@@ -6,7 +6,7 @@ class Point {
     b : Bool <- true;
 
     init(g : int, z : int) : SELF_TYPE {
-        x <= 10;
+        x <- 10;
         y <- 10;
     };
 
@@ -22,7 +22,7 @@ class Circle inherits Point {
     x : Int;
     y : Int;
     init(g : int, z : int) : SELF_TYPE {
-        x <= 10;
+        x <- 10;
         y <- 10;
     };
 
