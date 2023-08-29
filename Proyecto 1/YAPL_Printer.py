@@ -267,27 +267,44 @@ class YAPLPrinter(YAPLListener):
             col = ctx.start.column
             self.errors.add(line, col, "Metodo duplicado: " + method_id)
 
-        self.newscope()
+        # self.newscope()
 
     def exitSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
+        # self.popscope()
         self.method_call_table = MethodTable()
-        self.popscope()
+        variable_name = None
 
+        print('CTX ID', ctx.ID())
         # Check if ctx.ID is array or not
         if type(ctx.ID()) is TerminalNode:
             method_id = ctx.ID().getText()
         else:
             if len(ctx.ID()) > 1:
+                variable_name = ctx.ID()[0].getText()
                 method_id = ctx.ID()[1].getText()
             else:
                 method_id = ctx.ID()[0].getText()
 
+        # Get type of method
+        if variable_name != None:
+            method = self.global_symbol_table.lookup(variable_name)
+            if self.global_method_table.lookup_w_class(method_id, method['Type']) == 0:
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line, col, "Metodo no existe: " + method_id + " para tipo: " + method['Type'])
+
+            
+
 
         # Check if method exists
-        if self.global_method_table.lookup(method_id) == 0:
+        existing_method = self.global_method_table.lookup(method_id)
+        if existing_method == 0 :
             line = ctx.start.line
             col = ctx.start.column
             self.errors.add(line,col,"Metodo no existe: " + method_id)
+
+        # Check if type of method has a declared method
+
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
         class_type = ctx.type_()[0].getText()

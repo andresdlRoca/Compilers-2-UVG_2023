@@ -97,6 +97,14 @@ class MethodTable():
                 return method
         return 0
     
+    def lookup_w_class(self, variable, class_name):
+        for method in self._methods:
+            method_scope = method['Scope'].split('->')[1].strip()
+            if method['ID'] == variable and method_scope == class_name:
+                return method
+        
+        return 0
+    
     def totable(self):
         self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Address', 'Position']
         for i in self._methods:

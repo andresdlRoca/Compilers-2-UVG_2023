@@ -36,13 +36,14 @@ class Square inherits Point {
 
 };
 
-class test1 inherits test1 {
-
-};
 
 class main {
 
     main_circle : Circle;
+
+    main_square : Square;
+
+    // main_square.init(10, 20);
 
     main_circle.init(10, 20);
 
