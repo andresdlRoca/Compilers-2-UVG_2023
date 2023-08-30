@@ -54,11 +54,12 @@ feature_list: feature* | formal*;
 feature:
 	attribute_definition
 	| method_definition
-	| simple_method_definition;
+	| simple_method_definition
+	| var_assign;
 
 attribute_definition:
 	ID COLON type ('<-' expr)? (LPAREN expr SEMI RPAREN)? SEMI;
-var_assign: ID '<-' expr;
+var_assign: ID '<-' expr SEMI;
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (
 		block SEMI
@@ -85,6 +86,8 @@ block:
 	if_statement*
 	| while_statement*
 	| let_declaration*
+	| var_assign*
+	| attribute_definition*
 	| expr*;
 
 simple_method_definition:

@@ -5,9 +5,13 @@ class Point {
     a : String <- "abc";
     b : Bool <- true;
 
+    b <- false;
+    x <- true;
+    y <- "hola";
+    a <- true;
+
     init(g : int, z : int) : SELF_TYPE {
-        x <- 10;
-        y <- 10;
+       //inside : String <- "Im Inside";
     };
 
     init(x, y);
@@ -50,6 +54,8 @@ class main {
     main() : main {
 
     };
+
+    //new Main.main();
 
 };
 

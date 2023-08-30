@@ -44,6 +44,12 @@ class SymbolTable():
             if symbol['ID'] == ID:
                 self._symbols.remove(symbol)
 
+    # Update the value of a symbol
+    def update(self, ID, value):
+        for symbol in self._symbols:
+            if symbol['ID'] == ID:
+                symbol['Value'] = value
+
 class ClassTable():
     def __init__(self) -> None:
         self.pretty_table = PrettyTable()

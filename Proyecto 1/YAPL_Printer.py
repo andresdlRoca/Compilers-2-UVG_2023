@@ -95,6 +95,12 @@ class YAPLPrinter(YAPLListener):
             if inheritance == class_type:
                 self.errors.add(line, col, "Herencia recursiva no permitida: " + inheritance)
 
+        
+        # Error si clase main es heredada por otra clase
+        if inheritance is not None:
+            if ctx.type_()[1].getText().lower() == 'main':
+                self.errors.add(line, col, "Main no puede ser heredada por otra clase")
+
         if class_type.lower() == 'main': # Error si clase main hereda de otra clase
             if inheritance is not None:
                 self.errors.add(line, col, "Main no puede heredar de otra clase")
@@ -211,6 +217,55 @@ class YAPLPrinter(YAPLListener):
     
     def exitExpr(self, ctx: YAPLParser.ExprContext):
         return super().exitExpr(ctx)
+    
+    def exitVar_assign(self, ctx: YAPLParser.Var_assignContext):
+        # Check if variable exists
+        # print(self.current_scope._symbols)
+        # print("ID", ctx.ID)
+        if self.current_scope.lookup(ctx.ID().getText()) == 0:
+            line = ctx.expr().start.line
+            col = ctx.expr().start.column
+            self.errors.add(line,col,"Variable no existe: " + ctx.ID().getText())
+        else:
+            variable_declaration = self.current_scope.lookup(ctx.ID())
+            variable_type = self.current_scope.lookup(ctx.ID().getText())['Type']
+            value = ctx.expr().getText()
+            print('Value', value)
+
+            start_with_quote = value.startswith("'") or value.startswith('"')
+            end_with_quote = value.endswith("'") or value.endswith('"')
+
+            # Check if assignment is boolean
+            if value == 'true' or value == 'false':
+                if variable_type.lower() != self.BOOL.lower():
+                    line = ctx.expr().start.line
+                    col = ctx.expr().start.column
+                    self.errors.add(line,col,"Variable de tipo: " + self.BOOL + " no puede ser asignada a: " + ctx.ID().getText())
+            
+            # Check if assignment is digit
+            elif value.isdigit():
+                if variable_type.lower() != self.INT.lower():
+                    line = ctx.expr().start.line
+                    col = ctx.expr().start.line
+                    self.errors.add(line,col, "Variable de tipo: " + self.INT + " no puede ser asignada a: " + ctx.ID().getText())
+            
+            #Check if assignment is string
+            elif start_with_quote and end_with_quote:
+                if variable_type.lower() != self.STRING.lower():
+                    line = ctx.expr().start.line
+                    col = ctx.expr().start.column
+                    self.errors.add(line,col,"Variable de tipo: " + self.STRING + " no puede ser asignada a: " + ctx.ID().getText())
+
+            # Check if assigned variable is valid
+            elif value:
+                # TODO: Validate if variable is valid
+                pass
+        
+
+        # tipo = ctx.type_().getText()
+        # address = hex(id(ctx))
+        # position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
+        # value = ctx.expr().pop().getText() if len(ctx.expr()) > 0 else None
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         self.popscope()
@@ -274,7 +329,6 @@ class YAPLPrinter(YAPLListener):
         self.method_call_table = MethodTable()
         variable_name = None
 
-        print('CTX ID', ctx.ID())
         # Check if ctx.ID is array or not
         if type(ctx.ID()) is TerminalNode:
             method_id = ctx.ID().getText()
@@ -288,22 +342,10 @@ class YAPLPrinter(YAPLListener):
         # Get type of method
         if variable_name != None:
             method = self.global_symbol_table.lookup(variable_name)
-            if self.global_method_table.lookup_w_class(method_id, method['Type']) == 0:
+            if self.global_method_table.lookup_w_class(method_id, method['Type']) == 0: # Chequear si metodo existe en clase del objeto
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line, col, "Metodo no existe: " + method_id + " para tipo: " + method['Type'])
-
-            
-
-
-        # Check if method exists
-        existing_method = self.global_method_table.lookup(method_id)
-        if existing_method == 0 :
-            line = ctx.start.line
-            col = ctx.start.column
-            self.errors.add(line,col,"Metodo no existe: " + method_id)
-
-        # Check if type of method has a declared method
 
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):

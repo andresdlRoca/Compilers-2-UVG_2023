@@ -39,7 +39,11 @@ class Compile():
         self.print_tokens()
 
         if self.myError.getHasError():
-            print("\nReporte de errores: ")
+
+            self.printer = YAPLPrinter()
+            walker = ParseTreeWalker()
+            walker.walk(self.printer, tree)
+            print("\nReporte de errores: Lexicos y Sintacticos")
             for i in self.myError.listErrors:
                 print(i)
         else:
