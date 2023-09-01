@@ -92,7 +92,7 @@ block:
 
 simple_method_definition:
 	ID LPAREN expr? (COMMA expr)* RPAREN SEMI
-	| ID DOT ID LPAREN expr (COMMA expr)* RPAREN SEMI;
+	| ID DOT ID LPAREN expr? (COMMA expr)* RPAREN SEMI;
 
 formal: ID COLON type;
 

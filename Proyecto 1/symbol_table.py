@@ -103,10 +103,10 @@ class MethodTable():
                 return method
         return 0
     
-    def lookup_w_class(self, variable, class_name):
+    def lookup_w_class(self, id, type):
         for method in self._methods:
             method_scope = method['Scope'].split('->')[1].strip()
-            if method['ID'] == variable and method_scope == class_name:
+            if method['ID'] == id and method_scope == type:
                 return method
         
         return 0
@@ -119,6 +119,47 @@ class MethodTable():
         print(" -- Metodos -- ")
         print(self.pretty_table)
         self.pretty_table.clear_rows()
+
+class MethodCallTable():
+    def __init__(self) -> None:
+        self.pretty_table = PrettyTable()
+        self._methods = []
+        print(" -- Iniciando nuevo ambito/scope -- ")
+
+    def add(self, type, id, function_id, parameters, scope, address, position):
+        self._methods.append({
+            'Type': type,
+            'ID': id,
+            'Function_ID': function_id,
+            'Parameters': parameters,
+            'Scope': scope,
+            'Address': address,
+            'Position': position
+        })
+    
+    def lookup(self, variable):
+        for method in self._methods:
+            if method['ID'] == variable:
+                return method
+        return 0
+    
+    def lookup_w_class(self, variable, class_name):
+        for method in self._methods:
+            method_scope = method['Scope'].split('->')[1].strip()
+            if method['ID'] == variable and method_scope == class_name:
+                return method
+        
+        return 0
+    
+    def totable(self):
+        self.pretty_table.field_names = ['Type', 'ID', 'Function_ID', 'Parameters', 'Scope', 'Address', 'Position']
+        for i in self._methods:
+            self.pretty_table.add_row(list(i.values()))
+
+        print(" -- Metodos -- ")
+        print(self.pretty_table)
+        self.pretty_table.clear_rows()
+
 
 class SemanticError():
     def __init__(self) -> None:

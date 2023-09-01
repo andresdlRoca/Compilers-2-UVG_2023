@@ -29,10 +29,10 @@ class YAPLPrinter(YAPLListener):
         # self.type_table = TypeTable()
         self.global_symbol_table = SymbolTable()
         self.errors = SemanticError()
-        self.global_method_table = MethodTable() # Saves all the methods
-        self.global_method_call_table = MethodTable() # Saves all the method calls
-        self.method_table = MethodTable()
-        self.method_call_table = MethodTable()
+        self.global_method_table = MethodTable() # Saves ALL the methods
+        self.global_method_call_table = MethodCallTable() # Saves ALL the method calls
+        self.method_table = MethodTable() # Saves the methods of the current scope
+        self.method_call_table = MethodCallTable() # Saves the method calls of the current scope
         self.class_table = ClassTable()
 
         self.node_type = {}
@@ -124,9 +124,11 @@ class YAPLPrinter(YAPLListener):
             # print('inherited_symbols', inherited_symbols)
             for symbol in inherited_symbols:
                 if symbol['Scope'] == 'global -> ' + inheritance:
-                    self.current_scope.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
-                    self.global_symbol_table.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
-            
+                    if symbol['IsInherited'] == False:
+                        self.current_scope.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
+                        self.global_symbol_table.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
+                    else:
+                        pass # No se agregan variables heredadas de variables heredadas (Evita herencia multiple)
 
     # Entrando a declaraciones de variables
     def enterAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
@@ -168,6 +170,7 @@ class YAPLPrinter(YAPLListener):
         if ctx.ID() is not None:
             ctx_id = ctx.ID().getText()
             if self.current_scope.lookup(ctx_id) == 0:
+                # Allow only simple inheritance
                 self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
                 self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
             else:
@@ -253,7 +256,6 @@ class YAPLPrinter(YAPLListener):
             variable_declaration = self.current_scope.lookup(ctx.ID())
             variable_type = self.current_scope.lookup(ctx.ID().getText())['Type']
             value = ctx.expr().getText()
-            print('Value', value)
 
             start_with_quote = value.startswith("'") or value.startswith('"')
             end_with_quote = value.endswith("'") or value.endswith('"')
@@ -297,26 +299,26 @@ class YAPLPrinter(YAPLListener):
     def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
         # self.current_scope_statement = "local"
 
-        method_id = None
+        function_call_id = None
         variable_name = None
         variable_type = None
 
         # Check if ctx.ID is array or not
         if type(ctx.ID()) is TerminalNode:
-            method_id = ctx.ID().getText()
+            function_call_id = ctx.ID().getText()
         else:
             if len(ctx.ID()) > 1:
                 variable_name = ctx.ID()[0].getText()
-                method_id = ctx.ID()[1].getText()
+                function_call_id = ctx.ID()[1].getText()
             else:
-                method_id = ctx.ID()[0].getText()
+                function_call_id = ctx.ID()[0].getText()
 
         # Check if variable exists
         if variable_name is not None:
             if self.current_scope.lookup(variable_name) == 0:
                 line = ctx.start.line
                 col = ctx.start.column
-                self.errors.add(line,col,"Variable no existe: " + variable_name)
+                self.errors.add(line,col,"Variable de la llamada no existe: " + variable_name + '.' + function_call_id + '()')
             else:
                 variable_type = self.current_scope.lookup(variable_name)['Type']     
 
@@ -330,41 +332,48 @@ class YAPLPrinter(YAPLListener):
         for parameter in parameter_list:
             parameters.append(parameter.getText())
 
+        # Check if number of parameters is the same
+        method = self.global_method_table.lookup(function_call_id)
+        if method != 0:
+            if len(method['Parameters']) != len(parameters):
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + ctx.ID().getText())
+
         # Check if method has already called init()
-        if method_id == 'init':
-            if self.method_call_table.lookup('init') != 0:
+        if function_call_id == 'init':
+            lookupmethod = self.method_call_table.lookup(variable_name)
+            if lookupmethod != 0 and lookupmethod['Function_ID'] == 'init' and lookupmethod['ID'] == variable_name:
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Metodo init() ya ha sido llamado")
 
         #Check if method calls another method before init()
-        if method_id != 'init':
-            if self.method_call_table.lookup('init') == 0:
+        if function_call_id != 'init':
+            lookupmethod = self.method_call_table.lookup(variable_name)
+            if lookupmethod == 0:
                 line = ctx.start.line
                 col = ctx.start.column
-                self.errors.add(line,col,"No se ha inicializado esta instancia")
+                self.errors.add(line,col,"Metodo init() debe ser llamado primero")
 
-        # Check if number of parameters is the same
-        method = self.global_method_table.lookup(method_id)
-        if method != 0:
-            if len(method['Parameters']) != len(parameters):
-                line = ctx.start.line
-                col = ctx.start.column
-                self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + method_id)
 
-        if self.method_call_table.lookup(method_id) == 0:
-            self.global_method_call_table.add(variable_type, method_id, parameters, self.current_scope_statement, address, position)
-            self.method_call_table.add(variable_type, method_id, parameters, self.current_scope_statement, address, position)
+        if self.method_call_table.lookup(function_call_id) == 0:
+            self.global_method_call_table.add(variable_type, variable_name, function_call_id, parameters, self.current_scope_statement, address, position)
+            self.method_call_table.add(variable_type, variable_name, function_call_id, parameters, self.current_scope_statement, address, position)
         else:
             line = ctx.start.line
             col = ctx.start.column
-            self.errors.add(line, col, "Metodo duplicado: " + method_id)
+            self.errors.add(line, col, "Metodo duplicado: " + function_call_id)
+
+        
+
 
         # self.newscope()
 
     def exitSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
         # self.popscope()
-        self.method_call_table = MethodTable()
+        # self.method_call_table = MethodCallTable()
+
         variable_name = None
 
         # Check if ctx.ID is array or not
@@ -377,14 +386,18 @@ class YAPLPrinter(YAPLListener):
             else:
                 method_id = ctx.ID()[0].getText()
 
-        # Get type of method
-        if variable_name != None:
-            method = self.global_symbol_table.lookup(variable_name)
-            if self.global_method_table.lookup_w_class(method_id, method['Type']) == 0: # Chequear si metodo existe en clase del objeto
+        # Get current type of variable
+        variable_lookup = self.current_scope.lookup(variable_name)
+        if type(variable_lookup) is not int:
+            variable_type = self.current_scope.lookup(variable_name)['Type']     
+
+            # Get if method exists
+            method = self.global_method_table.lookup_w_class(method_id, variable_type)
+            if method == 0:
                 line = ctx.start.line
                 col = ctx.start.column
-                self.errors.add(line, col, "Metodo no existe: " + method_id + " para tipo: " + method['Type'])
-
+                self.errors.add(line,col,"Metodo no existe: " + method_id + " en clase: " + variable_type)
+        
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
         class_type = ctx.type_()[0].getText()

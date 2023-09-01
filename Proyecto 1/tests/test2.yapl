@@ -15,6 +15,8 @@ class Point {
         Moab <- "hola";
     };
 
+
+
     calculate() : Int {
 
     };
@@ -33,18 +35,32 @@ class Circle {
 
     x : Int;
     y : Int;
+
     init(g : int, z : int) : Circle {
         //x <- 10;
         //y <- 10;
     };
 
+    calculate() : Int {
+        calculate()
+    };
+
 };
 
-class Square {
+class Square inherits Circle {
     abc : String;
     efg : Bool;
+    circulo : Circle;
+    punto : Point;
 
 	// abc : String;
+
+    circulo.init(abc, efg);
+    circulo.calculate();
+    //point.calculate();
+};
+
+class Triangle inherits Square {
 
 };
 
@@ -57,10 +73,10 @@ class main {
     // main_square.init(10, 20);
 
     main_circle.init(10, 20);
-    main_circle.init(10,20);
+    //main_circle.init(10,20);
 
     main() : main {
-
+        num_test : int;
     };
 
 };
