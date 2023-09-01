@@ -5,34 +5,42 @@ class Point {
     a : String <- "abc";
     b : Bool <- true;
 
-    b <- false;
-    x <- true;
-    y <- "hola";
-    a <- true;
+    //b <- false;
+    //x <- true;
+    //y <- "hola";
+    //a <- true;
 
-    init(g : int, z : int) : SELF_TYPE {
-       //inside : String <- "Im Inside";
+    init(g : int, z : int) : Point {
+        Moab : String;
+        Moab <- "hola";
     };
 
-    init(x, y);
+    calculate() : Int {
+
+    };
+
+    calculate2() : Int {
+
+    };
+
 
 };
 
-class Circle inherits Point {
+class Circle {
 
     abc : String;
     efg : Bool;
 
     x : Int;
     y : Int;
-    init(g : int, z : int) : SELF_TYPE {
-        x <- 10;
-        y <- 10;
+    init(g : int, z : int) : Circle {
+        //x <- 10;
+        //y <- 10;
     };
 
 };
 
-class Square inherits Point {
+class Square {
     abc : String;
     efg : Bool;
 
@@ -45,17 +53,15 @@ class main {
 
     main_circle : Circle;
 
-    main_square : Square;
 
     // main_square.init(10, 20);
 
     main_circle.init(10, 20);
+    main_circle.init(10,20);
 
     main() : main {
 
     };
-
-    //new Main.main();
 
 };
 

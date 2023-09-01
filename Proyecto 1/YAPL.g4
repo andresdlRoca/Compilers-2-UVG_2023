@@ -62,7 +62,7 @@ attribute_definition:
 var_assign: ID '<-' expr SEMI;
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (
-		block SEMI
+		block
 	)* RBRACE SEMI;
 
 let_declaration:
@@ -83,12 +83,12 @@ while_statement:
 	)* 'pool';
 
 block:
-	if_statement*
-	| while_statement*
-	| let_declaration*
-	| var_assign*
-	| attribute_definition*
-	| expr*;
+	if_statement
+	| while_statement
+	| let_declaration
+	| var_assign
+	| attribute_definition
+	| expr;
 
 simple_method_definition:
 	ID LPAREN expr? (COMMA expr)* RPAREN SEMI

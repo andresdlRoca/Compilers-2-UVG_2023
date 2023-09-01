@@ -25,6 +25,7 @@ class YAPLPrinter(YAPLListener):
         self.scopes = []
         self.current_scope = None
         self.current_scope_statement = None
+        self.current_scope_class = None
         # self.type_table = TypeTable()
         self.global_symbol_table = SymbolTable()
         self.errors = SemanticError()
@@ -93,7 +94,7 @@ class YAPLPrinter(YAPLListener):
         # Check for recursive inheritance
         if inheritance is not None:
             if inheritance == class_type:
-                self.errors.add(line, col, "Herencia recursiva no permitida: " + inheritance)
+                self.errors.add(line, col, "Herencia a si mismo no es permitido: " + inheritance)
 
         
         # Error si clase main es heredada por otra clase
@@ -114,6 +115,7 @@ class YAPLPrinter(YAPLListener):
             self.errors.add(line, col, "Clase duplicada: " + class_type)
         
         self.current_scope_statement = "global -> " + class_type
+        self.current_scope_class = self.current_scope_statement
         self.newscope()
 
         # Add inherited variables to current scope
@@ -157,6 +159,12 @@ class YAPLPrinter(YAPLListener):
             elif tipo.lower() == self.basic_data_type['bool']:
                 value = False
 
+        # Check recursive inheritance
+        scope_split = self.current_scope_statement.split(" -> ")
+        if len(scope_split) > 1:
+            if scope_split[1] == tipo:
+                self.errors.add(ctx.type_().start.line, ctx.type_().start.column, "Herencia recursiva no permitida: " + tipo)
+
         if ctx.ID() is not None:
             ctx_id = ctx.ID().getText()
             if self.current_scope.lookup(ctx_id) == 0:
@@ -180,10 +188,25 @@ class YAPLPrinter(YAPLListener):
     
     def enterMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         method_id = ctx.ID().getText()
-        method_type = ctx.type_().getText()
+        method_type = None
+        if ctx.type_():
+            method_type = ctx.type_().getText()
+            # Buscar en tabla de clases si no es tipo basico
+            if method_type.lower() not in self.basic_data_type:
+                if self.class_table.lookup(method_type) == 0:
+                    line = ctx.type_().start.line
+                    col = ctx.type_().start.column
+                    self.errors.add(line, col, "Tipo no existe: " + method_type)
+
+        else:
+            method_type = None
+            self.errors.add(ctx.start.line, ctx.start.column, "Se debe especificar el tipo del metodo: " + method_id)
         address = hex(id(ctx))
         parameters = []
-        position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
+        if method_type:
+            position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
+        else:
+            position = "Linea: " + str(ctx.parameter_list().start.line) + " Columna: " + str(ctx.parameter_list().start.column)
 
         parameter_list = ctx.parameter_list()
         if parameter_list is not None: # Si hay parametros
@@ -269,9 +292,10 @@ class YAPLPrinter(YAPLListener):
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         self.popscope()
+        self.current_scope_statement = self.current_scope_class
     
     def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
-        self.current_scope_statement = "local"
+        # self.current_scope_statement = "local"
 
         method_id = None
         variable_name = None
@@ -305,6 +329,20 @@ class YAPLPrinter(YAPLListener):
         parameter_list = ctx.expr()
         for parameter in parameter_list:
             parameters.append(parameter.getText())
+
+        # Check if method has already called init()
+        if method_id == 'init':
+            if self.method_call_table.lookup('init') != 0:
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line,col,"Metodo init() ya ha sido llamado")
+
+        #Check if method calls another method before init()
+        if method_id != 'init':
+            if self.method_call_table.lookup('init') == 0:
+                line = ctx.start.line
+                col = ctx.start.column
+                self.errors.add(line,col,"No se ha inicializado esta instancia")
 
         # Check if number of parameters is the same
         method = self.global_method_table.lookup(method_id)
