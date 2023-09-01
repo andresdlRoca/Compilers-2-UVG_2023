@@ -42,7 +42,7 @@ class Circle {
     };
 
     calculate() : Int {
-        calculate()
+        lal : int;
     };
 
 };
@@ -75,9 +75,11 @@ class main {
     main_circle.init(10, 20);
     //main_circle.init(10,20);
 
-    main() : main {
+    main() : void {
         num_test : int;
     };
+
+    main.main(); // Inicializacion del programa
 
 };
 

@@ -119,7 +119,7 @@ expr:
 	| 'self'
 	| 'true'
 	| 'false'
-	| 'void'
+	| 'v'
 	| expr DOT ID
 	| expr DOT ID LPAREN expr? RPAREN
 	| expr DOT ID ASSIGN expr

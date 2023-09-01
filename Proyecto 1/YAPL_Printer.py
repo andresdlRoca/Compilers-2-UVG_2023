@@ -13,13 +13,21 @@ class YAPLPrinter(YAPLListener):
         self.INT = "int"
         self.BOOL = "bool"
         self.IO = "io"
-        self.VOID = "Void"
+        self.VOID = "void"
         self.ERROR = "error"
 
         self.basic_data_type = {
             'string': self.STRING,
             'int': self.INT,
             'bool': self.BOOL,
+        }
+
+        self.default_data_types = {
+            'string': self.STRING,
+            'int': self.INT,
+            'bool': self.BOOL,
+            'io': self.IO,
+            'void': self.VOID
         }
 
         self.scopes = []
@@ -146,7 +154,7 @@ class YAPLPrinter(YAPLListener):
             elif tipo.lower() == self.basic_data_type['bool']:
                 value = bool(value)
         
-        if tipo.lower() not in self.basic_data_type: # Buscar en tabla de clases si no es tipo basico
+        if tipo.lower() not in self.default_data_types: # Buscar en tabla de clases si no es tipo basico
             if self.class_table.lookup(tipo) == 0:
                 line = ctx.type_().start.line
                 col = ctx.type_().start.column
@@ -195,7 +203,7 @@ class YAPLPrinter(YAPLListener):
         if ctx.type_():
             method_type = ctx.type_().getText()
             # Buscar en tabla de clases si no es tipo basico
-            if method_type.lower() not in self.basic_data_type:
+            if method_type.lower() not in self.default_data_types:
                 if self.class_table.lookup(method_type) == 0:
                     line = ctx.type_().start.line
                     col = ctx.type_().start.column
@@ -316,9 +324,10 @@ class YAPLPrinter(YAPLListener):
         # Check if variable exists
         if variable_name is not None:
             if self.current_scope.lookup(variable_name) == 0:
-                line = ctx.start.line
-                col = ctx.start.column
-                self.errors.add(line,col,"Variable de la llamada no existe: " + variable_name + '.' + function_call_id + '()')
+                if variable_name != 'main':
+                    line = ctx.start.line
+                    col = ctx.start.column
+                    self.errors.add(line,col,"Variable de la llamada no existe: " + variable_name + '.' + function_call_id + '()')
             else:
                 variable_type = self.current_scope.lookup(variable_name)['Type']     
 
@@ -333,12 +342,13 @@ class YAPLPrinter(YAPLListener):
             parameters.append(parameter.getText())
 
         # Check if number of parameters is the same
-        method = self.global_method_table.lookup(function_call_id)
+        method = self.global_method_table.lookup_w_class(function_call_id, variable_type)
         if method != 0:
             if len(method['Parameters']) != len(parameters):
+                # print('Lenes', len(method['Parameters']), len(parameters))
                 line = ctx.start.line
                 col = ctx.start.column
-                self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + ctx.ID().getText())
+                self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + variable_name + '.' + function_call_id + '()')
 
         # Check if method has already called init()
         if function_call_id == 'init':
@@ -351,7 +361,7 @@ class YAPLPrinter(YAPLListener):
         #Check if method calls another method before init()
         if function_call_id != 'init':
             lookupmethod = self.method_call_table.lookup(variable_name)
-            if lookupmethod == 0:
+            if lookupmethod == 0 and variable_name != 'main':
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Metodo init() debe ser llamado primero")

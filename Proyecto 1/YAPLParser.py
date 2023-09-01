@@ -191,7 +191,7 @@ class YAPLParser ( Parser ):
                      "'*'", "'/'", "'<'", "'<='", "'='", "'@'", "'~'", "'let'", 
                      "'in'", "'if'", "'then'", "'else'", "'fi'", "'while'", 
                      "'loop'", "'pool'", "'self'", "'true'", "'false'", 
-                     "'void'", "'>'", "'%'", "'^'", "<INVALID>", "<INVALID>", 
+                     "'v'", "'>'", "'%'", "'^'", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "'Bool'", "'Int'", "'String'", 
                      "'IO'", "'Object'", "'SELF_TYPE'", "'case'", "'of'", 
                      "'esac'", "'new'", "'isvoid'", "'not'", "'<-'", "'=>'", 
