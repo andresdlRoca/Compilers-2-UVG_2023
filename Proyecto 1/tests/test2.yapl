@@ -15,6 +15,7 @@ class Point {
     init(g : int, z : int) : IO {
         Moab : String;
         Moab <- "hola";
+        x_holder : Int;
     };
 
 
@@ -79,7 +80,7 @@ class Square inherits Circle {
 };
 
 class Triangle inherits Square {
-
+    prueba_string <- "Adios desde triangle";
 };
 
 

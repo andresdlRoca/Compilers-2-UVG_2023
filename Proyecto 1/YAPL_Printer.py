@@ -157,8 +157,19 @@ class YAPLPrinter(YAPLListener):
                     if symbol['IsInherited'] == False:
                         self.current_scope.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
                         self.global_symbol_table.add(symbol['Type'], symbol['ID'], self.current_scope_statement, symbol['Value'], symbol['Position'], symbol['Address'], symbol['IsParameter'], True)
+                        
                     else:
                         pass # No se agregan variables heredadas de variables heredadas (Evita herencia multiple)
+            
+            # Add inherited methods to current scope
+            inherited_methods = self.global_method_table._methods.copy()
+            for method in inherited_methods:
+                if method['Scope'] == 'global -> ' + inheritance:
+                    if method['IsInherited'] == False and method['ID'] != 'init':
+                        self.method_table.add(method['Type'], method['ID'], method['Parameters'], self.current_scope_statement, method['Address'], method['Position'], True)
+                        self.global_method_table.add(method['Type'], method['ID'], method['Parameters'], self.current_scope_statement, method['Address'], method['Position'], True)
+                    else:
+                        pass # No se agregan metodos heredados de metodos heredados (Evita herencia multiple)
 
     # Entrando a declaraciones de variables
     def enterAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
@@ -396,8 +407,69 @@ class YAPLPrinter(YAPLListener):
 
 
             # Check if assigned variable is valid
-            elif value:
-                pass
+            else:
+                # Check for string
+                if variable_type.lower() == self.STRING.lower():
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.expr().start.line
+                        col = ctx.expr().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != 'string':
+                            line = ctx.expr().start.line
+                            col = ctx.expr().start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo string: " + value)
+                        else:
+                            self.current_scope.update(ctx.ID().getText(), value)
+                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                # Check for int
+                elif variable_type.lower() == self.INT.lower():
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.expr().start.line
+                        col = ctx.expr().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != 'int':
+                            line = ctx.expr().start.line
+                            col = ctx.expr().start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo int: " + value)
+                        else:
+                            self.current_scope.update(ctx.ID().getText(), value)
+                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                # Check for bool
+                elif variable_type.lower() == self.BOOL.lower():
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.expr().start.line
+                        col = ctx.expr().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != 'bool':
+                            line = ctx.expr().start.line
+                            col = ctx.expr().start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo bool: " + value)
+                        else:
+                            self.current_scope.update(ctx.ID().getText(), value)
+                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                # Check for object
+                else:
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.expr().start.line
+                        col = ctx.expr().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != variable_type.lower():
+                            line = ctx.expr().start.line
+                            col = ctx.expr().start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo: " + variable_type + " " + value)
+                        else:
+                            self.current_scope.update(ctx.ID().getText(), value)
+                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+
+
                 # # Check if value is a valid ID
                 # if self.current_scope.lookup(value) == 0:
 
