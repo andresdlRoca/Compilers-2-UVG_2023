@@ -1,0 +1,29 @@
+class Circle {
+
+    radius : int;
+    color : string;
+
+    init() : void {
+        radius  <- 100;
+        color <- "Red";
+
+        return 0;
+    };
+
+    draw_circle() : void {
+        draw_circle();
+        return 0;
+    };
+
+};
+
+class main {
+
+	main() : void {
+		circulo : Circle;
+		circulo.init();
+
+        return 0;
+	};
+
+};

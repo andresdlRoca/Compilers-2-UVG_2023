@@ -179,6 +179,13 @@ class YAPLPrinter(YAPLListener):
         
         value = ctx.expr().pop().getText() if len(ctx.expr()) > 0 else None
 
+        copy_global_symbol_table = self.global_symbol_table._symbols.copy()
+        for symbol in copy_global_symbol_table:
+            # Check if current scope is local
+            if self.current_scope_statement == 'local':
+                if symbol['Scope'] == self.current_scope_class:
+                    self.current_scope._symbols.append(symbol)
+
         if value is not None: # Si hay valor convertir a tipo de dato esperado
             if tipo.lower() == self.basic_data_type['string']:
                 # Check if value is a string with regex
@@ -335,9 +342,22 @@ class YAPLPrinter(YAPLListener):
             self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
             self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
         else:
-            line = ctx.type_().start.line
-            col = ctx.type_().start.column
-            self.errors.add(line, col, "Metodo duplicado: " + method_id)
+
+            if self.method_table.lookup(method_id)['IsInherited'] == True: # Overriding de metodo heredado
+                inherited_method = self.method_table.lookup(method_id)
+                if inherited_method['Type'].lower() == method_type.lower():
+                    self.method_table.delete(method_id)
+                    self.global_method_table.delete(method_id)
+                    self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
+                    self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
+                else:
+                    line = ctx.type_().start.line
+                    col = ctx.type_().start.column
+                    self.errors.add(line, col, "Metodo heredado no puede cambiarse de tipo: " + method_id);
+            else:
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line, col, "Metodo duplicado: " + method_id)
 
         self.current_scope_statement = "local"
 
@@ -362,6 +382,14 @@ class YAPLPrinter(YAPLListener):
         # Check if variable exists
         # print(self.current_scope._symbols)
         # print("ID", ctx.ID)
+
+        copy_global_symbol_table = self.global_symbol_table._symbols.copy()
+        for symbol in copy_global_symbol_table:
+            # Check if current scope is local
+            if self.current_scope_statement == 'local':
+                if symbol['Scope'] == self.current_scope_class:
+                    self.current_scope._symbols.append(symbol)
+
         if self.current_scope.lookup(ctx.ID().getText()) == 0:
             line = ctx.expr().start.line
             col = ctx.expr().start.column
@@ -373,6 +401,7 @@ class YAPLPrinter(YAPLListener):
 
             start_with_quote = value.startswith("'") or value.startswith('"')
             end_with_quote = value.endswith("'") or value.endswith('"')
+            lookupvalue = self.current_scope.lookup(value)
 
             # Check if assignment is boolean
             if value == 'true' or value == 'false':
@@ -381,8 +410,12 @@ class YAPLPrinter(YAPLListener):
                     col = ctx.expr().start.column
                     self.errors.add(line,col,"Variable de tipo: " + self.BOOL + " no puede ser asignada a: " + ctx.ID().getText())
                 else:
-                    self.current_scope.update(ctx.ID().getText(), value)
-                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                    if self.current_scope_statement == "local" and lookupvalue!=0:
+                        self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                        self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                    else:
+                        self.current_scope.update(ctx.ID().getText(), value)
+                        self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
 
 
             # Check if assignment is digit
@@ -392,9 +425,12 @@ class YAPLPrinter(YAPLListener):
                     col = ctx.expr().start.line
                     self.errors.add(line,col, "Variable de tipo: " + self.INT + " no puede ser asignada a: " + ctx.ID().getText())
                 else:
-                    self.current_scope.update(ctx.ID().getText(), value)
-                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
-
+                    if self.current_scope_statement == "local" and lookupvalue!=0:
+                        self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                        self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                    else:
+                        self.current_scope.update(ctx.ID().getText(), value)
+                        self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
             #Check if assignment is string
             elif start_with_quote and end_with_quote:
                 if variable_type.lower() != self.STRING.lower():
@@ -402,10 +438,12 @@ class YAPLPrinter(YAPLListener):
                     col = ctx.expr().start.column
                     self.errors.add(line,col,"Variable de tipo: " + self.STRING + " no puede ser asignada a: " + ctx.ID().getText())
                 else:
-                    self.current_scope.update(ctx.ID().getText(), value)
-                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
-
-
+                    if self.current_scope_statement == "local" and lookupvalue!=0:
+                        self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                        self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                    else:
+                        self.current_scope.update(ctx.ID().getText(), value)
+                        self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
             # Check if assigned variable is valid
             else:
                 # Check for string
@@ -421,8 +459,12 @@ class YAPLPrinter(YAPLListener):
                             col = ctx.expr().start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo string: " + value)
                         else:
-                            self.current_scope.update(ctx.ID().getText(), value)
-                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                            if self.current_scope_statement == "local" and lookupvalue!=0:
+                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            else:
+                                self.current_scope.update(ctx.ID().getText(), value)
+                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
                 # Check for int
                 elif variable_type.lower() == self.INT.lower():
                     if self.current_scope.lookup(value) == 0:
@@ -436,8 +478,13 @@ class YAPLPrinter(YAPLListener):
                             col = ctx.expr().start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo int: " + value)
                         else:
-                            self.current_scope.update(ctx.ID().getText(), value)
-                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                            if self.current_scope_statement == "local" and lookupvalue!=0:
+                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            else:
+                                self.current_scope.update(ctx.ID().getText(), value)
+                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                
                 # Check for bool
                 elif variable_type.lower() == self.BOOL.lower():
                     if self.current_scope.lookup(value) == 0:
@@ -451,8 +498,13 @@ class YAPLPrinter(YAPLListener):
                             col = ctx.expr().start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo bool: " + value)
                         else:
-                            self.current_scope.update(ctx.ID().getText(), value)
-                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                            if self.current_scope_statement == "local" and lookupvalue!=0:
+                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            else:
+                                self.current_scope.update(ctx.ID().getText(), value)
+                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+                        
                 # Check for object
                 else:
                     if self.current_scope.lookup(value) == 0:
@@ -466,16 +518,12 @@ class YAPLPrinter(YAPLListener):
                             col = ctx.expr().start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo: " + variable_type + " " + value)
                         else:
-                            self.current_scope.update(ctx.ID().getText(), value)
-                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
-
-
-                # # Check if value is a valid ID
-                # if self.current_scope.lookup(value) == 0:
-
-                # # TODO: Validate if variable is valid
-                # pass
-        
+                            if self.current_scope_statement == "local" and lookupvalue!=0:
+                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            else:
+                                self.current_scope.update(ctx.ID().getText(), value)
+                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         self.popscope()
@@ -548,7 +596,7 @@ class YAPLPrinter(YAPLListener):
             lookupdefaultmethod = self.default_methods.lookup(function_call_id)
             if lookupdefaultmethod !=0:
                 pass # No hacer nada porque es valido no llamar a init en este caso
-            elif lookupmethod == 0 and variable_name != 'main':
+            elif lookupmethod == 0 and variable_name != 'main' and self.current_scope_statement != 'local':
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Metodo init() debe ser llamado primero")

@@ -25,6 +25,17 @@ class SymbolTable():
             if symbol['ID'] == id:
                 return symbol
         return 0
+    
+    def lookup_w_type(self, id, type):
+        symbols_copy = self._symbols.copy()
+        symbols_copy.reverse()
+        for symbol in symbols_copy:
+            if '->' in type and len(symbol['Scope'].split('->')) > 1:
+                type = type.split('->')[1].strip()
+                scope = symbol['Scope'].split('->')[1].strip()
+                if symbol['ID'] == id and scope == type:
+                    return symbol
+        return 0
 
     def getsize(self):
         return sum(symbol['size'] for symbol in self._symbols)

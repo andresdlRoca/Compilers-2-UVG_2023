@@ -62,8 +62,10 @@ attribute_definition:
 var_assign: ID '<-' (expr | simple_method_definition) SEMI;
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (
-		block
-	)* RBRACE SEMI;
+		block | method_definition | simple_method_definition
+	)* return_statement RBRACE SEMI;
+
+return_statement: 'return' expr SEMI;
 
 let_declaration:
 	'let' let_binding (',' let_binding)* (
@@ -72,14 +74,12 @@ let_declaration:
 let_binding: ID ':' type ('<-' expr)? (type)?;
 
 if_statement:
-	'if' expr ('then' (expr | while_statement | if_statement)*)* (
-		'else' (expr | while_statement | if_statement)
+	'if' expr ('then' (block)*)* (
+		'else' (block)*
 	)? 'fi';
 while_statement:
-	'while' (expr | while_statement | if_statement)* 'loop' (
-		expr
-		| while_statement
-		| if_statement
+	'while' (expr)* 'loop' (
+		block
 	)* 'pool';
 
 block:

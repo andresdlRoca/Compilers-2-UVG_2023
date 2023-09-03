@@ -116,6 +116,15 @@ class YAPLListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by YAPLParser#return_statement.
+    def enterReturn_statement(self, ctx:YAPLParser.Return_statementContext):
+        pass
+
+    # Exit a parse tree produced by YAPLParser#return_statement.
+    def exitReturn_statement(self, ctx:YAPLParser.Return_statementContext):
+        pass
+
+
     # Enter a parse tree produced by YAPLParser#let_declaration.
     def enterLet_declaration(self, ctx:YAPLParser.Let_declarationContext):
         pass

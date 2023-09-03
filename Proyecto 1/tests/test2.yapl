@@ -12,20 +12,25 @@ class Point {
     //y <- "hola";
     //a <- true;
 
-    init(g : int, z : int) : IO {
+    init(g : int, z : int) : void {
         Moab : String;
         Moab <- "hola";
-        x_holder : Int;
+        x_holder : Int <- x;
+        Max : String <- a;
+
+        return 0;
     };
 
 
 
     calculate() : Int {
 
+        return 0;
     };
 
     calculate2() : Int {
 
+        return 0;
     };
 
 
@@ -39,23 +44,30 @@ class Circle {
     init(g : int, z : int) : SELF_TYPE {
         //x <- 10;
         //y <- 10;
+
+        return 0;
     };
 
     calculate() : Int {
         lal : int;
         lal <- 10;
+
+        return 0;
     };
 
     round() : Int {
-
+        
+        return 0;
     };
 
     getSize() : Int {
 
+        return 0;
     };
 
     getID() : Int { 
 
+        return 0;
     };
 
 };
@@ -77,6 +89,7 @@ class Square inherits Circle {
     circulo.calculate();
     punto.init(10, 20);
     punto.calculate();
+
 };
 
 class Triangle inherits Square {
@@ -97,6 +110,8 @@ class main {
     main() : void {
         num_test : int;
         num_test <- 100;
+
+        return 0;
     };
 
     main.main(); // Inicializacion del programa
