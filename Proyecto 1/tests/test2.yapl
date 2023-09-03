@@ -5,6 +5,7 @@ class Point {
     a : String <- "abc";
     z : Bool <- false;
     b : Bool <- z;
+    x <- 100;
 
     //b <- false;
     //x <- true;
@@ -31,13 +32,10 @@ class Point {
 
 class Circle {
 
-    abc : String;
-    efg : Bool;
-
-    x : Int;
+    xander : Int;
     y : Int;
 
-    init(g : int, z : int) : Circle {
+    init(g : int, z : int) : SELF_TYPE {
         //x <- 10;
         //y <- 10;
     };
@@ -49,10 +47,14 @@ class Circle {
 };
 
 class Square inherits Circle {
-    abc : String;
+    abc : string;
     efg : Bool;
     circulo : Circle;
     punto : Point;
+    abc_length : int;
+    
+
+    abc <- "Holanda";
 
 	// abc : String;
 

@@ -59,7 +59,7 @@ feature:
 
 attribute_definition:
 	ID COLON type ('<-' expr)? (LPAREN expr SEMI RPAREN)? SEMI;
-var_assign: ID '<-' expr SEMI;
+var_assign: ID '<-' (expr | simple_method_definition) SEMI;
 method_definition:
 	ID LPAREN parameter_list? RPAREN COLON type LBRACE (
 		block

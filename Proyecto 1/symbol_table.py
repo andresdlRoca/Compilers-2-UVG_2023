@@ -49,6 +49,11 @@ class SymbolTable():
         for symbol in self._symbols:
             if symbol['ID'] == ID:
                 symbol['Value'] = value
+    
+    def update_global(self, ID, value, scope):
+        for symbol in self._symbols:
+            if symbol['ID'] == ID and symbol['Scope'] == scope:
+                symbol['Value'] = value
 
 class ClassTable():
     def __init__(self) -> None:

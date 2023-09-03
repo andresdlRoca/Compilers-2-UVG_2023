@@ -15,6 +15,8 @@ class YAPLPrinter(YAPLListener):
         self.IO = "io"
         self.VOID = "void"
         self.ERROR = "error"
+        self.OBJECT = "object"
+        self.SELF_TYPE = "self_type"
 
         self.basic_data_type = {
             'string': self.STRING,
@@ -27,10 +29,26 @@ class YAPLPrinter(YAPLListener):
             'int': self.INT,
             'bool': self.BOOL,
             'io': self.IO,
-            'void': self.VOID
+            'void': self.VOID,
+            'object': self.OBJECT,
+            'error': self.ERROR,
+            'self_type': self.SELF_TYPE
         }
 
-        # self.default_methods = ClassTable()
+        self.default_methods = MethodTable()
+        # OBJECT
+        self.default_methods.add('object', 'abort', [], 'global -> object', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('string', 'type_name', [], 'global -> object', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('SELF_TYPE', 'copy', [], 'global -> object', hex(id(self)), 'Linea: 0 Columna: 0')
+        #IO
+        self.default_methods.add('SELF_TYPE', 'out_string', ['x:string'], 'global -> io', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('SELF_TYPE', 'out_int', ['x:int'], 'global -> io', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('string', 'in_string', [], 'global -> io', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('int', 'in_int', [], 'global -> io', hex(id(self)), 'Linea: 0 Columna: 0')
+        #STRING
+        self.default_methods.add('int', 'length', [], 'global -> string', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('string', 'concat', ['s:string'], 'global -> string', hex(id(self)), 'Linea: 0 Columna: 0')
+        self.default_methods.add('string', 'substr', ['i:int', 'l:int'], 'global -> string', hex(id(self)), 'Linea: 0 Columna: 0')
 
 
         self.scopes = []
@@ -254,10 +272,16 @@ class YAPLPrinter(YAPLListener):
                 self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
             else:
                 if self.current_scope.lookup(ctx_id)['IsInherited'] == True: # Overriding de variable heredada
-                    self.current_scope.delete(ctx_id)
-                    self.global_symbol_table.delete(ctx_id)
-                    self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
-                    self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                    inherited_symbol = self.current_scope.lookup(ctx_id)
+                    if inherited_symbol['Type'].lower() == tipo.lower():
+                        self.current_scope.delete(ctx_id)
+                        self.global_symbol_table.delete(ctx_id)
+                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                    else:
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line, col, "Variable heredada no puede cambiarse de tipo: " + ctx_id)
                 else: # Error si hay variables duplicadas
                     line = ctx.type_().start.line
                     col = ctx.type_().start.column
@@ -345,31 +369,41 @@ class YAPLPrinter(YAPLListener):
                     line = ctx.expr().start.line
                     col = ctx.expr().start.column
                     self.errors.add(line,col,"Variable de tipo: " + self.BOOL + " no puede ser asignada a: " + ctx.ID().getText())
-            
+                else:
+                    self.current_scope.update(ctx.ID().getText(), value)
+                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+
+
             # Check if assignment is digit
             elif value.isdigit():
                 if variable_type.lower() != self.INT.lower():
                     line = ctx.expr().start.line
                     col = ctx.expr().start.line
                     self.errors.add(line,col, "Variable de tipo: " + self.INT + " no puede ser asignada a: " + ctx.ID().getText())
-            
+                else:
+                    self.current_scope.update(ctx.ID().getText(), value)
+                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+
             #Check if assignment is string
             elif start_with_quote and end_with_quote:
                 if variable_type.lower() != self.STRING.lower():
                     line = ctx.expr().start.line
                     col = ctx.expr().start.column
                     self.errors.add(line,col,"Variable de tipo: " + self.STRING + " no puede ser asignada a: " + ctx.ID().getText())
+                else:
+                    self.current_scope.update(ctx.ID().getText(), value)
+                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
+
 
             # Check if assigned variable is valid
             elif value:
-                # TODO: Validate if variable is valid
                 pass
-        
+                # # Check if value is a valid ID
+                # if self.current_scope.lookup(value) == 0:
 
-        # tipo = ctx.type_().getText()
-        # address = hex(id(ctx))
-        # position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
-        # value = ctx.expr().pop().getText() if len(ctx.expr()) > 0 else None
+                # # TODO: Validate if variable is valid
+                # pass
+        
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
         self.popscope()
@@ -394,7 +428,7 @@ class YAPLPrinter(YAPLListener):
 
         # Check if variable exists
         if variable_name is not None:
-            if self.current_scope.lookup(variable_name) == 0:
+            if self.current_scope.lookup(variable_name) == 0 and self.default_methods.lookup(variable_name) == 0:
                 if variable_name != 'main':
                     line = ctx.start.line
                     col = ctx.start.column
@@ -414,12 +448,19 @@ class YAPLPrinter(YAPLListener):
 
         # Check if number of parameters is the same
         method = self.global_method_table.lookup_w_class(function_call_id, variable_type)
+        default_method = self.default_methods.lookup(function_call_id)
         if method != 0:
             if len(method['Parameters']) != len(parameters):
                 # print('Lenes', len(method['Parameters']), len(parameters))
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + variable_name + '.' + function_call_id + '()')
+        else:
+            if default_method != 0:
+                if len(default_method['Parameters']) != len(parameters):
+                    line = ctx.start.line
+                    col = ctx.start.column
+                    self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + variable_name + '.' + function_call_id + '()')
 
         # Check if method has already called init()
         if function_call_id == 'init':
@@ -432,7 +473,8 @@ class YAPLPrinter(YAPLListener):
         #Check if method calls another method before init()
         if function_call_id != 'init':
             lookupmethod = self.method_call_table.lookup(variable_name)
-            if lookupmethod == 0 and variable_name != 'main':
+            lookupdefaultmethod = self.default_methods.lookup(variable_name)
+            if lookupmethod == 0 and variable_name != 'main' and lookupdefaultmethod != 0:
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Metodo init() debe ser llamado primero")
@@ -470,14 +512,22 @@ class YAPLPrinter(YAPLListener):
         # Get current type of variable
         variable_lookup = self.current_scope.lookup(variable_name)
         if type(variable_lookup) is not int:
-            variable_type = self.current_scope.lookup(variable_name)['Type']     
+            variable_type = self.current_scope.lookup(variable_name)['Type']
 
             # Get if method exists
             method = self.global_method_table.lookup_w_class(method_id, variable_type)
-            if method == 0:
-                line = ctx.start.line
-                col = ctx.start.column
-                self.errors.add(line,col,"Metodo no existe: " + method_id + " en clase: " + variable_type)
+            if variable_type.lower() not in self.default_data_types:
+                if method == 0:
+                    line = ctx.start.line
+                    col = ctx.start.column
+                    self.errors.add(line,col,"Metodo no existe: " + method_id + " en clase: " + variable_type)
+            else:
+                default_methods = self.default_methods.lookup_w_class(method_id, variable_type)
+                if default_methods == 0:
+                    line = ctx.start.line
+                    col = ctx.start.column
+                    self.errors.add(line,col,"Metodo no existe: " + method_id + " para tipo: " + variable_type)
+            
         
 
     def exitClas_list(self, ctx: YAPLParser.Clas_listContext):
