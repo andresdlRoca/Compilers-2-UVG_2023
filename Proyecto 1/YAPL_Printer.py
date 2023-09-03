@@ -30,6 +30,9 @@ class YAPLPrinter(YAPLListener):
             'void': self.VOID
         }
 
+        # self.default_methods = ClassTable()
+
+
         self.scopes = []
         self.current_scope = None
         self.current_scope_statement = None
@@ -107,8 +110,9 @@ class YAPLPrinter(YAPLListener):
         
         # Error si clase main es heredada por otra clase
         if inheritance is not None:
-            if ctx.type_()[1].getText().lower() == 'main':
-                self.errors.add(line, col, "Main no puede ser heredada por otra clase")
+            # Default data types cannot be inherited
+            if inheritance.lower() in self.default_data_types:
+                self.errors.add(line, col, "Tipo basico no puede ser heredado: " + inheritance)
 
         if class_type.lower() == 'main': # Error si clase main hereda de otra clase
             if inheritance is not None:
@@ -148,11 +152,78 @@ class YAPLPrinter(YAPLListener):
 
         if value is not None: # Si hay valor convertir a tipo de dato esperado
             if tipo.lower() == self.basic_data_type['string']:
-                value = str(value)
+                # Check if value is a string with regex
+                if value.startswith("'") and value.endswith("'"):
+                    value = str(value)
+                elif value.startswith('"') and value.endswith('"'):
+                    value = str(value)
+                else:
+                    # Check if value is a valid ID
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != 'string':
+                            line = ctx.type_().start.line
+                            col = ctx.type_().start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo string: " + value)
+
             elif tipo.lower() == self.basic_data_type['int']:
-                value = int(value)
+
+                if "+" in value or "-" in value or "*" in value or "/" in value:
+                    if is_valid_arithmethic_expression(value):
+                        pass
+                    else:
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line,col,"Expresion aritmetica invalida: " + value)
+                else:
+                    # Check if value is digit
+                    if value.isdigit():
+                        value = int(value)
+                    else:
+                        # Check if value is a valid ID
+                        if self.current_scope.lookup(value) == 0:
+                            line = ctx.type_().start.line
+                            col = ctx.type_().start.column
+                            self.errors.add(line,col,"La variable asignada no existe aun: " + value)
+                        else:
+                            lookupvalue = self.current_scope.lookup(value)
+                            if lookupvalue['Type'].lower() != 'int':
+                                line = ctx.type_().start.line
+                                col = ctx.type_().start.column
+                                self.errors.add(line,col,"Variable asignada no es tipo int: " + value)
+
+
             elif tipo.lower() == self.basic_data_type['bool']:
-                value = bool(value)
+                if is_valid_boolean_expression(value):
+                    value = bool(value)
+                else:
+                    # Check if value is a valid ID
+                    if self.current_scope.lookup(value) == 0:
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(value)
+                        if lookupvalue['Type'].lower() != 'bool':
+                            line = ctx.type_().start.line
+                            col = ctx.type_().start.column
+                            self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)
+            else:
+                # Check if value is a valid ID
+                if self.current_scope.lookup(value) == 0:
+                    line = ctx.type_().start.line
+                    col = ctx.type_().start.column
+                    self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                else:
+                    lookupvalue = self.current_scope.lookup(value)
+                    if lookupvalue['Type'].lower() != tipo.lower():
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line,col,"Variable asignada no es de tipo: " + tipo + " " + value)
         
         if tipo.lower() not in self.default_data_types: # Buscar en tabla de clases si no es tipo basico
             if self.class_table.lookup(tipo) == 0:
@@ -425,6 +496,9 @@ class YAPLPrinter(YAPLListener):
                     col = main_method['Position'].split(" ")[3]
                     self.errors.add(line,col,"Metodo main no puede tener parametros")
 
+        if class_type.lower() in self.default_data_types:
+            self.errors.add(line,col,"Clase no puede ser tipo basico: " + class_type)
+
         self.method_table = MethodTable()
 
 
@@ -474,4 +548,28 @@ class YAPLPrinter(YAPLListener):
             print(self.errors.GetErrores())
 
 
+def is_valid_arithmethic_expression(expression): # Receives string
+    try:
+        result = eval(expression)
+        return True
+    except:
+        return False
+
+def is_valid_boolean_expression(expression):
+    if expression == 'true' or expression == 'false':
+        return True
+    else:
+        return False
+
+def is_comparation_expression(expression):
+    if '<' in expression or '<=' in expression or '=' in expression:
+        return True
+    else:
+        return False
+    
+def is_unary_expression(expression):
+    if expression.startswith('not') or expression.startswith('~'):
+        return True
+    else:
+        return False
 

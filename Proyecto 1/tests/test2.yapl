@@ -1,16 +1,17 @@
 class Point {
 
-    x : Int;
-    y : Int;
+    x : Int <- 5;
+    y : Int <- x;
     a : String <- "abc";
-    b : Bool <- true;
+    z : Bool <- false;
+    b : Bool <- z;
 
     //b <- false;
     //x <- true;
     //y <- "hola";
     //a <- true;
 
-    init(g : int, z : int) : Point {
+    init(g : int, z : int) : IO {
         Moab : String;
         Moab <- "hola";
     };
@@ -77,6 +78,7 @@ class main {
 
     main() : void {
         num_test : int;
+        num_test <- 100;
     };
 
     main.main(); // Inicializacion del programa
