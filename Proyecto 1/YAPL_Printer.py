@@ -301,9 +301,14 @@ class YAPLPrinter(YAPLListener):
                         col = ctx.type_().start.column
                         self.errors.add(line, col, "Variable heredada no puede cambiarse de tipo: " + ctx_id)
                 else: # Error si hay variables duplicadas
-                    line = ctx.type_().start.line
-                    col = ctx.type_().start.column
-                    self.errors.add(line, col, "Variable duplicada: " + ctx_id)
+                    if self.current_scope.lookup(ctx_id)['Scope'] != self.current_scope_statement:
+                        pass
+                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
+                    else:
+                        line = ctx.type_().start.line
+                        col = ctx.type_().start.column
+                        self.errors.add(line, col, "Variable duplicada: " + ctx_id)
                 
     
     def exitAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):

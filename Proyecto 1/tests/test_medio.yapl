@@ -12,6 +12,8 @@ class Point {
         Moab <- "hola";
         x_holder : Int <- x;
         Max : String <- a;
+        x : Int <- 1024;
+
 
         return 0;
     };
