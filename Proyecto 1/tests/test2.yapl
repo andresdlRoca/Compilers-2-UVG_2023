@@ -42,25 +42,40 @@ class Circle {
 
     calculate() : Int {
         lal : int;
+        lal <- 10;
+    };
+
+    round() : Int {
+
+    };
+
+    getSize() : Int {
+
+    };
+
+    getID() : Int { 
+
     };
 
 };
 
 class Square inherits Circle {
     abc : string;
+    prueba_string : string <- "Halo";
     efg : Bool;
     circulo : Circle;
     punto : Point;
     abc_length : int;
     
 
-    abc <- "Holanda";
+    abc <- prueba_string;
+    abc.length();
 
-	// abc : String;
 
-    circulo.init(abc, efg);
+    circulo.init(10, 20);
     circulo.calculate();
-    //point.calculate();
+    punto.init(10, 20);
+    punto.calculate();
 };
 
 class Triangle inherits Square {

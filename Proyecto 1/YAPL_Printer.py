@@ -473,8 +473,10 @@ class YAPLPrinter(YAPLListener):
         #Check if method calls another method before init()
         if function_call_id != 'init':
             lookupmethod = self.method_call_table.lookup(variable_name)
-            lookupdefaultmethod = self.default_methods.lookup(variable_name)
-            if lookupmethod == 0 and variable_name != 'main' and lookupdefaultmethod != 0:
+            lookupdefaultmethod = self.default_methods.lookup(function_call_id)
+            if lookupdefaultmethod !=0:
+                pass # No hacer nada porque es valido no llamar a init en este caso
+            elif lookupmethod == 0 and variable_name != 'main':
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Metodo init() debe ser llamado primero")
