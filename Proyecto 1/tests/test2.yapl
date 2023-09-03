@@ -101,11 +101,7 @@ class main {
 
     main_circle : Circle;
 
-
-    // main_square.init(10, 20);
-
     main_circle.init(10, 20);
-    //main_circle.init(10,20);
 
     main() : void {
         num_test : int;
