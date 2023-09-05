@@ -15,7 +15,7 @@ class Point {
         x : Int <- 1024;
 
 
-        return 0;
+        return void;
     };
 
 
@@ -38,11 +38,11 @@ class Circle {
     xander : Int;
     y : Int;
 
-    init(g : int, z : int) : SELF_TYPE {
+    init(g : int, z : int) : void {
         //x <- 10;
         //y <- 10;
 
-        return 0;
+        return void;
     };
 
     calculate() : Int {
@@ -104,7 +104,7 @@ class main {
         num_test : int;
         num_test <- 100;
 
-        return 0;
+        return void;
     };
 
     main.main(); // Inicializacion del programa

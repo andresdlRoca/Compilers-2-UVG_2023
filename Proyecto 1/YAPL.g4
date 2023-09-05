@@ -74,13 +74,13 @@ let_declaration:
 let_binding: ID ':' type ('<-' expr)? (type)?;
 
 if_statement:
-	'if' expr ('then' (block)*)* (
-		'else' (block)*
-	)? 'fi';
+	'if' expr ('then' (simple_method_definition | block)*)* (
+		'else' (simple_method_definition | block)*
+	)? 'fi' SEMI;
 while_statement:
 	'while' (expr)* 'loop' (
-		block
-	)* 'pool';
+		block | simple_method_definition
+	)* 'pool' SEMI;
 
 block:
 	if_statement

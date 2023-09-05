@@ -49,6 +49,7 @@ class Point {
 class Circle {
 
     xander : Int;
+    x : Int;
     y : Int;
     stringo : String;
 
@@ -57,7 +58,19 @@ class Circle {
         //y <- 10;
         self_obj : SELF_TYPE;
 
+        if x = y then
+            out_int(50);
+        else
+            out_int(0);
+        fi;
+
+        while x < y loop
+            out_int(10);
+            x <- x + 1;
+        pool;
+
         return self_obj;
+
     };
 
     calculate() : Int {
