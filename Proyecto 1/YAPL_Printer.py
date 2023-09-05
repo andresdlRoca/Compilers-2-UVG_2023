@@ -212,7 +212,23 @@ class YAPLPrinter(YAPLListener):
 
                 if "+" in value or "-" in value or "*" in value or "/" in value:
                     if is_valid_arithmethic_expression(value):
-                        pass
+                            # Check if value is a valid digit
+                            operation_values = re.split(r'[-+*/]', value)
+                            operation_values = [operation_values.strip() for operation_values in operation_values if operation_values.strip()]
+                            for token in operation_values:
+                                if token.isdigit() == False:
+                                    if self.current_scope.lookup(token) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para operacion aritmetica: " + token)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(token)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + token)
+
+                            
                     else:
                         line = ctx.type_().start.line
                         col = ctx.type_().start.column
@@ -232,7 +248,7 @@ class YAPLPrinter(YAPLListener):
                             if lookupvalue['Type'].lower() != 'int':
                                 line = ctx.type_().start.line
                                 col = ctx.type_().start.column
-                                self.errors.add(line,col,"Variable asignada no es tipo int: " + value)
+                                self.errors.add(line,col,"Variable asigfdsnada no es tipo int: " + value)
 
 
             elif tipo.lower() == self.basic_data_type['bool']:
@@ -304,6 +320,7 @@ class YAPLPrinter(YAPLListener):
                                             line = ctx.type_().start.line
                                             col = ctx.type_().start.column
                                             self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+                                            
 
                         elif "=" in value:
                             valueOne = value.split("=")[0]
@@ -314,29 +331,28 @@ class YAPLPrinter(YAPLListener):
                                 pass
                             else:
                                 # Check if value is a valid ID
-                                if valueOne.isdigit() == False:
-                                    if self.current_scope.lookup(valueOne) == 0:
-                                        line = ctx.type_().start.line
-                                        col = ctx.type_().start.column
-                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
-                                    else:
-                                        lookupvalue = self.current_scope.lookup(valueOne)
-                                        if lookupvalue['Type'].lower() != 'int':
-                                            line = ctx.type_().start.line
-                                            col = ctx.type_().start.column
-                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+                                lookupValueOne = self.current_scope.lookup(valueOne)
+                                lookupValueTwo = self.current_scope.lookup(valueTwo)
 
-                                if valueTwo.isdigit() == False:
-                                    if self.current_scope.lookup(valueTwo) == 0:
-                                        line = ctx.type_().start.line
-                                        col = ctx.type_().start.column
-                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
-                                    else:
-                                        lookupvalue = self.current_scope.lookup(valueTwo)
-                                        if lookupvalue['Type'].lower() != 'int':
+                                if lookupValueOne == 0 and lookupValueTwo == 0:
+                                    line = ctx.type_().start.line
+                                    col = ctx.type_().start.column
+                                    self.errors.add(line,col,"Variables asignadas no existen aun o no son valores validos para comparacion: " + valueOne + " " + valueTwo)
+                                else:
+                                    if lookupValueOne != 0:
+                                        # lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupValueOne['Type'].lower() != lookupValueTwo['Type'].lower():
                                             line = ctx.type_().start.line
                                             col = ctx.type_().start.column
-                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+                                            self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueOne)
+                                            
+                                    if lookupValueTwo != 0:
+                                        # lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupValueTwo['Type'].lower() != lookupValueTwo['Type'].lower():
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueTwo)
+                                            
 
                     else:
                         # Check if value is a valid ID
@@ -349,7 +365,7 @@ class YAPLPrinter(YAPLListener):
                             if lookupvalue['Type'].lower() != 'bool':
                                 line = ctx.type_().start.line
                                 col = ctx.type_().start.column
-                                self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)
+                                self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)                    
             else:
                 # Check if value is a valid ID
                 if self.current_scope.lookup(value) == 0:
@@ -416,7 +432,6 @@ class YAPLPrinter(YAPLListener):
                         self.errors.add(line, col, "Variable heredada no puede cambiarse de tipo: " + ctx_id)
                 else: # Error si hay variables duplicadas
                     if self.current_scope.lookup(ctx_id)['Scope'] != self.current_scope_statement[-1]:
-                        pass
                         self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
                         self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
                     else:
@@ -529,8 +544,6 @@ class YAPLPrinter(YAPLListener):
     
     def exitVar_assign(self, ctx: YAPLParser.Var_assignContext):
         # Check if variable exists
-        # print(self.current_scope._symbols)
-        # print("ID", ctx.ID)
 
         copy_global_symbol_table = self.global_symbol_table._symbols.copy()
         for symbol in copy_global_symbol_table:
@@ -553,18 +566,120 @@ class YAPLPrinter(YAPLListener):
             lookupvalue = self.current_scope.lookup(value)
 
             # Check if assignment is boolean
-            if value == 'true' or value == 'false':
+            if value == 'true' or value == 'false' or is_valid_comparison_operation(value):
                 if variable_type.lower() != self.BOOL.lower():
                     line = ctx.expr().start.line
                     col = ctx.expr().start.column
                     self.errors.add(line,col,"Variable de tipo: " + self.BOOL + " no puede ser asignada a: " + ctx.ID().getText())
+
                 else:
-                    if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
-                        self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
-                        self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+
+                    if is_valid_comparison_operation(value):
+                        
+                        if "<" in value and "<=" not in value and "=" not in value:
+                            valueOne = value.split("<")[0]
+                            valueTwo = value.split("<")[1]
+
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                if valueOne.isdigit() == False:
+                                    if self.current_scope.lookup(valueOne) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                                if valueTwo.isdigit() == False:
+                                    if self.current_scope.lookup(valueTwo) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+
+                        elif "<=" in value:
+                            valueOne = value.split("<=")[0]
+                            valueTwo = value.split("<=")[1]
+
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                if valueOne.isdigit() == False:
+                                    if self.current_scope.lookup(valueOne) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                                if valueTwo.isdigit() == False:
+                                    if self.current_scope.lookup(valueTwo) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+                                            
+
+                        elif "=" in value:
+                            valueOne = value.split("=")[0]
+                            valueTwo = value.split("=")[1]
+
+                            # Check if they are same type
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                lookupValueOne = self.current_scope.lookup(valueOne)
+                                lookupValueTwo = self.current_scope.lookup(valueTwo)
+
+                                if lookupValueOne == 0 and lookupValueTwo == 0:
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Variables asignadas no existen aun o no son valores validos para comparacion: " + valueOne + " " + valueTwo)
+                                else:
+                                    if lookupValueOne != 0:
+                                        # lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupValueOne['Type'].lower() != lookupValueTwo['Type'].lower():
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueOne)
+                                            
+                                    if lookupValueTwo != 0:
+                                        # lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupValueTwo['Type'].lower() != lookupValueTwo['Type'].lower():
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueTwo)
+                                            
+                        
                     else:
-                        self.current_scope.update(ctx.ID().getText(), value)
-                        self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
+                        if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
+                            self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                        else:
+                            self.current_scope.update(ctx.ID().getText(), value)
+                            self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
 
 
             # Check if assignment is digit
@@ -623,23 +738,55 @@ class YAPLPrinter(YAPLListener):
                                 self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
                 # Check for int
                 elif variable_type.lower() == self.INT.lower():
-                    if self.current_scope.lookup(value) == 0:
-                        line = ctx.expr().start.line
-                        col = ctx.expr().start.column
-                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+
+                    if "+" in value or "-" in value or "*" in value or "/" in value:
+                        if is_valid_arithmethic_expression(value):
+                            # Check if value is a valid digit
+                            operation_values = re.split(r'[-+*/]', value)
+                            operation_values = [operation_values.strip() for operation_values in operation_values if operation_values.strip()]
+                            for token in operation_values:
+                                if token.isdigit() == False:
+                                    if self.current_scope.lookup(token) == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para operacion aritmetica: " + token)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(token)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.expr().start.line
+                                            col = ctx.expr().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + token)
+                                        else:
+                                            if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
+                                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                            else:
+                                                self.current_scope.update(ctx.ID().getText(), value)
+                                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
+                            
+                        else:
+                            line = ctx.type_().start.line
+                            col = ctx.type_().start.column
+                            self.errors.add(line,col,"Expresion aritmetica invalida: " + value)
                     else:
-                        lookupvalue = self.current_scope.lookup(value)
-                        if lookupvalue['Type'].lower() != 'int':
+
+                        if self.current_scope.lookup(value) == 0:
                             line = ctx.expr().start.line
                             col = ctx.expr().start.column
-                            self.errors.add(line,col,"Variable asignada no es de tipo int: " + value)
+                            self.errors.add(line,col,"Variable asignada no existe aun: " + value)
                         else:
-                            if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
-                                self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
-                                self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                            lookupvalue = self.current_scope.lookup(value)
+                            if lookupvalue['Type'].lower() != 'int':
+                                line = ctx.expr().start.line
+                                col = ctx.expr().start.column
+                                self.errors.add(line,col,"Variable asignada no es de tipo int: " + value)
                             else:
-                                self.current_scope.update(ctx.ID().getText(), value)
-                                self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
+                                if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
+                                    self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                    self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                                else:
+                                    self.current_scope.update(ctx.ID().getText(), value)
+                                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
                 
                 # Check for bool
                 elif variable_type.lower() == self.BOOL.lower():
@@ -730,11 +877,28 @@ class YAPLPrinter(YAPLListener):
         
         # Check if number of parameters is the same
         method = self.global_method_table.lookup_w_class(function_call_id, variable_type)
+        local_method = self.method_table.lookup(function_call_id)
         # Get types of method's parameters
         parameters_type = []
         if method != 0:
             for parameter in method['Parameters']:
                 parameters_type.append(parameter.split(":")[1])
+        elif local_method != 0:
+            for parameter in local_method['Parameters']:
+                parameters_type.append(parameter.split(":")[1])
+            method = local_method
+            variable_name = ""
+
+        # if function_call_id == 'pruebarde':
+        #     print('----------------debug print-------------')
+        #     print('function_call_id', function_call_id)
+        #     print('variable_name', variable_name)
+        #     print('variable_type', variable_type)
+        #     print('parameters', parameters)
+        #     print('method', method)
+        #     print('local', local_method)
+
+        
         
         default_method = self.default_methods.lookup(function_call_id)
         if method != 0:

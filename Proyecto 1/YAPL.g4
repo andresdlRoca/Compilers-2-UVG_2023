@@ -101,12 +101,6 @@ parameter_list: formal (COMMA formal)*;
 expr:
 	ID ASSIGN expr
 	| STR_CONST
-	| ID '(' expr ')'
-	| ID '(' parameter_list? ')'
-	| '{' expr '}'
-	| STR_CONST
-	| ID '(' STR_CONST ')'
-	| '(' STR_CONST ')'
 	| INT_CONST
 	| NEW ID
 	| NEW type
@@ -120,9 +114,6 @@ expr:
 	| 'true'
 	| 'false'
 	| 'v'
-	| expr DOT ID
-	| expr DOT ID LPAREN expr? RPAREN
-	| expr DOT ID ASSIGN expr
 	| expr '@' type DOT ID LPAREN expr (SEMI expr)* RPAREN
 	| expr '~'
 	| expr ('-' expr)+

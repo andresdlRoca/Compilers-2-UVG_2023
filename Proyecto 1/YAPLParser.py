@@ -1,4 +1,4 @@
-# Generated from YAPL.g4 by ANTLR 4.13.0
+# Generated from YAPL.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,57,432,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,57,393,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,1,0,1,0,1,1,1,1,1,2,1,2,1,3,1,3,1,4,1,4,1,5,4,5,56,
@@ -33,64 +33,61 @@ def serializedATN():
         18,1,18,1,18,5,18,244,8,18,10,18,12,18,247,9,18,1,18,1,18,3,18,251,
         8,18,1,19,1,19,1,19,1,19,1,20,1,20,1,20,5,20,260,8,20,10,20,12,20,
         263,9,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,
-        1,21,1,21,3,21,278,8,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,
+        1,21,1,21,1,21,1,21,1,21,1,21,1,21,4,21,283,8,21,11,21,12,21,284,
+        1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,296,8,21,1,21,
         1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,
-        1,21,1,21,1,21,1,21,1,21,4,21,306,8,21,11,21,12,21,307,1,21,1,21,
-        1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,319,8,21,1,21,1,21,1,21,
-        1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,
-        1,21,1,21,1,21,1,21,1,21,1,21,3,21,343,8,21,1,21,1,21,1,21,1,21,
-        1,21,1,21,1,21,1,21,1,21,1,21,5,21,355,8,21,10,21,12,21,358,9,21,
-        1,21,1,21,1,21,1,21,1,21,1,21,1,21,4,21,367,8,21,11,21,12,21,368,
-        1,21,1,21,1,21,4,21,374,8,21,11,21,12,21,375,1,21,1,21,1,21,4,21,
-        381,8,21,11,21,12,21,382,1,21,1,21,1,21,4,21,388,8,21,11,21,12,21,
-        389,1,21,1,21,1,21,4,21,395,8,21,11,21,12,21,396,1,21,1,21,1,21,
-        4,21,402,8,21,11,21,12,21,403,1,21,1,21,1,21,4,21,409,8,21,11,21,
-        12,21,410,1,21,1,21,1,21,4,21,416,8,21,11,21,12,21,417,1,21,1,21,
-        1,21,4,21,423,8,21,11,21,12,21,424,5,21,427,8,21,10,21,12,21,430,
-        9,21,1,21,1,307,1,42,22,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
-        30,32,34,36,38,40,42,0,3,2,0,29,29,33,38,1,0,3,10,2,0,11,11,44,44,
-        497,0,44,1,0,0,0,2,46,1,0,0,0,4,48,1,0,0,0,6,50,1,0,0,0,8,52,1,0,
-        0,0,10,55,1,0,0,0,12,59,1,0,0,0,14,82,1,0,0,0,16,88,1,0,0,0,18,90,
-        1,0,0,0,20,106,1,0,0,0,22,114,1,0,0,0,24,135,1,0,0,0,26,139,1,0,
-        0,0,28,161,1,0,0,0,30,171,1,0,0,0,32,196,1,0,0,0,34,218,1,0,0,0,
-        36,250,1,0,0,0,38,252,1,0,0,0,40,256,1,0,0,0,42,318,1,0,0,0,44,45,
-        5,1,0,0,45,1,1,0,0,0,46,47,5,2,0,0,47,3,1,0,0,0,48,49,7,0,0,0,49,
-        5,1,0,0,0,50,51,7,1,0,0,51,7,1,0,0,0,52,53,7,2,0,0,53,9,1,0,0,0,
-        54,56,3,12,6,0,55,54,1,0,0,0,56,57,1,0,0,0,57,55,1,0,0,0,57,58,1,
-        0,0,0,58,11,1,0,0,0,59,60,5,1,0,0,60,63,3,4,2,0,61,62,5,2,0,0,62,
-        64,3,4,2,0,63,61,1,0,0,0,63,64,1,0,0,0,64,65,1,0,0,0,65,66,5,53,
-        0,0,66,67,3,14,7,0,67,68,5,54,0,0,68,69,5,47,0,0,69,13,1,0,0,0,70,
-        72,3,16,8,0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,1,0,0,0,73,74,1,0,
-        0,0,74,83,1,0,0,0,75,73,1,0,0,0,76,78,3,38,19,0,77,76,1,0,0,0,78,
-        81,1,0,0,0,79,77,1,0,0,0,79,80,1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,
-        0,82,73,1,0,0,0,82,79,1,0,0,0,83,15,1,0,0,0,84,89,3,18,9,0,85,89,
-        3,22,11,0,86,89,3,36,18,0,87,89,3,20,10,0,88,84,1,0,0,0,88,85,1,
-        0,0,0,88,86,1,0,0,0,88,87,1,0,0,0,89,17,1,0,0,0,90,91,5,29,0,0,91,
-        92,5,48,0,0,92,95,3,4,2,0,93,94,5,45,0,0,94,96,3,42,21,0,95,93,1,
-        0,0,0,95,96,1,0,0,0,96,102,1,0,0,0,97,98,5,51,0,0,98,99,3,42,21,
-        0,99,100,5,47,0,0,100,101,5,52,0,0,101,103,1,0,0,0,102,97,1,0,0,
-        0,102,103,1,0,0,0,103,104,1,0,0,0,104,105,5,47,0,0,105,19,1,0,0,
-        0,106,107,5,29,0,0,107,110,5,45,0,0,108,111,3,42,21,0,109,111,3,
-        36,18,0,110,108,1,0,0,0,110,109,1,0,0,0,111,112,1,0,0,0,112,113,
-        5,47,0,0,113,21,1,0,0,0,114,115,5,29,0,0,115,117,5,51,0,0,116,118,
-        3,40,20,0,117,116,1,0,0,0,117,118,1,0,0,0,118,119,1,0,0,0,119,120,
-        5,52,0,0,120,121,5,48,0,0,121,122,3,4,2,0,122,128,5,53,0,0,123,127,
-        3,34,17,0,124,127,3,22,11,0,125,127,3,36,18,0,126,123,1,0,0,0,126,
-        124,1,0,0,0,126,125,1,0,0,0,127,130,1,0,0,0,128,126,1,0,0,0,128,
-        129,1,0,0,0,129,131,1,0,0,0,130,128,1,0,0,0,131,132,3,24,12,0,132,
-        133,5,54,0,0,133,134,5,47,0,0,134,23,1,0,0,0,135,136,5,12,0,0,136,
-        137,3,42,21,0,137,138,5,47,0,0,138,25,1,0,0,0,139,140,5,13,0,0,140,
-        145,3,28,14,0,141,142,5,49,0,0,142,144,3,28,14,0,143,141,1,0,0,0,
-        144,147,1,0,0,0,145,143,1,0,0,0,145,146,1,0,0,0,146,159,1,0,0,0,
-        147,145,1,0,0,0,148,149,5,14,0,0,149,155,5,53,0,0,150,151,3,42,21,
-        0,151,152,5,47,0,0,152,154,1,0,0,0,153,150,1,0,0,0,154,157,1,0,0,
-        0,155,153,1,0,0,0,155,156,1,0,0,0,156,158,1,0,0,0,157,155,1,0,0,
-        0,158,160,5,54,0,0,159,148,1,0,0,0,159,160,1,0,0,0,160,27,1,0,0,
-        0,161,162,5,29,0,0,162,163,5,48,0,0,163,166,3,4,2,0,164,165,5,45,
-        0,0,165,167,3,42,21,0,166,164,1,0,0,0,166,167,1,0,0,0,167,169,1,
-        0,0,0,168,170,3,4,2,0,169,168,1,0,0,0,169,170,1,0,0,0,170,29,1,0,
-        0,0,171,172,5,15,0,0,172,182,3,42,21,0,173,177,5,16,0,0,174,176,
-        3,34,17,0,175,174,1,0,0,0,176,179,1,0,0,0,177,175,1,0,0,0,177,178,
+        1,21,1,21,1,21,1,21,5,21,316,8,21,10,21,12,21,319,9,21,1,21,1,21,
+        1,21,1,21,1,21,1,21,1,21,4,21,328,8,21,11,21,12,21,329,1,21,1,21,
+        1,21,4,21,335,8,21,11,21,12,21,336,1,21,1,21,1,21,4,21,342,8,21,
+        11,21,12,21,343,1,21,1,21,1,21,4,21,349,8,21,11,21,12,21,350,1,21,
+        1,21,1,21,4,21,356,8,21,11,21,12,21,357,1,21,1,21,1,21,4,21,363,
+        8,21,11,21,12,21,364,1,21,1,21,1,21,4,21,370,8,21,11,21,12,21,371,
+        1,21,1,21,1,21,4,21,377,8,21,11,21,12,21,378,1,21,1,21,1,21,4,21,
+        384,8,21,11,21,12,21,385,5,21,388,8,21,10,21,12,21,391,9,21,1,21,
+        1,284,1,42,22,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,
+        38,40,42,0,3,2,0,29,29,33,38,1,0,3,10,2,0,11,11,44,44,447,0,44,1,
+        0,0,0,2,46,1,0,0,0,4,48,1,0,0,0,6,50,1,0,0,0,8,52,1,0,0,0,10,55,
+        1,0,0,0,12,59,1,0,0,0,14,82,1,0,0,0,16,88,1,0,0,0,18,90,1,0,0,0,
+        20,106,1,0,0,0,22,114,1,0,0,0,24,135,1,0,0,0,26,139,1,0,0,0,28,161,
+        1,0,0,0,30,171,1,0,0,0,32,196,1,0,0,0,34,218,1,0,0,0,36,250,1,0,
+        0,0,38,252,1,0,0,0,40,256,1,0,0,0,42,295,1,0,0,0,44,45,5,1,0,0,45,
+        1,1,0,0,0,46,47,5,2,0,0,47,3,1,0,0,0,48,49,7,0,0,0,49,5,1,0,0,0,
+        50,51,7,1,0,0,51,7,1,0,0,0,52,53,7,2,0,0,53,9,1,0,0,0,54,56,3,12,
+        6,0,55,54,1,0,0,0,56,57,1,0,0,0,57,55,1,0,0,0,57,58,1,0,0,0,58,11,
+        1,0,0,0,59,60,5,1,0,0,60,63,3,4,2,0,61,62,5,2,0,0,62,64,3,4,2,0,
+        63,61,1,0,0,0,63,64,1,0,0,0,64,65,1,0,0,0,65,66,5,53,0,0,66,67,3,
+        14,7,0,67,68,5,54,0,0,68,69,5,47,0,0,69,13,1,0,0,0,70,72,3,16,8,
+        0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,1,0,0,0,73,74,1,0,0,0,74,83,
+        1,0,0,0,75,73,1,0,0,0,76,78,3,38,19,0,77,76,1,0,0,0,78,81,1,0,0,
+        0,79,77,1,0,0,0,79,80,1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,0,82,73,
+        1,0,0,0,82,79,1,0,0,0,83,15,1,0,0,0,84,89,3,18,9,0,85,89,3,22,11,
+        0,86,89,3,36,18,0,87,89,3,20,10,0,88,84,1,0,0,0,88,85,1,0,0,0,88,
+        86,1,0,0,0,88,87,1,0,0,0,89,17,1,0,0,0,90,91,5,29,0,0,91,92,5,48,
+        0,0,92,95,3,4,2,0,93,94,5,45,0,0,94,96,3,42,21,0,95,93,1,0,0,0,95,
+        96,1,0,0,0,96,102,1,0,0,0,97,98,5,51,0,0,98,99,3,42,21,0,99,100,
+        5,47,0,0,100,101,5,52,0,0,101,103,1,0,0,0,102,97,1,0,0,0,102,103,
+        1,0,0,0,103,104,1,0,0,0,104,105,5,47,0,0,105,19,1,0,0,0,106,107,
+        5,29,0,0,107,110,5,45,0,0,108,111,3,42,21,0,109,111,3,36,18,0,110,
+        108,1,0,0,0,110,109,1,0,0,0,111,112,1,0,0,0,112,113,5,47,0,0,113,
+        21,1,0,0,0,114,115,5,29,0,0,115,117,5,51,0,0,116,118,3,40,20,0,117,
+        116,1,0,0,0,117,118,1,0,0,0,118,119,1,0,0,0,119,120,5,52,0,0,120,
+        121,5,48,0,0,121,122,3,4,2,0,122,128,5,53,0,0,123,127,3,34,17,0,
+        124,127,3,22,11,0,125,127,3,36,18,0,126,123,1,0,0,0,126,124,1,0,
+        0,0,126,125,1,0,0,0,127,130,1,0,0,0,128,126,1,0,0,0,128,129,1,0,
+        0,0,129,131,1,0,0,0,130,128,1,0,0,0,131,132,3,24,12,0,132,133,5,
+        54,0,0,133,134,5,47,0,0,134,23,1,0,0,0,135,136,5,12,0,0,136,137,
+        3,42,21,0,137,138,5,47,0,0,138,25,1,0,0,0,139,140,5,13,0,0,140,145,
+        3,28,14,0,141,142,5,49,0,0,142,144,3,28,14,0,143,141,1,0,0,0,144,
+        147,1,0,0,0,145,143,1,0,0,0,145,146,1,0,0,0,146,159,1,0,0,0,147,
+        145,1,0,0,0,148,149,5,14,0,0,149,155,5,53,0,0,150,151,3,42,21,0,
+        151,152,5,47,0,0,152,154,1,0,0,0,153,150,1,0,0,0,154,157,1,0,0,0,
+        155,153,1,0,0,0,155,156,1,0,0,0,156,158,1,0,0,0,157,155,1,0,0,0,
+        158,160,5,54,0,0,159,148,1,0,0,0,159,160,1,0,0,0,160,27,1,0,0,0,
+        161,162,5,29,0,0,162,163,5,48,0,0,163,166,3,4,2,0,164,165,5,45,0,
+        0,165,167,3,42,21,0,166,164,1,0,0,0,166,167,1,0,0,0,167,169,1,0,
+        0,0,168,170,3,4,2,0,169,168,1,0,0,0,169,170,1,0,0,0,170,29,1,0,0,
+        0,171,172,5,15,0,0,172,182,3,42,21,0,173,177,5,16,0,0,174,176,3,
+        34,17,0,175,174,1,0,0,0,176,179,1,0,0,0,177,175,1,0,0,0,177,178,
         1,0,0,0,178,181,1,0,0,0,179,177,1,0,0,0,180,173,1,0,0,0,181,184,
         1,0,0,0,182,180,1,0,0,0,182,183,1,0,0,0,183,192,1,0,0,0,184,182,
         1,0,0,0,185,189,5,17,0,0,186,188,3,34,17,0,187,186,1,0,0,0,188,191,
@@ -117,65 +114,52 @@ def serializedATN():
         254,5,48,0,0,254,255,3,4,2,0,255,39,1,0,0,0,256,261,3,38,19,0,257,
         258,5,49,0,0,258,260,3,38,19,0,259,257,1,0,0,0,260,263,1,0,0,0,261,
         259,1,0,0,0,261,262,1,0,0,0,262,41,1,0,0,0,263,261,1,0,0,0,264,265,
-        6,21,-1,0,265,266,5,29,0,0,266,267,5,45,0,0,267,319,3,42,21,39,268,
-        319,5,31,0,0,269,270,5,29,0,0,270,271,5,51,0,0,271,272,3,42,21,0,
-        272,273,5,52,0,0,273,319,1,0,0,0,274,275,5,29,0,0,275,277,5,51,0,
-        0,276,278,3,40,20,0,277,276,1,0,0,0,277,278,1,0,0,0,278,279,1,0,
-        0,0,279,319,5,52,0,0,280,281,5,53,0,0,281,282,3,42,21,0,282,283,
-        5,54,0,0,283,319,1,0,0,0,284,319,5,31,0,0,285,286,5,29,0,0,286,287,
-        5,51,0,0,287,288,5,31,0,0,288,319,5,52,0,0,289,290,5,51,0,0,290,
-        291,5,31,0,0,291,319,5,52,0,0,292,319,5,30,0,0,293,294,5,42,0,0,
-        294,319,5,29,0,0,295,296,5,42,0,0,296,319,3,4,2,0,297,298,5,43,0,
-        0,298,319,3,42,21,28,299,319,5,30,0,0,300,319,5,31,0,0,301,302,5,
-        44,0,0,302,319,3,42,21,25,303,305,5,51,0,0,304,306,3,42,21,0,305,
-        304,1,0,0,0,306,307,1,0,0,0,307,308,1,0,0,0,307,305,1,0,0,0,308,
-        309,1,0,0,0,309,310,5,52,0,0,310,319,1,0,0,0,311,312,5,43,0,0,312,
-        319,3,42,21,23,313,319,5,22,0,0,314,319,5,23,0,0,315,319,5,24,0,
-        0,316,319,5,25,0,0,317,319,5,29,0,0,318,264,1,0,0,0,318,268,1,0,
-        0,0,318,269,1,0,0,0,318,274,1,0,0,0,318,280,1,0,0,0,318,284,1,0,
-        0,0,318,285,1,0,0,0,318,289,1,0,0,0,318,292,1,0,0,0,318,293,1,0,
-        0,0,318,295,1,0,0,0,318,297,1,0,0,0,318,299,1,0,0,0,318,300,1,0,
-        0,0,318,301,1,0,0,0,318,303,1,0,0,0,318,311,1,0,0,0,318,313,1,0,
-        0,0,318,314,1,0,0,0,318,315,1,0,0,0,318,316,1,0,0,0,318,317,1,0,
-        0,0,319,428,1,0,0,0,320,321,10,16,0,0,321,322,5,50,0,0,322,323,5,
-        29,0,0,323,324,5,45,0,0,324,427,3,42,21,17,325,326,10,9,0,0,326,
-        327,5,9,0,0,327,427,3,42,21,10,328,329,10,3,0,0,329,330,5,28,0,0,
-        330,427,3,42,21,4,331,332,10,2,0,0,332,333,5,8,0,0,333,427,3,42,
-        21,3,334,335,10,18,0,0,335,336,5,50,0,0,336,427,5,29,0,0,337,338,
-        10,17,0,0,338,339,5,50,0,0,339,340,5,29,0,0,340,342,5,51,0,0,341,
-        343,3,42,21,0,342,341,1,0,0,0,342,343,1,0,0,0,343,344,1,0,0,0,344,
-        427,5,52,0,0,345,346,10,15,0,0,346,347,5,10,0,0,347,348,3,4,2,0,
-        348,349,5,50,0,0,349,350,5,29,0,0,350,351,5,51,0,0,351,356,3,42,
-        21,0,352,353,5,47,0,0,353,355,3,42,21,0,354,352,1,0,0,0,355,358,
-        1,0,0,0,356,354,1,0,0,0,356,357,1,0,0,0,357,359,1,0,0,0,358,356,
-        1,0,0,0,359,360,5,52,0,0,360,427,1,0,0,0,361,362,10,14,0,0,362,427,
-        5,11,0,0,363,366,10,13,0,0,364,365,5,4,0,0,365,367,3,42,21,0,366,
-        364,1,0,0,0,367,368,1,0,0,0,368,366,1,0,0,0,368,369,1,0,0,0,369,
-        427,1,0,0,0,370,373,10,12,0,0,371,372,5,3,0,0,372,374,3,42,21,0,
-        373,371,1,0,0,0,374,375,1,0,0,0,375,373,1,0,0,0,375,376,1,0,0,0,
-        376,427,1,0,0,0,377,380,10,11,0,0,378,379,5,7,0,0,379,381,3,42,21,
-        0,380,378,1,0,0,0,381,382,1,0,0,0,382,380,1,0,0,0,382,383,1,0,0,
-        0,383,427,1,0,0,0,384,387,10,10,0,0,385,386,5,26,0,0,386,388,3,42,
-        21,0,387,385,1,0,0,0,388,389,1,0,0,0,389,387,1,0,0,0,389,390,1,0,
-        0,0,390,427,1,0,0,0,391,394,10,8,0,0,392,393,5,3,0,0,393,395,3,42,
-        21,0,394,392,1,0,0,0,395,396,1,0,0,0,396,394,1,0,0,0,396,397,1,0,
-        0,0,397,427,1,0,0,0,398,401,10,7,0,0,399,400,5,4,0,0,400,402,3,42,
-        21,0,401,399,1,0,0,0,402,403,1,0,0,0,403,401,1,0,0,0,403,404,1,0,
-        0,0,404,427,1,0,0,0,405,408,10,6,0,0,406,407,5,5,0,0,407,409,3,42,
-        21,0,408,406,1,0,0,0,409,410,1,0,0,0,410,408,1,0,0,0,410,411,1,0,
-        0,0,411,427,1,0,0,0,412,415,10,5,0,0,413,414,5,6,0,0,414,416,3,42,
-        21,0,415,413,1,0,0,0,416,417,1,0,0,0,417,415,1,0,0,0,417,418,1,0,
-        0,0,418,427,1,0,0,0,419,422,10,4,0,0,420,421,5,27,0,0,421,423,3,
-        42,21,0,422,420,1,0,0,0,423,424,1,0,0,0,424,422,1,0,0,0,424,425,
-        1,0,0,0,425,427,1,0,0,0,426,320,1,0,0,0,426,325,1,0,0,0,426,328,
-        1,0,0,0,426,331,1,0,0,0,426,334,1,0,0,0,426,337,1,0,0,0,426,345,
-        1,0,0,0,426,361,1,0,0,0,426,363,1,0,0,0,426,370,1,0,0,0,426,377,
-        1,0,0,0,426,384,1,0,0,0,426,391,1,0,0,0,426,398,1,0,0,0,426,405,
-        1,0,0,0,426,412,1,0,0,0,426,419,1,0,0,0,427,430,1,0,0,0,428,426,
-        1,0,0,0,428,429,1,0,0,0,429,43,1,0,0,0,430,428,1,0,0,0,46,57,63,
-        73,79,82,88,95,102,110,117,126,128,145,155,159,166,169,177,182,189,
-        192,200,207,218,223,229,239,245,250,261,277,307,318,342,356,368,
-        375,382,389,396,403,410,417,424,426,428
+        6,21,-1,0,265,266,5,29,0,0,266,267,5,45,0,0,267,296,3,42,21,30,268,
+        296,5,31,0,0,269,296,5,30,0,0,270,271,5,42,0,0,271,296,5,29,0,0,
+        272,273,5,42,0,0,273,296,3,4,2,0,274,275,5,43,0,0,275,296,3,42,21,
+        25,276,296,5,30,0,0,277,296,5,31,0,0,278,279,5,44,0,0,279,296,3,
+        42,21,22,280,282,5,51,0,0,281,283,3,42,21,0,282,281,1,0,0,0,283,
+        284,1,0,0,0,284,285,1,0,0,0,284,282,1,0,0,0,285,286,1,0,0,0,286,
+        287,5,52,0,0,287,296,1,0,0,0,288,289,5,43,0,0,289,296,3,42,21,20,
+        290,296,5,22,0,0,291,296,5,23,0,0,292,296,5,24,0,0,293,296,5,25,
+        0,0,294,296,5,29,0,0,295,264,1,0,0,0,295,268,1,0,0,0,295,269,1,0,
+        0,0,295,270,1,0,0,0,295,272,1,0,0,0,295,274,1,0,0,0,295,276,1,0,
+        0,0,295,277,1,0,0,0,295,278,1,0,0,0,295,280,1,0,0,0,295,288,1,0,
+        0,0,295,290,1,0,0,0,295,291,1,0,0,0,295,292,1,0,0,0,295,293,1,0,
+        0,0,295,294,1,0,0,0,296,389,1,0,0,0,297,298,10,9,0,0,298,299,5,9,
+        0,0,299,388,3,42,21,10,300,301,10,3,0,0,301,302,5,28,0,0,302,388,
+        3,42,21,4,303,304,10,2,0,0,304,305,5,8,0,0,305,388,3,42,21,3,306,
+        307,10,15,0,0,307,308,5,10,0,0,308,309,3,4,2,0,309,310,5,50,0,0,
+        310,311,5,29,0,0,311,312,5,51,0,0,312,317,3,42,21,0,313,314,5,47,
+        0,0,314,316,3,42,21,0,315,313,1,0,0,0,316,319,1,0,0,0,317,315,1,
+        0,0,0,317,318,1,0,0,0,318,320,1,0,0,0,319,317,1,0,0,0,320,321,5,
+        52,0,0,321,388,1,0,0,0,322,323,10,14,0,0,323,388,5,11,0,0,324,327,
+        10,13,0,0,325,326,5,4,0,0,326,328,3,42,21,0,327,325,1,0,0,0,328,
+        329,1,0,0,0,329,327,1,0,0,0,329,330,1,0,0,0,330,388,1,0,0,0,331,
+        334,10,12,0,0,332,333,5,3,0,0,333,335,3,42,21,0,334,332,1,0,0,0,
+        335,336,1,0,0,0,336,334,1,0,0,0,336,337,1,0,0,0,337,388,1,0,0,0,
+        338,341,10,11,0,0,339,340,5,7,0,0,340,342,3,42,21,0,341,339,1,0,
+        0,0,342,343,1,0,0,0,343,341,1,0,0,0,343,344,1,0,0,0,344,388,1,0,
+        0,0,345,348,10,10,0,0,346,347,5,26,0,0,347,349,3,42,21,0,348,346,
+        1,0,0,0,349,350,1,0,0,0,350,348,1,0,0,0,350,351,1,0,0,0,351,388,
+        1,0,0,0,352,355,10,8,0,0,353,354,5,3,0,0,354,356,3,42,21,0,355,353,
+        1,0,0,0,356,357,1,0,0,0,357,355,1,0,0,0,357,358,1,0,0,0,358,388,
+        1,0,0,0,359,362,10,7,0,0,360,361,5,4,0,0,361,363,3,42,21,0,362,360,
+        1,0,0,0,363,364,1,0,0,0,364,362,1,0,0,0,364,365,1,0,0,0,365,388,
+        1,0,0,0,366,369,10,6,0,0,367,368,5,5,0,0,368,370,3,42,21,0,369,367,
+        1,0,0,0,370,371,1,0,0,0,371,369,1,0,0,0,371,372,1,0,0,0,372,388,
+        1,0,0,0,373,376,10,5,0,0,374,375,5,6,0,0,375,377,3,42,21,0,376,374,
+        1,0,0,0,377,378,1,0,0,0,378,376,1,0,0,0,378,379,1,0,0,0,379,388,
+        1,0,0,0,380,383,10,4,0,0,381,382,5,27,0,0,382,384,3,42,21,0,383,
+        381,1,0,0,0,384,385,1,0,0,0,385,383,1,0,0,0,385,386,1,0,0,0,386,
+        388,1,0,0,0,387,297,1,0,0,0,387,300,1,0,0,0,387,303,1,0,0,0,387,
+        306,1,0,0,0,387,322,1,0,0,0,387,324,1,0,0,0,387,331,1,0,0,0,387,
+        338,1,0,0,0,387,345,1,0,0,0,387,352,1,0,0,0,387,359,1,0,0,0,387,
+        366,1,0,0,0,387,373,1,0,0,0,387,380,1,0,0,0,388,391,1,0,0,0,389,
+        387,1,0,0,0,389,390,1,0,0,0,390,43,1,0,0,0,391,389,1,0,0,0,44,57,
+        63,73,79,82,88,95,102,110,117,126,128,145,155,159,166,169,177,182,
+        189,192,200,207,218,223,229,239,245,250,261,284,295,317,329,336,
+        343,350,357,364,371,378,385,387,389
     ]
 
 class YAPLParser ( Parser ):
@@ -304,7 +288,7 @@ class YAPLParser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.13.0")
+        self.checkVersion("4.13.1")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
@@ -1122,7 +1106,7 @@ class YAPLParser ( Parser ):
             self.state = 128
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215580160) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960839168) != 0):
                 self.state = 126
                 self._errHandler.sync(self)
                 la_ = self._interp.adaptivePredict(self._input,10,self._ctx)
@@ -1297,7 +1281,7 @@ class YAPLParser ( Parser ):
                 self.state = 155
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215014912) != 0):
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960273920) != 0):
                     self.state = 150
                     self.expr(0)
                     self.state = 151
@@ -1452,7 +1436,7 @@ class YAPLParser ( Parser ):
                 self.state = 177
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215580160) != 0):
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960839168) != 0):
                     self.state = 174
                     self.block()
                     self.state = 179
@@ -1472,7 +1456,7 @@ class YAPLParser ( Parser ):
                 self.state = 189
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215580160) != 0):
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960839168) != 0):
                     self.state = 186
                     self.block()
                     self.state = 191
@@ -1539,7 +1523,7 @@ class YAPLParser ( Parser ):
             self.state = 200
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215014912) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960273920) != 0):
                 self.state = 197
                 self.expr(0)
                 self.state = 202
@@ -1551,7 +1535,7 @@ class YAPLParser ( Parser ):
             self.state = 207
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215580160) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960839168) != 0):
                 self.state = 204
                 self.block()
                 self.state = 209
@@ -1738,7 +1722,7 @@ class YAPLParser ( Parser ):
                 self.state = 223
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215014912) != 0):
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960273920) != 0):
                     self.state = 222
                     self.expr(0)
 
@@ -1774,7 +1758,7 @@ class YAPLParser ( Parser ):
                 self.state = 239
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215014912) != 0):
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & 2282589960273920) != 0):
                     self.state = 238
                     self.expr(0)
 
@@ -1946,22 +1930,6 @@ class YAPLParser ( Parser ):
         def STR_CONST(self):
             return self.getToken(YAPLParser.STR_CONST, 0)
 
-        def LPAREN(self):
-            return self.getToken(YAPLParser.LPAREN, 0)
-
-        def RPAREN(self):
-            return self.getToken(YAPLParser.RPAREN, 0)
-
-        def parameter_list(self):
-            return self.getTypedRuleContext(YAPLParser.Parameter_listContext,0)
-
-
-        def LBRACE(self):
-            return self.getToken(YAPLParser.LBRACE, 0)
-
-        def RBRACE(self):
-            return self.getToken(YAPLParser.RBRACE, 0)
-
         def INT_CONST(self):
             return self.getToken(YAPLParser.INT_CONST, 0)
 
@@ -1977,6 +1945,12 @@ class YAPLParser ( Parser ):
 
         def NOT(self):
             return self.getToken(YAPLParser.NOT, 0)
+
+        def LPAREN(self):
+            return self.getToken(YAPLParser.LPAREN, 0)
+
+        def RPAREN(self):
+            return self.getToken(YAPLParser.RPAREN, 0)
 
         def DOT(self):
             return self.getToken(YAPLParser.DOT, 0)
@@ -2010,16 +1984,16 @@ class YAPLParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 318
+            self.state = 295
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,32,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,31,self._ctx)
             if la_ == 1:
                 self.state = 265
                 self.match(YAPLParser.ID)
                 self.state = 266
                 self.match(YAPLParser.ASSIGN)
                 self.state = 267
-                self.expr(39)
+                self.expr(30)
                 pass
 
             elif la_ == 2:
@@ -2029,544 +2003,427 @@ class YAPLParser ( Parser ):
 
             elif la_ == 3:
                 self.state = 269
-                self.match(YAPLParser.ID)
-                self.state = 270
-                self.match(YAPLParser.LPAREN)
-                self.state = 271
-                self.expr(0)
-                self.state = 272
-                self.match(YAPLParser.RPAREN)
+                self.match(YAPLParser.INT_CONST)
                 pass
 
             elif la_ == 4:
-                self.state = 274
+                self.state = 270
+                self.match(YAPLParser.NEW)
+                self.state = 271
                 self.match(YAPLParser.ID)
-                self.state = 275
-                self.match(YAPLParser.LPAREN)
-                self.state = 277
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                if _la==29:
-                    self.state = 276
-                    self.parameter_list()
-
-
-                self.state = 279
-                self.match(YAPLParser.RPAREN)
                 pass
 
             elif la_ == 5:
-                self.state = 280
-                self.match(YAPLParser.LBRACE)
-                self.state = 281
-                self.expr(0)
-                self.state = 282
-                self.match(YAPLParser.RBRACE)
-                pass
-
-            elif la_ == 6:
-                self.state = 284
-                self.match(YAPLParser.STR_CONST)
-                pass
-
-            elif la_ == 7:
-                self.state = 285
-                self.match(YAPLParser.ID)
-                self.state = 286
-                self.match(YAPLParser.LPAREN)
-                self.state = 287
-                self.match(YAPLParser.STR_CONST)
-                self.state = 288
-                self.match(YAPLParser.RPAREN)
-                pass
-
-            elif la_ == 8:
-                self.state = 289
-                self.match(YAPLParser.LPAREN)
-                self.state = 290
-                self.match(YAPLParser.STR_CONST)
-                self.state = 291
-                self.match(YAPLParser.RPAREN)
-                pass
-
-            elif la_ == 9:
-                self.state = 292
-                self.match(YAPLParser.INT_CONST)
-                pass
-
-            elif la_ == 10:
-                self.state = 293
+                self.state = 272
                 self.match(YAPLParser.NEW)
-                self.state = 294
-                self.match(YAPLParser.ID)
-                pass
-
-            elif la_ == 11:
-                self.state = 295
-                self.match(YAPLParser.NEW)
-                self.state = 296
+                self.state = 273
                 self.type_()
                 pass
 
-            elif la_ == 12:
-                self.state = 297
+            elif la_ == 6:
+                self.state = 274
                 self.match(YAPLParser.ISVOID)
-                self.state = 298
-                self.expr(28)
-                pass
-
-            elif la_ == 13:
-                self.state = 299
-                self.match(YAPLParser.INT_CONST)
-                pass
-
-            elif la_ == 14:
-                self.state = 300
-                self.match(YAPLParser.STR_CONST)
-                pass
-
-            elif la_ == 15:
-                self.state = 301
-                self.match(YAPLParser.NOT)
-                self.state = 302
+                self.state = 275
                 self.expr(25)
                 pass
 
-            elif la_ == 16:
-                self.state = 303
+            elif la_ == 7:
+                self.state = 276
+                self.match(YAPLParser.INT_CONST)
+                pass
+
+            elif la_ == 8:
+                self.state = 277
+                self.match(YAPLParser.STR_CONST)
+                pass
+
+            elif la_ == 9:
+                self.state = 278
+                self.match(YAPLParser.NOT)
+                self.state = 279
+                self.expr(22)
+                pass
+
+            elif la_ == 10:
+                self.state = 280
                 self.match(YAPLParser.LPAREN)
-                self.state = 305 
+                self.state = 282 
                 self._errHandler.sync(self)
                 _alt = 1+1
                 while _alt!=1 and _alt!=ATN.INVALID_ALT_NUMBER:
                     if _alt == 1+1:
-                        self.state = 304
+                        self.state = 281
                         self.expr(0)
 
                     else:
                         raise NoViableAltException(self)
-                    self.state = 307 
+                    self.state = 284 
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input,31,self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input,30,self._ctx)
 
-                self.state = 309
+                self.state = 286
                 self.match(YAPLParser.RPAREN)
                 pass
 
-            elif la_ == 17:
-                self.state = 311
+            elif la_ == 11:
+                self.state = 288
                 self.match(YAPLParser.ISVOID)
-                self.state = 312
-                self.expr(23)
+                self.state = 289
+                self.expr(20)
                 pass
 
-            elif la_ == 18:
-                self.state = 313
+            elif la_ == 12:
+                self.state = 290
                 self.match(YAPLParser.T__21)
                 pass
 
-            elif la_ == 19:
-                self.state = 314
+            elif la_ == 13:
+                self.state = 291
                 self.match(YAPLParser.T__22)
                 pass
 
-            elif la_ == 20:
-                self.state = 315
+            elif la_ == 14:
+                self.state = 292
                 self.match(YAPLParser.T__23)
                 pass
 
-            elif la_ == 21:
-                self.state = 316
+            elif la_ == 15:
+                self.state = 293
                 self.match(YAPLParser.T__24)
                 pass
 
-            elif la_ == 22:
-                self.state = 317
+            elif la_ == 16:
+                self.state = 294
                 self.match(YAPLParser.ID)
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 428
+            self.state = 389
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,45,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,43,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 426
+                    self.state = 387
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,44,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,42,self._ctx)
                     if la_ == 1:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 320
-                        if not self.precpred(self._ctx, 16):
+                        self.state = 297
+                        if not self.precpred(self._ctx, 9):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 16)")
-                        self.state = 321
-                        self.match(YAPLParser.DOT)
-                        self.state = 322
-                        self.match(YAPLParser.ID)
-                        self.state = 323
-                        self.match(YAPLParser.ASSIGN)
-                        self.state = 324
-                        self.expr(17)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
+                        self.state = 298
+                        self.match(YAPLParser.T__8)
+                        self.state = 299
+                        self.expr(10)
                         pass
 
                     elif la_ == 2:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 325
-                        if not self.precpred(self._ctx, 9):
+                        self.state = 300
+                        if not self.precpred(self._ctx, 3):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
-                        self.state = 326
-                        self.match(YAPLParser.T__8)
-                        self.state = 327
-                        self.expr(10)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
+                        self.state = 301
+                        self.match(YAPLParser.T__27)
+                        self.state = 302
+                        self.expr(4)
                         pass
 
                     elif la_ == 3:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 328
-                        if not self.precpred(self._ctx, 3):
+                        self.state = 303
+                        if not self.precpred(self._ctx, 2):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
-                        self.state = 329
-                        self.match(YAPLParser.T__27)
-                        self.state = 330
-                        self.expr(4)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
+                        self.state = 304
+                        self.match(YAPLParser.T__7)
+                        self.state = 305
+                        self.expr(3)
                         pass
 
                     elif la_ == 4:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 331
-                        if not self.precpred(self._ctx, 2):
+                        self.state = 306
+                        if not self.precpred(self._ctx, 15):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                        self.state = 332
-                        self.match(YAPLParser.T__7)
-                        self.state = 333
-                        self.expr(3)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 15)")
+                        self.state = 307
+                        self.match(YAPLParser.T__9)
+                        self.state = 308
+                        self.type_()
+                        self.state = 309
+                        self.match(YAPLParser.DOT)
+                        self.state = 310
+                        self.match(YAPLParser.ID)
+                        self.state = 311
+                        self.match(YAPLParser.LPAREN)
+                        self.state = 312
+                        self.expr(0)
+                        self.state = 317
+                        self._errHandler.sync(self)
+                        _la = self._input.LA(1)
+                        while _la==47:
+                            self.state = 313
+                            self.match(YAPLParser.SEMI)
+                            self.state = 314
+                            self.expr(0)
+                            self.state = 319
+                            self._errHandler.sync(self)
+                            _la = self._input.LA(1)
+
+                        self.state = 320
+                        self.match(YAPLParser.RPAREN)
                         pass
 
                     elif la_ == 5:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 334
-                        if not self.precpred(self._ctx, 18):
+                        self.state = 322
+                        if not self.precpred(self._ctx, 14):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 18)")
-                        self.state = 335
-                        self.match(YAPLParser.DOT)
-                        self.state = 336
-                        self.match(YAPLParser.ID)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 14)")
+                        self.state = 323
+                        self.match(YAPLParser.T__10)
                         pass
 
                     elif la_ == 6:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 337
-                        if not self.precpred(self._ctx, 17):
+                        self.state = 324
+                        if not self.precpred(self._ctx, 13):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 17)")
-                        self.state = 338
-                        self.match(YAPLParser.DOT)
-                        self.state = 339
-                        self.match(YAPLParser.ID)
-                        self.state = 340
-                        self.match(YAPLParser.LPAREN)
-                        self.state = 342
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 13)")
+                        self.state = 327 
                         self._errHandler.sync(self)
-                        _la = self._input.LA(1)
-                        if (((_la) & ~0x3f) == 0 and ((1 << _la) & 11289789215014912) != 0):
-                            self.state = 341
-                            self.expr(0)
+                        _alt = 1
+                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                            if _alt == 1:
+                                self.state = 325
+                                self.match(YAPLParser.T__3)
+                                self.state = 326
+                                self.expr(0)
 
+                            else:
+                                raise NoViableAltException(self)
+                            self.state = 329 
+                            self._errHandler.sync(self)
+                            _alt = self._interp.adaptivePredict(self._input,33,self._ctx)
 
-                        self.state = 344
-                        self.match(YAPLParser.RPAREN)
                         pass
 
                     elif la_ == 7:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 345
-                        if not self.precpred(self._ctx, 15):
+                        self.state = 331
+                        if not self.precpred(self._ctx, 12):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 15)")
-                        self.state = 346
-                        self.match(YAPLParser.T__9)
-                        self.state = 347
-                        self.type_()
-                        self.state = 348
-                        self.match(YAPLParser.DOT)
-                        self.state = 349
-                        self.match(YAPLParser.ID)
-                        self.state = 350
-                        self.match(YAPLParser.LPAREN)
-                        self.state = 351
-                        self.expr(0)
-                        self.state = 356
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 12)")
+                        self.state = 334 
                         self._errHandler.sync(self)
-                        _la = self._input.LA(1)
-                        while _la==47:
-                            self.state = 352
-                            self.match(YAPLParser.SEMI)
-                            self.state = 353
-                            self.expr(0)
-                            self.state = 358
-                            self._errHandler.sync(self)
-                            _la = self._input.LA(1)
+                        _alt = 1
+                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                            if _alt == 1:
+                                self.state = 332
+                                self.match(YAPLParser.T__2)
+                                self.state = 333
+                                self.expr(0)
 
-                        self.state = 359
-                        self.match(YAPLParser.RPAREN)
+                            else:
+                                raise NoViableAltException(self)
+                            self.state = 336 
+                            self._errHandler.sync(self)
+                            _alt = self._interp.adaptivePredict(self._input,34,self._ctx)
+
                         pass
 
                     elif la_ == 8:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 361
-                        if not self.precpred(self._ctx, 14):
+                        self.state = 338
+                        if not self.precpred(self._ctx, 11):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 14)")
-                        self.state = 362
-                        self.match(YAPLParser.T__10)
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 11)")
+                        self.state = 341 
+                        self._errHandler.sync(self)
+                        _alt = 1
+                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                            if _alt == 1:
+                                self.state = 339
+                                self.match(YAPLParser.T__6)
+                                self.state = 340
+                                self.expr(0)
+
+                            else:
+                                raise NoViableAltException(self)
+                            self.state = 343 
+                            self._errHandler.sync(self)
+                            _alt = self._interp.adaptivePredict(self._input,35,self._ctx)
+
                         pass
 
                     elif la_ == 9:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 363
-                        if not self.precpred(self._ctx, 13):
+                        self.state = 345
+                        if not self.precpred(self._ctx, 10):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 13)")
-                        self.state = 366 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 10)")
+                        self.state = 348 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 364
-                                self.match(YAPLParser.T__3)
-                                self.state = 365
+                                self.state = 346
+                                self.match(YAPLParser.T__25)
+                                self.state = 347
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 368 
+                            self.state = 350 
                             self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,35,self._ctx)
+                            _alt = self._interp.adaptivePredict(self._input,36,self._ctx)
 
                         pass
 
                     elif la_ == 10:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 370
-                        if not self.precpred(self._ctx, 12):
+                        self.state = 352
+                        if not self.precpred(self._ctx, 8):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 12)")
-                        self.state = 373 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
+                        self.state = 355 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 371
+                                self.state = 353
                                 self.match(YAPLParser.T__2)
-                                self.state = 372
+                                self.state = 354
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 375 
+                            self.state = 357 
                             self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,36,self._ctx)
+                            _alt = self._interp.adaptivePredict(self._input,37,self._ctx)
 
                         pass
 
                     elif la_ == 11:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 377
-                        if not self.precpred(self._ctx, 11):
+                        self.state = 359
+                        if not self.precpred(self._ctx, 7):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 11)")
-                        self.state = 380 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
+                        self.state = 362 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 378
-                                self.match(YAPLParser.T__6)
-                                self.state = 379
+                                self.state = 360
+                                self.match(YAPLParser.T__3)
+                                self.state = 361
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 382 
+                            self.state = 364 
                             self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,37,self._ctx)
+                            _alt = self._interp.adaptivePredict(self._input,38,self._ctx)
 
                         pass
 
                     elif la_ == 12:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 384
-                        if not self.precpred(self._ctx, 10):
+                        self.state = 366
+                        if not self.precpred(self._ctx, 6):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 10)")
-                        self.state = 387 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
+                        self.state = 369 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 385
-                                self.match(YAPLParser.T__25)
-                                self.state = 386
+                                self.state = 367
+                                self.match(YAPLParser.T__4)
+                                self.state = 368
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 389 
+                            self.state = 371 
                             self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,38,self._ctx)
+                            _alt = self._interp.adaptivePredict(self._input,39,self._ctx)
 
                         pass
 
                     elif la_ == 13:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 391
-                        if not self.precpred(self._ctx, 8):
+                        self.state = 373
+                        if not self.precpred(self._ctx, 5):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
-                        self.state = 394 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
+                        self.state = 376 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 392
-                                self.match(YAPLParser.T__2)
-                                self.state = 393
+                                self.state = 374
+                                self.match(YAPLParser.T__5)
+                                self.state = 375
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 396 
+                            self.state = 378 
                             self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,39,self._ctx)
+                            _alt = self._interp.adaptivePredict(self._input,40,self._ctx)
 
                         pass
 
                     elif la_ == 14:
                         localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 398
-                        if not self.precpred(self._ctx, 7):
+                        self.state = 380
+                        if not self.precpred(self._ctx, 4):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
-                        self.state = 401 
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
+                        self.state = 383 
                         self._errHandler.sync(self)
                         _alt = 1
                         while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                             if _alt == 1:
-                                self.state = 399
-                                self.match(YAPLParser.T__3)
-                                self.state = 400
+                                self.state = 381
+                                self.match(YAPLParser.T__26)
+                                self.state = 382
                                 self.expr(0)
 
                             else:
                                 raise NoViableAltException(self)
-                            self.state = 403 
-                            self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,40,self._ctx)
-
-                        pass
-
-                    elif la_ == 15:
-                        localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
-                        self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 405
-                        if not self.precpred(self._ctx, 6):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
-                        self.state = 408 
-                        self._errHandler.sync(self)
-                        _alt = 1
-                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                            if _alt == 1:
-                                self.state = 406
-                                self.match(YAPLParser.T__4)
-                                self.state = 407
-                                self.expr(0)
-
-                            else:
-                                raise NoViableAltException(self)
-                            self.state = 410 
+                            self.state = 385 
                             self._errHandler.sync(self)
                             _alt = self._interp.adaptivePredict(self._input,41,self._ctx)
 
                         pass
 
-                    elif la_ == 16:
-                        localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
-                        self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 412
-                        if not self.precpred(self._ctx, 5):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                        self.state = 415 
-                        self._errHandler.sync(self)
-                        _alt = 1
-                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                            if _alt == 1:
-                                self.state = 413
-                                self.match(YAPLParser.T__5)
-                                self.state = 414
-                                self.expr(0)
-
-                            else:
-                                raise NoViableAltException(self)
-                            self.state = 417 
-                            self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,42,self._ctx)
-
-                        pass
-
-                    elif la_ == 17:
-                        localctx = YAPLParser.ExprContext(self, _parentctx, _parentState)
-                        self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 419
-                        if not self.precpred(self._ctx, 4):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                        self.state = 422 
-                        self._errHandler.sync(self)
-                        _alt = 1
-                        while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                            if _alt == 1:
-                                self.state = 420
-                                self.match(YAPLParser.T__26)
-                                self.state = 421
-                                self.expr(0)
-
-                            else:
-                                raise NoViableAltException(self)
-                            self.state = 424 
-                            self._errHandler.sync(self)
-                            _alt = self._interp.adaptivePredict(self._input,43,self._ctx)
-
-                        pass
-
              
-                self.state = 430
+                self.state = 391
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,45,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,43,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -2590,70 +2447,58 @@ class YAPLParser ( Parser ):
 
     def expr_sempred(self, localctx:ExprContext, predIndex:int):
             if predIndex == 0:
-                return self.precpred(self._ctx, 16)
-         
-
-            if predIndex == 1:
                 return self.precpred(self._ctx, 9)
          
 
-            if predIndex == 2:
+            if predIndex == 1:
                 return self.precpred(self._ctx, 3)
          
 
-            if predIndex == 3:
+            if predIndex == 2:
                 return self.precpred(self._ctx, 2)
          
 
-            if predIndex == 4:
-                return self.precpred(self._ctx, 18)
-         
-
-            if predIndex == 5:
-                return self.precpred(self._ctx, 17)
-         
-
-            if predIndex == 6:
+            if predIndex == 3:
                 return self.precpred(self._ctx, 15)
          
 
-            if predIndex == 7:
+            if predIndex == 4:
                 return self.precpred(self._ctx, 14)
          
 
-            if predIndex == 8:
+            if predIndex == 5:
                 return self.precpred(self._ctx, 13)
          
 
-            if predIndex == 9:
+            if predIndex == 6:
                 return self.precpred(self._ctx, 12)
          
 
-            if predIndex == 10:
+            if predIndex == 7:
                 return self.precpred(self._ctx, 11)
          
 
-            if predIndex == 11:
+            if predIndex == 8:
                 return self.precpred(self._ctx, 10)
          
 
-            if predIndex == 12:
+            if predIndex == 9:
                 return self.precpred(self._ctx, 8)
          
 
-            if predIndex == 13:
+            if predIndex == 10:
                 return self.precpred(self._ctx, 7)
          
 
-            if predIndex == 14:
+            if predIndex == 11:
                 return self.precpred(self._ctx, 6)
          
 
-            if predIndex == 15:
+            if predIndex == 12:
                 return self.precpred(self._ctx, 5)
          
 
-            if predIndex == 16:
+            if predIndex == 13:
                 return self.precpred(self._ctx, 4)
          
 

@@ -7,7 +7,9 @@ class Point {
     b : Bool <- z;
     x <- 100;
 
-    test_comp : Bool <- x < "";
+    test_comp : Bool <- x < y;
+    test_comp <- 5 = 5;
+    test_comp <- x <= y;
 
     //b <- false;
     //x <- true;
@@ -22,7 +24,8 @@ class Point {
         x : Int <- 1024;
         x <- void;
         void_hold : Int <- void;
-        operacion : Int <- x_holder + x; // TODO: Check this
+        operaciao : Int <- 10 + y; // TODO: Check this
+
         comparativa : Bool <- x_holder < x; // TODO: Check this aswell
 
         return 0;
@@ -58,7 +61,6 @@ class Circle {
     calculate() : Int {
         lal : int;
         lal <- 10;
-
         return 0;
     };
 
@@ -103,7 +105,9 @@ class Square inherits Circle {
     punto.init(10, 20);
     punto.calculate(prueba_string, efg);
 
-    pruebard(g: int) : Int {
+    pruebarde(g: int) : Int {
+        abc <- "Halo";
+        pruebarde(10);
         return 0;
     };
 
@@ -113,9 +117,6 @@ class Square inherits Circle {
 
         return 0;
     };
-
-
-
 
 };
 
@@ -134,7 +135,7 @@ class Triangle inherits Square {
         string_test : string <- "Alemania";
         prueba_int : Int;
         prueba_string <- "Adentro de pruebarda";
-        square_obj.pruebard(a);
+        square_obj.pruebarde(10);
         a <- 100000;
 
         out_string("Hola mundo");
@@ -155,10 +156,15 @@ class main {
     main_circle : Circle;
 
     main_circle.init(10, 20);
+    prueba_aritmetica : int;
+
+    numero : Int <- 10;
+    prueba_aritmetica <- prueba_aritmetica-10;
 
     main() : void {
         num_test : int;
         num_test <- 100;
+        prueba_2_arith : Int <- 10+prueba_aritmetica-num_test;
 
         return 0;
     };

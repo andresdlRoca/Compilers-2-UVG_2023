@@ -11,7 +11,7 @@ class Circle {
     };
 
     draw_circle() : void {
-        draw_circle();
+        draw_circle(hola);
         return 0;
     };
 
