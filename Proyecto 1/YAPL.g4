@@ -83,12 +83,13 @@ while_statement:
 	)* 'pool';
 
 block:
-	if_statement
-	| while_statement
-	| let_declaration
-	| var_assign
-	| attribute_definition
-	| expr;
+    if_statement
+    | while_statement
+    | let_declaration
+    | var_assign
+    | attribute_definition
+    | return_statement
+    | expr;
 
 simple_method_definition:
 	ID LPAREN expr? (COMMA expr)* RPAREN SEMI
