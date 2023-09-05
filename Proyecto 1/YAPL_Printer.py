@@ -310,7 +310,7 @@ class YAPLPrinter(YAPLListener):
                     inherited_symbol = self.current_scope.lookup(ctx_id)
                     if inherited_symbol['Type'].lower() == tipo.lower():
                         self.current_scope.delete(ctx_id)
-                        self.global_symbol_table.delete(ctx_id)
+                        # self.global_symbol_table.delete(ctx_id)
                         self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
                         self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
                     else:
@@ -364,7 +364,7 @@ class YAPLPrinter(YAPLListener):
                 inherited_method = self.method_table.lookup(method_id)
                 if inherited_method['Type'].lower() == method_type.lower():
                     self.method_table.delete(method_id)
-                    self.global_method_table.delete(method_id)
+                    # self.global_method_table.delete(method_id)
                     self.method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
                     self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
                 else:

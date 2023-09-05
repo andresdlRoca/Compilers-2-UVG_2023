@@ -101,10 +101,37 @@ class Square inherits Circle {
     punto.init(10, 20);
     punto.calculate(prueba_string, efg);
 
+    pruebarda() : Int {
+        return 0;
+    };
+
+    init(g : int, z : int) : Int {
+        //x <- 10;
+        //y <- 10;
+
+        return 0;
+    };
+
+
+
+
 };
 
 class Triangle inherits Square {
     prueba_string <- "Adios desde triangle";
+    square_obj : Square;
+    square_obj.init(20, 30);
+    //square_obj.pruebarda();
+
+    pruebarda(a: String) : Int {
+
+        pruebarda2() : Int {
+            return 0;
+        };
+
+        return 0;
+    };
+
 };
 
 

@@ -122,11 +122,19 @@ class MethodTable():
     
     def lookup_w_class(self, id, type):
         for method in self._methods:
-            method_scope = method['Scope'].split('->')[1].strip()
+            try:
+                method_scope = method['Scope'].split('->')[1].strip()
+            except:
+                method_scope = 'local'
             if method['ID'] == id and method_scope == type:
                 return method
         
         return 0
+
+    def delete(self, ID):
+        for method in self._methods:
+            if method['ID'] == ID:
+                self._methods.remove(method)        
     
     def totable(self):
         self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Address', 'Position', 'IsInherited']
@@ -162,7 +170,10 @@ class MethodCallTable():
     
     def lookup_w_class(self, variable, class_name):
         for method in self._methods:
-            method_scope = method['Scope'].split('->')[1].strip()
+            try:
+                method_scope = method['Scope'].split('->')[1].strip()
+            except:
+                method_scope = 'local'
             if method['ID'] == variable and method_scope == class_name:
                 return method
         
