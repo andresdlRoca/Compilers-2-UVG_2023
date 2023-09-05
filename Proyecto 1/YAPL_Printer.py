@@ -326,9 +326,8 @@ class YAPLPrinter(YAPLListener):
                                             
 
                         elif "=" in value:
-                            valueOne = value.split("=")[0]
+                            valueOne= value.split("=")[0]
                             valueTwo = value.split("=")[1]
-
                             # Check if they are same type
                             if valueOne.isdigit() and valueTwo.isdigit():
                                 pass
@@ -338,8 +337,8 @@ class YAPLPrinter(YAPLListener):
                                 lookupValueTwo = self.current_scope.lookup(valueTwo)
 
                                 if lookupValueOne == 0 and lookupValueTwo == 0:
-                                    line = ctx.type_().start.line
-                                    col = ctx.type_().start.column
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
                                     self.errors.add(line,col,"Variables asignadas no existen aun o no son valores validos para comparacion: " + valueOne + " " + valueTwo)
                                 else:
                                     if lookupValueOne != 0:
@@ -349,13 +348,12 @@ class YAPLPrinter(YAPLListener):
                                             col = ctx.type_().start.column
                                             self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueOne)
                                             
-                                    if lookupValueTwo != 0:
+                                    elif lookupValueTwo != 0:
                                         # lookupvalue = self.current_scope.lookup(valueTwo)
-                                        if lookupValueTwo['Type'].lower() != lookupValueTwo['Type'].lower():
+                                        if lookupValueTwo['Type'].lower() != lookupValueOne['Type'].lower():
                                             line = ctx.type_().start.line
                                             col = ctx.type_().start.column
                                             self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueTwo)
-                                            
 
                     else:
                         # Check if value is a valid ID
@@ -529,9 +527,135 @@ class YAPLPrinter(YAPLListener):
                             self.current_scope.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
                             self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
 
+    def enterIf_statement(self, ctx: YAPLParser.If_statementContext):
+        self.current_scope_statement.append("local")
+        self.newscope()
 
     def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
-        return super().exitIf_statement(ctx)
+        
+        condition = ctx.expr().getText()
+        # Check if condition is valid
+        if is_valid_boolean_expression(condition):
+            pass
+        else:
+            # Check if its a comparison operation
+            if is_valid_comparison_operation(condition):
+                if "<" in condition and "<=" not in condition and "=" not in condition:
+                    valueOne = condition.split("<")[0]
+                    valueTwo = condition.split("<")[1]
+
+                    if valueOne.isdigit() and valueTwo.isdigit():
+                        pass
+                    else:
+                        # Check if value is a valid ID
+                        if valueOne.isdigit() == False:
+                            if self.current_scope.lookup(valueOne) == 0:
+                                line = ctx.expr().start.line
+                                col = ctx.expr().start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                            else:
+                                lookupvalue = self.current_scope.lookup(valueOne)
+                                if lookupvalue['Type'].lower() != 'int':
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+                                else:
+                                    if lookupvalue == 0:
+                                        line = ctx.expr().start.line
+                                        col = ctx.expr().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o el input es invalido: " + valueOne)
+                                    
+
+                        if valueTwo.isdigit() == False:
+                            if self.current_scope.lookup(valueTwo) == 0:
+                                line = ctx.expr().start.line
+                                col = ctx.expr().start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                            else:
+                                lookupvalue = self.current_scope.lookup(valueTwo)
+                                if lookupvalue['Type'].lower() != 'int':
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+
+                elif "<=" in condition:
+                    valueOne = condition.split("<=")[0]
+                    valueTwo = condition.split("<=")[1]
+
+                    if valueOne.isdigit() and valueTwo.isdigit():
+                        pass
+                    else:
+                        # Check if value is a valid ID
+                        if valueOne.isdigit() == False:
+                            if self.current_scope.lookup(valueOne) == 0:
+                                line = ctx.expr().start.line
+                                col = ctx.expr().start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                            else:
+                                lookupvalue = self.current_scope.lookup(valueOne)
+                                if lookupvalue['Type'].lower() != 'int':
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                        if valueTwo.isdigit() == False:
+                            if self.current_scope.lookup(valueTwo) == 0:
+                                line = ctx.expr().start.line
+                                col = ctx.expr().start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                            else:
+                                lookupvalue = self.current_scope.lookup(valueTwo)
+                                if lookupvalue['Type'].lower() != 'int':
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+                                    
+
+                elif "=" in condition:
+                    valueOne= condition.split("=")[0]
+                    valueTwo = condition.split("=")[1]
+                    # Check if they are same type
+                    if valueOne.isdigit() and valueTwo.isdigit():
+                        pass
+                    else:
+                        # Check if value is a valid ID
+                        lookupValueOne = self.current_scope.lookup(valueOne)
+                        lookupValueTwo = self.current_scope.lookup(valueTwo)
+
+                        if lookupValueOne == 0 and lookupValueTwo == 0:
+                            line = ctx.expr().start.line
+                            col = ctx.expr().start.column
+                            self.errors.add(line,col,"Variables asignadas no existen aun o no son valores validos para comparacion: " + valueOne + " " + valueTwo)
+                        else:
+                            if lookupValueOne != 0:
+                                # lookupvalue = self.current_scope.lookup(valueOne)
+                                if lookupValueOne['Type'].lower() != lookupValueTwo['Type'].lower():
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueOne)
+                                    
+                            elif lookupValueTwo != 0:
+                                # lookupvalue = self.current_scope.lookup(valueTwo)
+                                if lookupValueTwo['Type'].lower() != lookupValueOne['Type'].lower():
+                                    line = ctx.expr().start.line
+                                    col = ctx.expr().start.column
+                                    self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueTwo)
+                                
+            else:
+                if self.current_scope.lookup(condition) == 0:
+                    line = ctx.expr().start.line
+                    col = ctx.expr().start.column
+                    self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para bool: " + condition)
+                else:
+                    lookupvalue = self.current_scope.lookup(condition)
+                    print("Lookupvalue", lookupvalue['Type'].lower())
+                    if lookupvalue['Type'].lower() != 'bool' and lookupvalue['Type'].lower() != 'int':
+                        line = ctx.expr().start.line
+                        col = ctx.expr().start.column
+                        self.errors.add(line,col,"Variable asignada no es tipo bool: " + condition)
+
+        self.popscope()
+        self.current_scope_statement.pop()
     
     def exitWhile_statement(self, ctx: YAPLParser.While_statementContext):
         return super().exitWhile_statement(ctx)
@@ -645,9 +769,8 @@ class YAPLPrinter(YAPLListener):
                                             
 
                         elif "=" in value:
-                            valueOne = value.split("=")[0]
+                            valueOne= value.split("=")[0]
                             valueTwo = value.split("=")[1]
-
                             # Check if they are same type
                             if valueOne.isdigit() and valueTwo.isdigit():
                                 pass
@@ -668,9 +791,9 @@ class YAPLPrinter(YAPLListener):
                                             col = ctx.expr().start.column
                                             self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueOne)
                                             
-                                    if lookupValueTwo != 0:
+                                    elif lookupValueTwo != 0:
                                         # lookupvalue = self.current_scope.lookup(valueTwo)
-                                        if lookupValueTwo['Type'].lower() != lookupValueTwo['Type'].lower():
+                                        if lookupValueTwo['Type'].lower() != lookupValueOne['Type'].lower():
                                             line = ctx.expr().start.line
                                             col = ctx.expr().start.column
                                             self.errors.add(line,col,"Tipo de variable no coincide con la otra: " + valueTwo)
