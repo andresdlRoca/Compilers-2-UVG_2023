@@ -78,7 +78,7 @@ if_statement:
 		'else' (simple_method_definition | block)*
 	)? 'fi' SEMI;
 while_statement:
-	'while' (expr)* 'loop' (
+	'while' expr 'loop' (
 		block | simple_method_definition
 	)* 'pool' SEMI;
 
