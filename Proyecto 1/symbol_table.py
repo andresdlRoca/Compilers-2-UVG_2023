@@ -181,18 +181,18 @@ class MethodCallTable():
 class SemanticError():
     def __init__(self) -> None:
         self._errors = []
-        self.IDENTIFICADOR_DECLARADO_MULTIPLES_VECES = 'El identificador ya fue declarado'
-        self.PARAMETROS_INCORRECTOS_METODO = 'Los parametros del metodo no coinciden'
-        self.TIPO_INCORRECTO = 'El tipo de dato del parametro no coincide'
-        self.EQ_OPS = 'El tipo de datos de operandos no es el mismo para los operadores de igualacion'
-        self.ARITH_OP = 'El tipo de dato de operando debe ser INT para operadores aritméticos.'
-        self.REL_OP = 'El tipo de dato de operando debe ser INT para operadores de relación.'
-        self.COND_OP = 'El tipo de dato en operación condicional debe ser boolean.'
-        self.IF_BOOLEAN = 'El tipo de dato dentro de condición de IF debe ser boolean.'
-        self.WHILE_BOOLEAN = 'El tipo de dato dentro de condición de WHILE debe ser boolean.'
-        self.ASIGNACION = 'La asignación de dos valores deben ser del mismo tipo.'
-        self.RETURN_TYPE = 'El valor de retorno debe de ser del mismo tipo con que fue declarado el método.'
-        self.METHOD_NOT_DECLARED = 'El método no existe o no hay definición del método previamente a ser invocado.'
+        # self.IDENTIFICADOR_DECLARADO_MULTIPLES_VECES = 'El identificador ya fue declarado'
+        # self.PARAMETROS_INCORRECTOS_METODO = 'Los parametros del metodo no coinciden'
+        # self.TIPO_INCORRECTO = 'El tipo de dato del parametro no coincide'
+        # self.EQ_OPS = 'El tipo de datos de operandos no es el mismo para los operadores de igualacion'
+        # self.ARITH_OP = 'El tipo de dato de operando debe ser INT para operadores aritméticos.'
+        # self.REL_OP = 'El tipo de dato de operando debe ser INT para operadores de relación.'
+        # self.COND_OP = 'El tipo de dato en operación condicional debe ser boolean.'
+        # self.IF_BOOLEAN = 'El tipo de dato dentro de condición de IF debe ser boolean.'
+        # self.WHILE_BOOLEAN = 'El tipo de dato dentro de condición de WHILE debe ser boolean.'
+        # self.ASIGNACION = 'La asignación de dos valores deben ser del mismo tipo.'
+        # self.RETURN_TYPE = 'El valor de retorno debe de ser del mismo tipo con que fue declarado el método.'
+        # self.METHOD_NOT_DECLARED = 'El método no existe o no hay definición del método previamente a ser invocado.'
 
     
     def add(self, line, col, msg):

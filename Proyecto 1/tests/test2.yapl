@@ -28,7 +28,7 @@ class Point {
 
 
 
-    calculate() : Int {
+    calculate(alo : string, adio : bool) : Int {
 
         return 0;
     };
@@ -60,13 +60,13 @@ class Circle {
         return 0;
     };
 
-    round() : Int {
-        operation : Int <- 10+10+20+20+30;
+    round(doubleg : Point) : Int {
+        operation : Int <- 10+10+20-20*30;
         return 0;
     };
 
     getSize() : Int {
-
+        //comp : String <- 10-10;
         return 0;
     };
 
@@ -82,18 +82,22 @@ class Square inherits Circle {
     prueba_string : string <- "Halo";
     efg : Bool;
     circulo : Circle;
+    la_redonda : Circle;
     punto : Point;
     abc_length : int;
+
+    circulo <- la_redonda;
     
 
     abc <- prueba_string;
     abc.length();
 
-
+    //self: string;
     circulo.init(10, 20);
     circulo.calculate();
+    circulo.round(punto);
     punto.init(10, 20);
-    punto.calculate();
+    punto.calculate(prueba_string, efg);
 
 };
 

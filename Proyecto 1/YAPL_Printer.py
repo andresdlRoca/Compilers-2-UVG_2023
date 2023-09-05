@@ -107,6 +107,7 @@ class YAPLPrinter(YAPLListener):
         self.root = ctx
         self.current_scope = SymbolTable()
         self.current_scope_statement = "global"
+        
     
     def enterClas_list(self, ctx: YAPLParser.Clas_listContext):
         line = ctx.type_()[0].start.line
@@ -199,7 +200,7 @@ class YAPLPrinter(YAPLListener):
                     if self.current_scope.lookup(value) == 0:
                         line = ctx.type_().start.line
                         col = ctx.type_().start.column
-                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                        self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido para string: " + value)
                     else:
                         lookupvalue = self.current_scope.lookup(value)
                         if lookupvalue['Type'].lower() != 'string':
@@ -245,7 +246,7 @@ class YAPLPrinter(YAPLListener):
                         if self.current_scope.lookup(value) == 0:
                             line = ctx.type_().start.line
                             col = ctx.type_().start.column
-                            self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                            self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para bool: " + value)
                         else:
                             lookupvalue = self.current_scope.lookup(value)
                             if lookupvalue['Type'].lower() != 'bool':
@@ -288,6 +289,18 @@ class YAPLPrinter(YAPLListener):
 
         if ctx.ID() is not None:
             ctx_id = ctx.ID().getText()
+
+            if ctx_id == 'self':
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line, col, "Variable no puede llamarse self: " + ctx_id)
+            
+            # Check if variable is a default data type
+            if ctx_id.lower() in self.default_data_types:
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line, col, "Variable no puede llamarse igual que un tipo basico: " + ctx_id)
+
             if self.current_scope.lookup(ctx_id) == 0:
                 # Allow only simple inheritance
                 self.current_scope.add(tipo, ctx_id, self.current_scope_statement, value, position, address, False, False)
@@ -346,6 +359,8 @@ class YAPLPrinter(YAPLListener):
             formal_list = parameter_list.formal() # Parametros
             for formal in formal_list:
                 parameters.append(formal.getText())
+                # Add parameter to local method table
+
 
         if self.method_table.lookup(method_id) == 0:
             self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
@@ -371,7 +386,7 @@ class YAPLPrinter(YAPLListener):
         self.current_scope_statement = "local"
 
         self.newscope()
-    
+
     def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
         return super().exitIf_statement(ctx)
     
@@ -408,8 +423,8 @@ class YAPLPrinter(YAPLListener):
             variable_type = self.current_scope.lookup(ctx.ID().getText())['Type']
             value = ctx.expr().getText()
 
-            start_with_quote = value.startswith("'") or value.startswith('"')
-            end_with_quote = value.endswith("'") or value.endswith('"')
+            start_with_quote = value.startswith('"')
+            end_with_quote = value.endswith('"')
             lookupvalue = self.current_scope.lookup(value)
 
             # Check if assignment is boolean
@@ -467,7 +482,7 @@ class YAPLPrinter(YAPLListener):
                     if self.current_scope.lookup(value) == 0:
                         line = ctx.expr().start.line
                         col = ctx.expr().start.column
-                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                        self.errors.add(line,col,"Variable asignada no definida o valor invalido para tipo string: " + value)
                     else:
                         lookupvalue = self.current_scope.lookup(value)
                         if lookupvalue['Type'].lower() != 'string':
@@ -526,13 +541,13 @@ class YAPLPrinter(YAPLListener):
                     if self.current_scope.lookup(value) == 0:
                         line = ctx.expr().start.line
                         col = ctx.expr().start.column
-                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                        self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + value)
                     else:
                         lookupvalue = self.current_scope.lookup(value)
                         if lookupvalue['Type'].lower() != variable_type.lower():
                             line = ctx.expr().start.line
                             col = ctx.expr().start.column
-                            self.errors.add(line,col,"Variable asignada no es de tipo: " + variable_type + " " + value)
+                            self.errors.add(line,col,"Variable asignada no es de tipo: " + variable_type + " :" + value)
                         else:
                             if self.current_scope_statement == "local" and lookupvalue!=0:
                                 self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
@@ -581,9 +596,15 @@ class YAPLPrinter(YAPLListener):
         parameter_list = ctx.expr()
         for parameter in parameter_list:
             parameters.append(parameter.getText())
-
+        
         # Check if number of parameters is the same
         method = self.global_method_table.lookup_w_class(function_call_id, variable_type)
+        # Get types of method's parameters
+        parameters_type = []
+        if method != 0:
+            for parameter in method['Parameters']:
+                parameters_type.append(parameter.split(":")[1])
+        
         default_method = self.default_methods.lookup(function_call_id)
         if method != 0:
             if len(method['Parameters']) != len(parameters):
@@ -591,6 +612,73 @@ class YAPLPrinter(YAPLListener):
                 line = ctx.start.line
                 col = ctx.start.column
                 self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + variable_name + '.' + function_call_id + '()')
+            else: # Check if parameter types are the same
+                count = 0 # Counter for the parameters in the method call
+                for param_type in parameters_type:
+                    if param_type == self.STRING:
+                        # Check if parameter is a string
+                        if parameters[count].startswith('"') and parameters[count].endswith('"'):
+                            pass # Valid string literal
+                        else:
+                            # Check if parameter is a valid ID
+                            if self.current_scope.lookup(parameters[count]) == 0:
+                                line = ctx.start.line
+                                col = ctx.start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                            else:
+                                lookupvalue = self.current_scope.lookup(parameters[count])
+                                if lookupvalue['Type'].lower() != 'string':
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no es de tipo string: " + parameters[count])
+                    elif param_type == self.INT:
+                        # Check if parameter is a digit
+                        if parameters[count].isdigit():
+                            pass # Valid digit
+                        else:
+                            # Check if parameter is a valid ID
+                            if self.current_scope.lookup(parameters[count]) == 0:
+                                line = ctx.start.line
+                                col = ctx.start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                            else:
+                                lookupvalue = self.current_scope.lookup(parameters[count])
+                                if lookupvalue['Type'].lower() != 'int':
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no es de tipo int: " + parameters[count])
+                    elif param_type == self.BOOL:
+                        # Check if parameter is a boolean
+                        if parameters[count] == 'true' or parameters[count] == 'false':
+                            pass
+                        else:
+                            # Check if parameter is a valid ID
+                            if self.current_scope.lookup(parameters[count]) == 0:
+                                line = ctx.start.line
+                                col = ctx.start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                            else:
+                                lookupvalue = self.current_scope.lookup(parameters[count])
+                                if lookupvalue['Type'].lower() != 'bool':
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no es de tipo bool: " + parameters[count])
+                    else: # Cuando el tipo no es basico
+                        # Check if parameter is a valid ID
+                        if self.current_scope.lookup(parameters[count]) == 0:
+                            line = ctx.start.line
+                            col = ctx.start.column
+                            self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                        else:
+                            lookupvalue = self.current_scope.lookup(parameters[count])
+                            if lookupvalue['Type'].lower() != param_type.lower():
+                                line = ctx.start.line
+                                col = ctx.start.column
+                                self.errors.add(line,col,"Variable asignada no es de tipo: " + param_type + " :" + parameters[count])
+
+                    count += 1
+                    
+
         else:
             if default_method != 0:
                 if len(default_method['Parameters']) != len(parameters):
