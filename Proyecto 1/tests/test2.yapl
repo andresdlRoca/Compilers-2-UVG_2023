@@ -18,6 +18,10 @@ class Point {
         x_holder : Int <- x;
         Max : String <- a;
         x : Int <- 1024;
+        x <- void;
+        void_hold : Int <- void;
+        operacion : Int <- x_holder + x; // TODO: Check this
+        comparativa : Bool <- x_holder < x; // TODO: Check this aswell
 
         return 0;
     };
@@ -57,7 +61,7 @@ class Circle {
     };
 
     round() : Int {
-        
+        operation : Int <- 10+10+20+20+30;
         return 0;
     };
 

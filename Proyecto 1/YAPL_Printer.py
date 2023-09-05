@@ -4,6 +4,7 @@ from itertools import groupby
 from antlr4.tree.Trees import TerminalNode
 from antlr4.error.ErrorListener import ErrorListener
 from symbol_table import *
+import re
 
 class YAPLPrinter(YAPLListener):
     def __init__(self) -> None:
@@ -186,7 +187,7 @@ class YAPLPrinter(YAPLListener):
                 if symbol['Scope'] == self.current_scope_class:
                     self.current_scope._symbols.append(symbol)
 
-        if value is not None: # Si hay valor convertir a tipo de dato esperado
+        if value is not None and value != self.VOID: # Si hay valor convertir a tipo de dato esperado
             if tipo.lower() == self.basic_data_type['string']:
                 # Check if value is a string with regex
                 if value.startswith("'") and value.endswith("'"):
@@ -237,17 +238,20 @@ class YAPLPrinter(YAPLListener):
                 if is_valid_boolean_expression(value):
                     value = bool(value)
                 else:
-                    # Check if value is a valid ID
-                    if self.current_scope.lookup(value) == 0:
-                        line = ctx.type_().start.line
-                        col = ctx.type_().start.column
-                        self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                    if is_valid_comparison_operation(value):
+                        pass
                     else:
-                        lookupvalue = self.current_scope.lookup(value)
-                        if lookupvalue['Type'].lower() != 'bool':
+                        # Check if value is a valid ID
+                        if self.current_scope.lookup(value) == 0:
                             line = ctx.type_().start.line
                             col = ctx.type_().start.column
-                            self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)
+                            self.errors.add(line,col,"Variable asignada no existe aun: " + value)
+                        else:
+                            lookupvalue = self.current_scope.lookup(value)
+                            if lookupvalue['Type'].lower() != 'bool':
+                                line = ctx.type_().start.line
+                                col = ctx.type_().start.column
+                                self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)
             else:
                 # Check if value is a valid ID
                 if self.current_scope.lookup(value) == 0:
@@ -450,6 +454,13 @@ class YAPLPrinter(YAPLListener):
                         self.current_scope.update(ctx.ID().getText(), value)
                         self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
             # Check if assigned variable is valid
+            elif value == self.VOID:
+                if self.current_scope_statement == "local" and lookupvalue!=0:
+                    self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                    self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement, value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
+                else:
+                    self.current_scope.update(ctx.ID().getText(), value)
+                    self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement)
             else:
                 # Check for string
                 if variable_type.lower() == self.STRING.lower():
@@ -725,11 +736,17 @@ class YAPLPrinter(YAPLListener):
             print(self.errors.GetErrores())
 
 
-def is_valid_arithmethic_expression(expression): # Receives string
-    try:
-        result = eval(expression)
+def is_valid_arithmethic_expression(input_str): # Receives string
+    # Define a regular expression pattern to match valid arithmetic operations
+    pattern = r'^\s*((\d+|\w+)\s*([-+*/])\s*(\d+|\w+))*\s*$'
+
+    # Use re.match to check if the input string matches the pattern
+    match = re.match(pattern, input_str)
+
+    # If there's a match and it covers the entire string, it's a valid arithmetic operation
+    if match and match.group(0) == input_str:
         return True
-    except:
+    else:
         return False
 
 def is_valid_boolean_expression(expression):
@@ -738,8 +755,15 @@ def is_valid_boolean_expression(expression):
     else:
         return False
 
-def is_comparation_expression(expression):
-    if '<' in expression or '<=' in expression or '=' in expression:
+def is_valid_comparison_operation(input_str):
+    # Define a regular expression pattern to match valid comparison operations
+    pattern = r'^\s*(\w+)\s*(<|<=|=)\s*(\w+)\s*$'
+
+    # Use re.match to check if the input string matches the pattern
+    match = re.match(pattern, input_str)
+
+    # If there's a match and it covers the entire string, it's a valid comparison operation
+    if match and match.group(0) == input_str:
         return True
     else:
         return False
