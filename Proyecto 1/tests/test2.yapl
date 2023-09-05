@@ -7,6 +7,8 @@ class Point {
     b : Bool <- z;
     x <- 100;
 
+    test_comp : Bool <- x < "";
+
     //b <- false;
     //x <- true;
     //y <- "hola";
@@ -101,7 +103,7 @@ class Square inherits Circle {
     punto.init(10, 20);
     punto.calculate(prueba_string, efg);
 
-    pruebarda(g: int) : Int {
+    pruebard(g: int) : Int {
         return 0;
     };
 
@@ -132,9 +134,10 @@ class Triangle inherits Square {
         string_test : string <- "Alemania";
         prueba_int : Int;
         prueba_string <- "Adentro de pruebarda";
-        square_obj.pruebarda(a);
+        square_obj.pruebard(a);
         a <- 100000;
 
+        out_string("Hola mundo");
 
         pruebarda2() : Int {
             return 0;

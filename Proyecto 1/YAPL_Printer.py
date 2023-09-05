@@ -240,7 +240,104 @@ class YAPLPrinter(YAPLListener):
                     value = bool(value)
                 else:
                     if is_valid_comparison_operation(value):
-                        pass
+                        
+                        if "<" in value:
+                            valueOne = value.split("<")[0]
+                            valueTwo = value.split("<")[1]
+
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                if valueOne.isdigit() == False:
+                                    if self.current_scope.lookup(valueOne) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                                if valueTwo.isdigit() == False:
+                                    if self.current_scope.lookup(valueTwo) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+
+                        elif "<=" in value:
+                            valueOne = value.split("<=")[0]
+                            valueTwo = value.split("<=")[1]
+
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                if valueOne.isdigit() == False:
+                                    if self.current_scope.lookup(valueOne) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                                if valueTwo.isdigit() == False:
+                                    if self.current_scope.lookup(valueTwo) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+
+                        elif "=" in value:
+                            valueOne = value.split("=")[0]
+                            valueTwo = value.split("=")[1]
+
+                            # Check if they are same type
+                            if valueOne.isdigit() and valueTwo.isdigit():
+                                pass
+                            else:
+                                # Check if value is a valid ID
+                                if valueOne.isdigit() == False:
+                                    if self.current_scope.lookup(valueOne) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueOne)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueOne)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueOne)
+
+                                if valueTwo.isdigit() == False:
+                                    if self.current_scope.lookup(valueTwo) == 0:
+                                        line = ctx.type_().start.line
+                                        col = ctx.type_().start.column
+                                        self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para comparacion: " + valueTwo)
+                                    else:
+                                        lookupvalue = self.current_scope.lookup(valueTwo)
+                                        if lookupvalue['Type'].lower() != 'int':
+                                            line = ctx.type_().start.line
+                                            col = ctx.type_().start.column
+                                            self.errors.add(line,col,"Variable asignada no es tipo int: " + valueTwo)
+
                     else:
                         # Check if value is a valid ID
                         if self.current_scope.lookup(value) == 0:
@@ -827,7 +924,8 @@ class YAPLPrinter(YAPLListener):
                         self.errors.add(line,col,"Metodo no existe: " + variable_name + '.' + function_call_id + '()')
             else:
                 method = self.global_method_table.lookup(function_call_id)
-                if method == 0:
+                default_methods = self.default_methods.lookup(function_call_id)
+                if method == 0 and default_methods == 0:
                     line = ctx.start.line
                     col = ctx.start.column
                     self.errors.add(line,col,"Metodo no existe: " + function_call_id + '()')
