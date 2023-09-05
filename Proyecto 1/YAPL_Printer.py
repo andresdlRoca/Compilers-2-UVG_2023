@@ -511,54 +511,6 @@ class YAPLPrinter(YAPLListener):
                             self.current_scope.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
                             self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
 
-        self.check_return_type(ctx)
-
-    def analyze_expression_type(self, expr_ctx):
-        if not expr_ctx:
-            return None
-
-        # Check for integer literals
-        if expr_ctx.INT_LITERAL():
-            return 'Int'
-
-        # Check for string literals
-        if expr_ctx.STRING_LITERAL():
-            return 'String'
-
-        # Check for boolean literals
-        if expr_ctx.BOOL_LITERAL():
-            return 'Bool'
-
-    def check_return_type(self, ctx: YAPLParser.Method_definitionContext):
-        method_id = ctx.ID().getText()
-
-        # Extracting method's declared return type
-        method_type = None
-        if ctx.type_():
-            method_type = ctx.type_().getText()
-
-        # If method type is not declared, add an error and exit
-        if not method_type:
-            self.errors.add(ctx.start.line, ctx.start.column, "Method {} lacks a declared return type.".format(method_id))
-            return
-
-        # Traversing through the method's body to check return statements
-        method_body = ctx.block()
-        
-        if method_body:
-            # Traverse the children of method_body
-            for child in method_body:
-                # Check if the child is a return_statement
-                if isinstance(child, YAPLParser.Return_statementContext):
-                    returned_expr = child.expr()
-                    returned_type = self.analyze_expression_type(returned_expr)
-                    
-                    # If the returned type does not match the declared method type, add an error
-                    if returned_type != method_type:
-                        line = child.start.line
-                        col = child.start.column
-                        self.errors.add(line, col, "Method {} has a return type mismatch. Expected: {}, but got: {}.".format(method_id, method_type, returned_type))
-
 
     def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
         return super().exitIf_statement(ctx)

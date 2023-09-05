@@ -1598,9 +1598,6 @@ class YAPLParser ( Parser ):
 
         def expr(self):
             return self.getTypedRuleContext(YAPLParser.ExprContext,0)
-        
-        def return_statement(self):  # The added method
-            return self.getTypedRuleContext(YAPLParser.Return_statementContext,0)
 
 
         def getRuleIndex(self):
