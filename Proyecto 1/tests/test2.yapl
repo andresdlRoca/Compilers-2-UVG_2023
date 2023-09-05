@@ -91,6 +91,8 @@ class Square inherits Circle {
 
     abc <- prueba_string;
     abc.length();
+    abc.concat(abc);
+
 
     //self: string;
     circulo.init(10, 20);

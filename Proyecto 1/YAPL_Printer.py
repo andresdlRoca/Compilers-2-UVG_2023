@@ -708,11 +708,82 @@ class YAPLPrinter(YAPLListener):
                     
 
         else:
+
+            parameters_type = []
+            if default_method != 0:
+                for parameter in default_method['Parameters']:
+                    parameters_type.append(parameter.split(":")[1])
+
             if default_method != 0:
                 if len(default_method['Parameters']) != len(parameters):
                     line = ctx.start.line
                     col = ctx.start.column
                     self.errors.add(line,col,"Numero de parametros no coincide con la declaracion: " + variable_name + '.' + function_call_id + '()')
+                else: # Check if parameter types are the same
+                    count = 0 # Counter for the parameters in the method call
+                    for param_type in parameters_type:
+                        if param_type == self.STRING:
+                            # Check if parameter is a string
+                            if parameters[count].startswith('"') and parameters[count].endswith('"'):
+                                pass
+                            else:
+                                # Check if parameter is a valid ID
+                                if self.current_scope.lookup(parameters[count]) == 0:
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                                else:
+                                    lookupvalue = self.current_scope.lookup(parameters[count])
+                                    if lookupvalue['Type'].lower() != 'string':
+                                        line = ctx.start.line
+                                        col = ctx.start.column
+                                        self.errors.add(line,col,"Variable asignada no es de tipo string: " + parameters[count])
+                        elif param_type == self.INT:
+                            # Check if parameter is a digit
+                            if parameters[count].isdigit():
+                                pass
+                            else:
+                                # Check if parameter is a valid ID
+                                if self.current_scope.lookup(parameters[count]) == 0:
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                                else:
+                                    lookupvalue = self.current_scope.lookup(parameters[count])
+                                    if lookupvalue['Type'].lower() != 'int':
+                                        line = ctx.start.line
+                                        col = ctx.start.column
+                                        self.errors.add(line,col,"Variable asignada no es de tipo int: " + parameters[count])
+                        elif param_type == self.BOOL:
+                            # Check if parameter is a boolean
+                            if parameters[count] == 'true' or parameters[count] == 'false':
+                                pass
+                            else:
+                                # Check if parameter is a valid ID
+                                if self.current_scope.lookup(parameters[count]) == 0:
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                                else:
+                                    lookupvalue = self.current_scope.lookup(parameters[count])
+                                    if lookupvalue['Type'].lower() != 'bool':
+                                        line = ctx.start.line
+                                        col = ctx.start.column
+                                        self.errors.add(line,col,"Variable asignada no es de tipo bool: " + parameters[count])
+                        else: # Cuando el tipo no es basico
+                            # Check if parameter is a valid ID
+                            if self.current_scope.lookup(parameters[count]) == 0:
+                                line = ctx.start.line
+                                col = ctx.start.column
+                                self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + parameters[count])
+                            else:
+                                lookupvalue = self.current_scope.lookup(parameters[count])
+                                if lookupvalue['Type'].lower() != param_type.lower():
+                                    line = ctx.start.line
+                                    col = ctx.start.column
+                                    self.errors.add(line,col,"Variable asignada no es de tipo: " + param_type + " :" + parameters[count])
+
+                        count += 1
 
         # Check if method has already called init()
         if function_call_id == 'init':
