@@ -7,9 +7,9 @@ class Point {
     b : Bool <- z;
     x <- 100;
 
-    test_comp : Bool <- x = y;
+    test_comp : Bool <- 5 = y;
     test_comp2 : Bool <- x < y;
-    test_comp <- x <= y;
+    test_comp <- 5 = 5;
 
     //b <- false;
     //x <- true;
@@ -59,15 +59,16 @@ class Circle {
         //y <- 10;
         self_obj : SELF_TYPE;
 
-        if x < 10 then
+        if x = 10 then
             out_int(50);
+            x : Int <- 10;
         else
             out_int(0);
         fi;
 
-        while booleo = true  loop // TODO: Error de tipos
+        while booleo = true  loop
             out_int(10);
-            x <- x + 1;
+            x <- x + 10;
         pool;
 
         return self_obj;
