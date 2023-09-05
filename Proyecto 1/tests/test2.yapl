@@ -59,13 +59,13 @@ class Circle {
         //y <- 10;
         self_obj : SELF_TYPE;
 
-        if booleo then
+        if x < 10 then
             out_int(50);
         else
             out_int(0);
         fi;
 
-        while x < y loop // TODO: Error de tipos
+        while booleo = true  loop // TODO: Error de tipos
             out_int(10);
             x <- x + 1;
         pool;
