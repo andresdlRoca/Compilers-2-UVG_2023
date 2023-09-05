@@ -354,13 +354,6 @@ class YAPLPrinter(YAPLListener):
         else:
             position = "Linea: " + str(ctx.parameter_list().start.line) + " Columna: " + str(ctx.parameter_list().start.column)
 
-        parameter_list = ctx.parameter_list()
-        if parameter_list is not None: # Si hay parametros
-            formal_list = parameter_list.formal() # Parametros
-            for formal in formal_list:
-                parameters.append(formal.getText())
-                # Add parameter to local method table
-
 
         if self.method_table.lookup(method_id) == 0:
             self.global_method_table.add(method_type, method_id, parameters, self.current_scope_statement, address, position)
@@ -386,6 +379,41 @@ class YAPLPrinter(YAPLListener):
         self.current_scope_statement = "local"
 
         self.newscope()
+
+        parameter_list = ctx.parameter_list()
+        if parameter_list is not None: # Si hay parametros
+            formal_list = parameter_list.formal() # Parametros
+            for formal in formal_list:
+                formal_ctx = formal.getText()
+                formal_name = formal_ctx.split(":")[0]
+                formal_type = formal_ctx.split(":")[1]
+                # Check that parameter name is not self or a default data type
+                if formal_name == 'self':
+                    line = ctx.parameter_list().start.line
+                    col = ctx.parameter_list().start.column
+                    self.errors.add(line, col, "Parametro no puede llamarse self: " + formal.ID().getText())
+                elif formal_name.lower() in self.default_data_types:
+                    line = ctx.parameter_list().start.line
+                    col = ctx.parameter_list().start.column
+                    self.errors.add(line, col, "Parametro no puede llamarse igual que un tipo basico: " + formal.ID().getText())
+                else:
+                    # Check if parameter type is a default data type
+                    if formal_type.lower() in self.default_data_types:
+                        parameters.append(formal.getText())
+                        self.current_scope.add(formal_type, formal_name, self.current_scope_statement, None, position, address, True, False)
+                        self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement, None, position, address, True, False)
+                    else:
+                        # Check if parameter type is a valid class
+                        if self.class_table.lookup(formal_type) == 0:
+                            line = ctx.parameter_list().start.line
+                            col = ctx.parameter_list().start.column
+                            self.errors.add(line, col, "Tipo especificado de parametro no existe: " + formal_type)
+                        else:
+                            parameters.append(formal.getText())
+                            # Add parameter to local and global symbol table
+                            self.current_scope.add(formal_type, formal_name, self.current_scope_statement, None, position, address, True, False)
+                            self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement, None, position, address, True, False)
+
 
     def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
         return super().exitIf_statement(ctx)
