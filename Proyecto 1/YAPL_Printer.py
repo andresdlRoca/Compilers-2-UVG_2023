@@ -52,6 +52,9 @@ class YAPLPrinter(YAPLListener):
         self.default_methods.add('string', 'substr', ['i:int', 'l:int'], 'global -> string', hex(id(self)), 'Linea: 0 Columna: 0')
 
 
+        # Saves current return values
+        self.current_return_values = []
+
         self.scopes = []
         self.current_scope = None
         self.current_scope_statement = []
@@ -828,7 +831,88 @@ class YAPLPrinter(YAPLListener):
                                 self.current_scope.update(ctx.ID().getText(), value)
                                 self.global_symbol_table.update_global(ctx.ID().getText(), value, self.current_scope_statement[-1])
 
+
+    def exitReturn_statement(self, ctx: YAPLParser.Return_statementContext):
+        self.current_return_values.append(ctx.expr())
+
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
+
+        type = ctx.type_().getText()
+        return_expr_ctx = self.current_return_values.pop()
+        print("Return-value", return_expr_ctx.getText())
+        return_value = return_expr_ctx.getText()
+
+        if type.lower() == self.VOID.lower():
+            if return_value.lower() != self.VOID.lower():
+                line = return_expr_ctx.start.line
+                col = return_expr_ctx.start.column
+                self.errors.add(line,col,"Metodo tipo void no puede retornar un valor: " + return_value)
+        elif type.lower() == self.STRING.lower():
+            if return_value.startswith('"') and return_value.endswith('"'):
+                pass
+            else:
+                # Check if return value is a valid ID
+                if self.current_scope.lookup(return_value) == 0:
+                    line = return_expr_ctx.start.line
+                    col = return_expr_ctx.start.column
+                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + return_value)
+                else:
+                    lookupvalue = self.current_scope.lookup(return_value)
+                    if lookupvalue['Type'].lower() != 'string':
+                        line = return_expr_ctx.start.line
+                        col = return_expr_ctx.start.column
+                        self.errors.add(line,col,"Variable asignada no es de tipo string: " + return_value)
+        elif type.lower() == self.INT.lower():
+            if return_value.isdigit():
+                pass
+            else:
+                # Check if return value is a valid ID
+                if self.current_scope.lookup(return_value) == 0:
+                    line = return_expr_ctx.start.line
+                    col = return_expr_ctx.start.column
+                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + return_value)
+                else:
+                    lookupvalue = self.current_scope.lookup(return_value)
+                    if lookupvalue['Type'].lower() != 'int':
+                        line = return_expr_ctx.start.line
+                        col = return_expr_ctx.start.column
+                        self.errors.add(line,col,"Variable asignada no es de tipo int: " + return_value)
+        elif type.lower() == self.BOOL.lower():
+            if return_value == 'true' or return_value == 'false':
+                pass    
+            else:
+                # Check if return value is a valid ID
+                if self.current_scope.lookup(return_value) == 0:
+                    line = return_expr_ctx.start.line
+                    col = return_expr_ctx.start.column
+                    self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + return_value)
+                else:
+                    lookupvalue = self.current_scope.lookup(return_value)
+                    if lookupvalue['Type'].lower() != 'bool':
+                        line = return_expr_ctx.start.line
+                        col = return_expr_ctx.start.column
+                        self.errors.add(line,col,"Variable asignada no es de tipo bool: " + return_value)
+        else: # Check if type is a valid class
+            if self.class_table.lookup(type) == 0 and type.lower() != self.IO.lower() and type.lower() != "self_type":
+                line = ctx.type_().start.line
+                col = ctx.type_().start.column
+                self.errors.add(line,col,"Tipo especificado no existe: " + type)
+            else:
+                if return_value.lower() == self.VOID.lower():
+                    pass
+                else:
+                    # Check if return value is a valid ID
+                    if self.current_scope.lookup(return_value) == 0:
+                        line = return_expr_ctx.start.line
+                        col = return_expr_ctx.start.column
+                        self.errors.add(line,col,"Variable asignada no existe aun o no es un input valido: " + return_value)
+                    else:
+                        lookupvalue = self.current_scope.lookup(return_value)
+                        if lookupvalue['Type'].lower() != type.lower():
+                            line = return_expr_ctx.start.line
+                            col = return_expr_ctx.start.column
+                            self.errors.add(line,col,"Variable asignada no es de tipo: " + type + " :" + return_value)
+
         self.popscope()
         self.current_scope_statement.pop()
     

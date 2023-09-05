@@ -24,11 +24,11 @@ class Point {
         x : Int <- 1024;
         x <- void;
         void_hold : Int <- void;
-        operaciao : Int <- 10 + y; // TODO: Check this
+        operaciao : Int <- 10 + y;
 
-        comparativa : Bool <- x_holder < x; // TODO: Check this aswell
+        comparativa : Bool <- x_holder < x;
 
-        return 0;
+        return void;
     };
 
 
@@ -50,12 +50,14 @@ class Circle {
 
     xander : Int;
     y : Int;
+    stringo : String;
 
     init(g : int, z : int) : SELF_TYPE {
         //x <- 10;
         //y <- 10;
+        self_obj : SELF_TYPE;
 
-        return 0;
+        return self_obj;
     };
 
     calculate() : Int {
@@ -69,9 +71,9 @@ class Circle {
         return 0;
     };
 
-    getSize() : Int {
-        //comp : String <- 10-10;
-        return 0;
+    getSize() : String {
+        comp : String <- "Small";
+        return stringo;
     };
 
     getID() : Int { 
@@ -166,7 +168,7 @@ class main {
         num_test <- 100;
         prueba_2_arith : Int <- 10+prueba_aritmetica-num_test;
 
-        return 0;
+        return void;
     };
 
     main.main(); // Inicializacion del programa
