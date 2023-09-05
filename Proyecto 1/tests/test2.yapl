@@ -101,7 +101,7 @@ class Square inherits Circle {
     punto.init(10, 20);
     punto.calculate(prueba_string, efg);
 
-    pruebarda() : Int {
+    pruebarda(g: int) : Int {
         return 0;
     };
 
@@ -121,9 +121,20 @@ class Triangle inherits Square {
     prueba_string <- "Adios desde triangle";
     square_obj : Square;
     square_obj.init(20, 30);
+    string_test : String <- "Holanda";
     //square_obj.pruebarda();
 
-    pruebarda(a: String) : Int {
+    pruebarda3() : Int {
+        return 0;
+    };
+
+    pruebarda(a: int) : Int {
+        string_test : string <- "Alemania";
+        prueba_int : Int;
+        prueba_string <- "Adentro de pruebarda";
+        square_obj.pruebarda(a);
+        a <- 100000;
+
 
         pruebarda2() : Int {
             return 0;
@@ -131,6 +142,7 @@ class Triangle inherits Square {
 
         return 0;
     };
+
 
 };
 
