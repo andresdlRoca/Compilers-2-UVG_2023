@@ -85,7 +85,10 @@ class Item {
     price : Int;
 
     cast_test : Bool;
-    cast_test <- 5;
+    cast_test <- price;
+
+    test_cast : Int <- cast_test;
+    test_cast <- 50;
 
     init(item_type : string, item_name : string, item_description : string, item_price : int, rarity: int) : void {
 
