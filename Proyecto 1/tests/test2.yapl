@@ -140,8 +140,10 @@ class Square inherits Circle {
 class Triangle inherits Square {
     prueba_string <- "Adios desde triangle";
     square_obj : Square;
-    square_obj.init(20, 30);
     string_test : String <- "Holanda";
+    obj_circle : Circle;
+    obj_circle.init(5, 5);
+    obj_circle.calculate();
     //square_obj.pruebarda();
 
     pruebarda3() : Int {

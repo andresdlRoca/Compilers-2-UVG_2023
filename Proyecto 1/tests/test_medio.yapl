@@ -39,8 +39,6 @@ class Circle {
     y : Int;
 
     init(g : int, z : int) : void {
-        //x <- 10;
-        //y <- 10;
 
         return void;
     };

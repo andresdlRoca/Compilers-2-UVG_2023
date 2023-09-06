@@ -5,7 +5,7 @@ class player {
     attack : Int <- 50;
     prueba_int : Int <- 0;
 
-    init(hardmode : bool, player_name : String) : Int {
+    init(hardmode : bool, player_name : string) : Int {
 
         name <- player_name;
 
@@ -30,6 +30,12 @@ class player {
 
     hit() : void {
         health <- health - 10;
+
+        if health < 0 then
+            health <- 0;
+            out_string("Player dead");
+        fi;
+
         return void;
     };
 
@@ -37,36 +43,35 @@ class player {
 
 class enemy inherits player {
 
-    name : String <- "Enemy";
-    health : Int <- 100;
-    attack : Int <- 50;
+    poisoned : bool <- false;
 
-    init(hardmode : bool, enemy_name : String) : Int {
+    init(hardmode : bool, enemy_name : string) : void {
 
         name <- enemy_name;
-        pruebavalor: Int <- 0;
 
         if difficulty = false then 
-            health <- 80;
-            attack <- 20;
-        else
             health <- 50;
             attack <- 10;
+        else
+            health <- 80;
+            attack <- 25;
         fi;
 
-        return pruebavalor;
-    };
-
-    get_health() : Int {
-        return health;
-    };
-
-    get_attack() : Int {
-        return attack;
+        return void;
     };
 
     hit() : void {
-        health <- health - 10;
+        health <- health - 20;
+
+        while poisoned = true loop
+            health <- health - 10;
+        pool;
+
+        if health < 0 then
+            health <- 0;
+            out_string("Enemy dead");
+        fi;
+
         return void;
     };
 
@@ -79,7 +84,7 @@ class Item {
     description : String;
     price : Int;
 
-    init(item_type : String, item_name : String, item_description : String, item_price : Int, rarity: Int) : void {
+    init(item_type : string, item_name : string, item_description : string, item_price : int, rarity: int) : void {
 
         type <- item_type;
         name <- item_name;
@@ -98,16 +103,29 @@ class Item {
             price <- price * 1;
         fi;
 
-
-
         return void;
     };
+
+
 
 };
 
 class main {
 
+    myPlayer : player;
+    myPlayer.init(true, "Kirito");
+    mySword : Item;
+    mySword.init("Sword", "Excalibur", "The legendary sword of King Arthur", 100, 5);
+    myEnemy : enemy;
+    myEnemy.init(true, "Malenia");
+    theirSword : Item;
+    theirSword.init("Sword", "Malenia's Sword", "The sword of the evil Malenia", 100, 5);
+
     main() : void {
+
+        out_string("Welcome to the game");
+        myPlayer.hit();
+        myEnemy.hit();
 
         return void;
     };
