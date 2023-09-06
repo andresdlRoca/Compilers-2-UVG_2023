@@ -1,0 +1,105 @@
+class player {
+
+    name : String <- "Player";
+    health : Int <- 100;
+    attack : Int <- 50;
+    prueba_int : Int <- 0;
+
+    init(hardmode : bool, player_name : String) : Int {
+
+        name <- player_name;
+
+        if difficulty = false then 
+            health <- 80;
+            attack <- 20;
+        else
+            health <- 50;
+            attack <- prueba_int;
+        fi;
+
+        return health;
+    };
+
+    get_health() : Int {
+        return health;
+    };
+
+    get_attack() : Int {
+        return attack;
+    };
+
+    hit() : void {
+        health <- health - 10;
+        return void;
+    };
+
+};
+
+class enemy inherits player {
+
+    name : String <- "Enemy";
+    health : Int <- 100;
+    attack : Int <- 50;
+
+    init(hardmode : bool, enemy_name : String) : Int {
+
+        name <- enemy_name;
+
+        if difficulty = false then 
+            health <- 80;
+            attack <- 20;
+        else
+            health <- 50;
+            attack <- 10;
+        fi;
+
+        return health;
+    };
+
+    get_health() : Int {
+        return health;
+    };
+
+    get_attack() : Int {
+        return attack;
+    };
+
+    hit() : void {
+        health <- health - 10;
+        return void;
+    };
+
+};
+
+class Item {
+
+    type : String;
+    name : String;
+    description : String;
+    price : Int;
+
+    init(item_type : String, item_name : String, item_description : String, item_price : Int, rarity: String) : void {
+
+        type <- item_type;
+        name <- item_name;
+        description <- item_description;
+        price <- item_price;
+
+        if rarity = Legendary then
+            price <- price * 2;
+        fi;
+
+
+        return void;
+    };
+
+};
+
+class main {
+
+    main() : void {
+
+        return void;
+    };
+
+};

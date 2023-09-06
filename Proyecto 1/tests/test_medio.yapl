@@ -90,7 +90,8 @@ class Square inherits Circle {
 };
 
 class Triangle inherits Square {
-    prueba_string <- "Adios desde triangle";
+    prueba_string <- "Hola desde triangle";
+    in_out(prueba_string);
 };
 
 

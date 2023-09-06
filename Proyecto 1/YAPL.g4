@@ -76,7 +76,7 @@ let_binding: ID ':' type ('<-' expr)? (type)?;
 if_statement:
 	'if' expr ('then' (simple_method_definition | block)*)* (
 		'else' (simple_method_definition | block)*
-	)? 'fi' SEMI;
+	)? (return_statement)? 'fi' SEMI;
 while_statement:
 	'while' expr 'loop' (
 		block | simple_method_definition

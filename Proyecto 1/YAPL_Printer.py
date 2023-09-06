@@ -65,6 +65,7 @@ class YAPLPrinter(YAPLListener):
         self.global_method_table = MethodTable() # Saves ALL the methods
         self.global_method_call_table = MethodCallTable() # Saves ALL the method calls
         self.method_table = MethodTable() # Saves the methods of the current scope
+        self.copy_symbol_table = SymbolTable()
         self.method_call_table = MethodCallTable() # Saves the method calls of the current scope
         self.class_table = ClassTable()
 
@@ -75,9 +76,12 @@ class YAPLPrinter(YAPLListener):
         self.current_scope.totable()
         self.current_scope = self.scopes.pop()
     
-    def newscope(self):
-        self.scopes.append(self.current_scope)
-        self.current_scope = SymbolTable()
+    def newscope(self, goingToLocal = False):
+        if goingToLocal == False:
+            self.scopes.append(self.current_scope)
+        else:
+            self.scopes.append(self.current_scope)
+            self.current_scope = SymbolTable()
     
     def find(self, var):
         lookup = self.current_scope.lookup(var)
@@ -546,7 +550,7 @@ class YAPLPrinter(YAPLListener):
 
         self.current_scope_statement.append("local")
 
-        self.newscope()
+        self.newscope(goingToLocal=True)
 
         parameter_list = ctx.parameter_list()
         if parameter_list is not None: # Si hay parametros
@@ -583,8 +587,9 @@ class YAPLPrinter(YAPLListener):
                             self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
 
     def enterIf_statement(self, ctx: YAPLParser.If_statementContext):
-        self.current_scope_statement.append("local")
-        self.newscope()
+        pass
+        # self.current_scope_statement.append("local")
+        # self.newscope()
 
     def exitIf_statement(self, ctx: YAPLParser.If_statementContext):
         
@@ -691,8 +696,8 @@ class YAPLPrinter(YAPLListener):
                                 col = ctx.expr().start.column
                                 self.errors.add(line,col,"Variables asignadas no existen aun o no son valores validos para comparacion: " + valueOne + "=" + valueTwo)
                         else:
-                            print("LookupValueOne", lookupValueOne)
-                            print("LookupValueTwo", lookupValueTwo)
+                            # print("LookupValueOne", lookupValueOne)
+                            # print("LookupValueTwo", lookupValueTwo)
                             if lookupValueOne != 0 and lookupValueTwo != 0:
                                 # lookupvalue = self.current_scope.lookup(valueOne)
                                 if lookupValueOne['Type'].lower() != lookupValueTwo['Type'].lower():
@@ -763,12 +768,13 @@ class YAPLPrinter(YAPLListener):
                         col = ctx.expr().start.column
                         self.errors.add(line,col,"Variable asignada no es tipo bool: " + condition)
 
-        self.popscope()
-        self.current_scope_statement.pop()
+        # self.popscope()
+        # self.current_scope_statement.pop()
     
     def enterWhile_statement(self, ctx: YAPLParser.While_statementContext):
-        self.current_scope_statement.append("local")
-        self.newscope()
+        pass
+        # self.current_scope_statement.append("local")
+        # self.newscope()
 
     def exitWhile_statement(self, ctx: YAPLParser.While_statementContext):
         condition = ctx.expr().getText()
@@ -946,8 +952,8 @@ class YAPLPrinter(YAPLListener):
                         col = ctx.expr().start.column
                         self.errors.add(line,col,"Variable asignada no es tipo bool: " + condition)
 
-        self.popscope()
-        self.current_scope_statement.pop()
+        # self.popscope()
+        # self.current_scope_statement.pop()
     
     def enterLet_declaration(self, ctx: YAPLParser.Let_declarationContext):
         return super().enterLet_declaration(ctx)
@@ -1302,11 +1308,27 @@ class YAPLPrinter(YAPLListener):
         self.current_return_values.append(ctx.expr())
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
+        self.popscope()
+        self.current_scope_statement.pop()
+
+        for i in self.current_scope._symbols:
+            print("Scopes in scope array:", i)
 
         type = ctx.type_().getText()
-        return_expr_ctx = self.current_return_values.pop()
+        try:
+            return_expr_ctx = self.current_return_values.pop()
+            return_value = return_expr_ctx.getText()
+        except:
+            return_expr_ctx = ""
+            return_value = ""
+            line = ctx.type_().start.line
+            col = ctx.type_().start.column
+            self.errors.add(line,col,"Metodo no tiene return: " + ctx.ID().getText())
+            return
+
+        # print("Current_scope", self.current_scope._symbols)
+
         # print("Return-value", return_expr_ctx.getText())
-        return_value = return_expr_ctx.getText()
 
         if type.lower() == self.VOID.lower():
             if return_value.lower() != self.VOID.lower():
@@ -1379,8 +1401,10 @@ class YAPLPrinter(YAPLListener):
                             col = return_expr_ctx.start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo: " + type + " :" + return_value)
 
-        self.popscope()
-        self.current_scope_statement.pop()
+
+
+
+        # print("Exited method definition", self.current_scope._symbols)
     
     def enterSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
         # self.current_scope_statement = "local"
@@ -1656,10 +1680,8 @@ class YAPLPrinter(YAPLListener):
         
 
 
-        # self.newscope()
 
     def exitSimple_method_definition(self, ctx: YAPLParser.Simple_method_definitionContext):
-        # self.popscope()
         # self.method_call_table = MethodCallTable()
 
         variable_name = None
