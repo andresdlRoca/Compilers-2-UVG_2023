@@ -91,7 +91,7 @@ class Square inherits Circle {
 
 class Triangle inherits Square {
     prueba_string <- "Hola desde triangle";
-    in_out(prueba_string);
+    out_int(5);
 };
 
 
@@ -104,7 +104,6 @@ class main {
     main() : void {
         num_test : int;
         num_test <- 100;
-
         return void;
     };
 

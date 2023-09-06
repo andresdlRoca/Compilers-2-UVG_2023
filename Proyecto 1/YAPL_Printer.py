@@ -65,16 +65,19 @@ class YAPLPrinter(YAPLListener):
         self.global_method_table = MethodTable() # Saves ALL the methods
         self.global_method_call_table = MethodCallTable() # Saves ALL the method calls
         self.method_table = MethodTable() # Saves the methods of the current scope
-        self.copy_symbol_table = SymbolTable()
         self.method_call_table = MethodCallTable() # Saves the method calls of the current scope
         self.class_table = ClassTable()
 
         self.node_type = {}
 
     
-    def popscope(self):
-        self.current_scope.totable()
-        self.current_scope = self.scopes.pop()
+    def popscope(self, merging = False):
+        if merging == False:
+            self.current_scope.totable()
+            self.current_scope = self.scopes.pop()
+        else:
+            self.current_scope.totable()
+            self.current_scope._symbols = self.current_scope._symbols + self.scopes.pop()._symbols 
     
     def newscope(self, goingToLocal = False):
         if goingToLocal == False:
@@ -1308,11 +1311,12 @@ class YAPLPrinter(YAPLListener):
         self.current_return_values.append(ctx.expr())
 
     def exitMethod_definition(self, ctx: YAPLParser.Method_definitionContext):
-        self.popscope()
-        self.current_scope_statement.pop()
 
-        for i in self.current_scope._symbols:
-            print("Scopes in scope array:", i)
+        # for i in self.current_scope._symbols:
+        #     print("Before Popping Scopes in scope array:", i)        
+
+        self.popscope(merging=True)
+        self.current_scope_statement.pop()
 
         type = ctx.type_().getText()
         try:
@@ -1355,6 +1359,8 @@ class YAPLPrinter(YAPLListener):
                 pass
             else:
                 # Check if return value is a valid ID
+                # print("Return value", return_value)
+                # print("Current scope", self.current_scope._symbols)
                 if self.current_scope.lookup(return_value) == 0:
                     line = return_expr_ctx.start.line
                     col = return_expr_ctx.start.column
@@ -1457,7 +1463,7 @@ class YAPLPrinter(YAPLListener):
         if method != 0:
             for parameter in method['Parameters']:
                 parameters_type.append(parameter.split(":")[1])
-        elif local_method != 0:
+        elif local_method != 0 and variable_name is None:
             for parameter in local_method['Parameters']:
                 parameters_type.append(parameter.split(":")[1])
             method = local_method
@@ -1638,6 +1644,8 @@ class YAPLPrinter(YAPLListener):
         if function_call_id != 'init':
             lookupmethod = self.method_call_table.lookup(variable_name)
             lookupdefaultmethod = self.default_methods.lookup(function_call_id)
+            print('variable_name', variable_name)
+
             if lookupdefaultmethod !=0:
                 pass # No hacer nada porque es valido no llamar a init en este caso
             elif lookupmethod == 0 and variable_name != 'main' and self.current_scope_statement[-1] != 'local':

@@ -44,6 +44,7 @@ class enemy inherits player {
     init(hardmode : bool, enemy_name : String) : Int {
 
         name <- enemy_name;
+        pruebavalor: Int <- 0;
 
         if difficulty = false then 
             health <- 80;
@@ -53,7 +54,7 @@ class enemy inherits player {
             attack <- 10;
         fi;
 
-        return health;
+        return pruebavalor;
     };
 
     get_health() : Int {
@@ -78,16 +79,25 @@ class Item {
     description : String;
     price : Int;
 
-    init(item_type : String, item_name : String, item_description : String, item_price : Int, rarity: String) : void {
+    init(item_type : String, item_name : String, item_description : String, item_price : Int, rarity: Int) : void {
 
         type <- item_type;
         name <- item_name;
         description <- item_description;
         price <- item_price;
 
-        if rarity = Legendary then
+        if rarity = 5 then
+            price <- price * 3;
+        fi;
+
+        if rarity = 4 then
             price <- price * 2;
         fi;
+
+        if rarity = 3 then
+            price <- price * 1;
+        fi;
+
 
 
         return void;
@@ -101,5 +111,7 @@ class main {
 
         return void;
     };
+
+    main.main();
 
 };

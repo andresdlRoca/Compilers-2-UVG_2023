@@ -7,12 +7,12 @@ class Circle {
         radius  <- 100;
         color <- "Red";
 
-        return 0;
+        return void;
     };
 
     draw_circle() : void {
-        draw_circle(hola);
-        return 0;
+        draw_circle();
+        return void;
     };
 
 };
@@ -23,7 +23,7 @@ class main {
 		circulo : Circle;
 		circulo.init();
 
-        return 0;
+        return void;
 	};
 
 };
