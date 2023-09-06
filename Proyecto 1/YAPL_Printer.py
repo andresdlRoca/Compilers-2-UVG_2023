@@ -264,6 +264,12 @@ class YAPLPrinter(YAPLListener):
             elif tipo.lower() == self.basic_data_type['bool']:
                 if is_valid_boolean_expression(value):
                     value = bool(value)
+                elif value.isdigit():
+                    value = int(value)
+                    if value < 1:
+                        value = False
+                    else:
+                        value = True
                 else:
                     if is_valid_comparison_operation(value):
                         
@@ -425,10 +431,10 @@ class YAPLPrinter(YAPLListener):
                             self.errors.add(line,col,"Variable asignada no existe aun o no es un valor valido para bool: " + value)
                         else:
                             lookupvalue = self.current_scope.lookup(value)
-                            if lookupvalue['Type'].lower() != 'bool':
+                            if lookupvalue['Type'].lower() != 'bool' and lookupvalue['Type'].lower() != 'int':
                                 line = ctx.type_().start.line
                                 col = ctx.type_().start.column
-                                self.errors.add(line,col,"Variable asignada no es tipo bool: " + value)                    
+                                self.errors.add(line,col,"Variable asignada no es valida para tipo bool: " + value)                    
             else:
                 # Check if value is a valid ID
                 if self.current_scope.lookup(value) == 0:
@@ -991,7 +997,7 @@ class YAPLPrinter(YAPLListener):
             lookupvalue = self.current_scope.lookup(value)
 
             # Check if assignment is boolean
-            if value == 'true' or value == 'false' or is_valid_comparison_operation(value):
+            if value == 'true' or value == 'false' or is_valid_comparison_operation(value) or value.isdigit() and variable_type.lower() == self.BOOL.lower():
                 if variable_type.lower() != self.BOOL.lower():
                     line = ctx.expr().start.line
                     col = ctx.expr().start.column
@@ -1152,6 +1158,14 @@ class YAPLPrinter(YAPLListener):
                                         
                         
                     else:
+
+                        if value.isdigit():
+                            value = int(value)
+                            if value < 1:
+                                value = False
+                            else:
+                                value = True
+
                         if self.current_scope_statement[-1] == "local" and lookupvalue!=0:
                             self.current_scope.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
                             self.global_symbol_table.add(variable_type, ctx.ID().getText(), self.current_scope_statement[-1], value, "Linea: " + str(ctx.expr().start.line) + " Columna: " + str(ctx.expr().start.column), hex(id(ctx.expr())), False, False)
@@ -1274,7 +1288,7 @@ class YAPLPrinter(YAPLListener):
                         self.errors.add(line,col,"Variable asignada no existe aun: " + value)
                     else:
                         lookupvalue = self.current_scope.lookup(value)
-                        if lookupvalue['Type'].lower() != 'bool':
+                        if lookupvalue['Type'].lower() != 'bool' and lookupvalue['Type'].lower() != 'int':
                             line = ctx.expr().start.line
                             col = ctx.expr().start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo bool: " + value)

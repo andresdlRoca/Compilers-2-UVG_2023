@@ -84,6 +84,9 @@ class Item {
     description : String;
     price : Int;
 
+    cast_test : Bool;
+    cast_test <- 5;
+
     init(item_type : string, item_name : string, item_description : string, item_price : int, rarity: int) : void {
 
         type <- item_type;
@@ -119,7 +122,7 @@ class main {
     myEnemy : enemy;
     myEnemy.init(true, "Malenia");
     theirSword : Item;
-    theirSword.init("Sword", "Malenia's Sword", "The sword of the evil Malenia", 100, 5);
+    theirSword.init("Sword", "Hand of Malenia", "Blade built into Malenia's prosthetic arm", 100, 5);
 
     main() : void {
 
