@@ -57,11 +57,12 @@ class SymbolTable():
         total_size = 0
         for symbol in self._symbols:
             if symbol['ID'] not in cacheID or symbol['Scope'] not in cacheScope:
-                # print(symbol['ID'] + ' ' + symbol['Scope'])
+                print(symbol['ID'] + ' = ' + symbol['Scope'])
+                print(symbol['size'])
                 cacheID.add(symbol['ID'])
                 cacheScope.add(symbol['Scope'])
                 total_size += symbol['size']
-
+        print('Total', total_size)
         return total_size
     
     def totable(self):
@@ -192,6 +193,8 @@ class MethodTable():
     def update(self, ID, method_table):
         for method in self._methods:
             if method['ID'] == ID and method['Scope'] == method_table['Scope']:
+                print('Updating method: ' + method['ID'] + ' in scope: ' + method['Scope'])
+                print('size: ' + str(method_table['size']))
                 method['Parameters'] = method_table['Parameters']
                 method['Scope'] = method_table['Scope']
                 method['Address'] = method_table['Address']

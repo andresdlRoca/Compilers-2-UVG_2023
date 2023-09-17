@@ -1346,6 +1346,13 @@ class YAPLPrinter(YAPLListener):
         # for i in self.current_scope._symbols:
         #     print("Before Popping Scopes in scope array:", i)        
 
+
+        
+        current_method_id = self.method_table._methods[-1]['ID']
+        self.method_table._methods[-1]['size'] = self.current_scope.getsize()
+        print('Current method_table', self.method_table._methods)
+        self.global_method_table.update(current_method_id, self.method_table._methods[-1])
+
         self.popscope(merging=True)
         self.current_scope_statement.pop()
 
@@ -1438,10 +1445,6 @@ class YAPLPrinter(YAPLListener):
                             col = return_expr_ctx.start.column
                             self.errors.add(line,col,"Variable asignada no es de tipo: " + type + " :" + return_value)
 
-
-        current_method_id = self.method_table._methods[0]['ID']
-        self.method_table._methods[0]['size'] = self.current_scope.getsize()
-        self.global_method_table.update(current_method_id, self.method_table._methods[0])
 
 
         # print("Exited method definition", self.current_scope._symbols)
