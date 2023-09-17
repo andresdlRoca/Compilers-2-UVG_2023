@@ -7,6 +7,44 @@ import sys
 
 from main import Compile
 
+class NumberedPlainTextEdit(QPlainTextEdit):
+    def __init__(self):
+        super().__init__()
+        self.setLineWrapMode(QPlainTextEdit.NoWrap)
+        self.setStyleSheet("QPlainTextEdit { border:none; }")
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.cursorPositionChanged.connect(self.highlightCurrentLine)
+        self.highlightCurrentLine()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        painter = QPainter(self.viewport())
+        painter.setFont(self.font())
+        block = self.firstVisibleBlock()
+        line_number = block.blockNumber() + 1
+        top = self.blockBoundingGeometry(block).translated(self.contentOffset()).top()
+        bottom = top + self.blockBoundingRect(block).height()
+        current_block = self.textCursor().block().blockNumber()
+        padding = 5  # Adjust the padding as needed
+
+        while block.isValid() and top <= event.rect().bottom():
+            if block.isVisible() and bottom >= event.rect().top():
+                painter.setPen(Qt.black)  # Set line number color
+                rect = QRectF(0, top, 1100 - padding, self.fontMetrics().height())  # Adjust the width as needed
+                painter.drawText(rect, Qt.AlignRight | Qt.AlignTop, str(line_number))
+            block = block.next()
+            top = bottom
+            bottom = top + self.blockBoundingRect(block).height()
+            line_number += 1
+
+    def highlightCurrentLine(self):
+        extra_selection = QTextEdit.ExtraSelection()
+        line_color = QColor(0, 128, 0, 50)  # Yellow with 100 (semi-transparent) alpha
+        extra_selection.format.setBackground(line_color)
+        extra_selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+        extra_selection.cursor = self.textCursor()
+        extra_selection.cursor.clearSelection()
+        self.setExtraSelections([extra_selection])
 # Creating main window class
 class MainWindow(QMainWindow):
 
@@ -36,7 +74,7 @@ class MainWindow(QMainWindow):
 		self.tabs.addTab(self.tab2, "Results")
 
 		# creating a QPlainTextEdit object
-		self.editor = QPlainTextEdit()
+		self.editor = NumberedPlainTextEdit()
 
 		self.showErrors = QLabel()
 		self.showErrors.setFont(fixedfont)
