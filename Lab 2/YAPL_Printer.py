@@ -492,24 +492,24 @@ class YAPLPrinter(YAPLListener):
 
             if self.current_scope.lookup(ctx_id) == 0:
                 # Allow only simple inheritance
-                self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
-                self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
+                self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
+                self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
             else:
                 if self.current_scope.lookup(ctx_id)['IsInherited'] == True: # Overriding de variable heredada
                     inherited_symbol = self.current_scope.lookup(ctx_id)
                     if inherited_symbol['Type'].lower() == tipo.lower():
                         self.current_scope.delete(ctx_id)
                         # self.global_symbol_table.delete(ctx_id)
-                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
-                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
+                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
+                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
                     else:
                         line = ctx.type_().start.line
                         col = ctx.type_().start.column
                         self.errors.add(line, col, "Variable heredada no puede cambiarse de tipo: " + ctx_id)
                 else: # Error si hay variables duplicadas
                     if self.current_scope.lookup(ctx_id)['Scope'] != self.current_scope_statement[-1]:
-                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
-                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False)
+                        self.current_scope.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
+                        self.global_symbol_table.add(tipo, ctx_id, self.current_scope_statement[-1], value, position, address, False, False, self.class_table)
                     else:
                         line = ctx.type_().start.line
                         col = ctx.type_().start.column
@@ -1350,7 +1350,7 @@ class YAPLPrinter(YAPLListener):
         
         current_method_id = self.method_table._methods[-1]['ID']
         self.method_table._methods[-1]['size'] = self.current_scope.getsize()
-        print('Current method_table', self.method_table._methods)
+        # print('Current method_table', self.method_table._methods)
         self.global_method_table.update(current_method_id, self.method_table._methods[-1])
 
         self.popscope(merging=True)
@@ -1781,12 +1781,23 @@ class YAPLPrinter(YAPLListener):
         if class_type.lower() in self.default_data_types:
             self.errors.add(line,col,"Clase no puede ser tipo basico: " + class_type)
 
+
         self.method_table = MethodTable()
 
 
         self.popscope()
         self.current_scope_statement.pop()
         print('Saliendo de la clase: ' + class_type)
+
+        # print('Clases actuales: ', self.class_table._classes)
+        # print('scope', self.current_scope._symbols)
+        for variables in self.current_scope._symbols:
+            if variables['Scope'] == f'global -> {class_type}':
+                self.class_table._classes[-1]['size'] = variables['size']
+        
+        for methods in self.global_method_table._methods:
+            if methods['Scope'] == f'global -> {class_type}':
+                self.class_table._classes[-1]['size'] += methods['size']
 
         if class_type == self.VOID:
             self.node_type[ctx] = self.ERROR

@@ -6,8 +6,8 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, scope, value, position, address, isParameter, isInherited, size = 0):
-
+    def add(self, type, id, scope, value, position, address, isParameter, isInherited, class_table = None):
+        size = 0
         if type.lower() == 'int':
             size = 4
         elif type.lower() == 'string':
@@ -18,7 +18,14 @@ class SymbolTable():
         elif type.lower() == 'bool':
             size = 1
         else:
-            size = 0
+            if class_table:
+                _class = class_table.lookup(type)
+                if _class:
+                    size = _class['size']
+                else:
+                    size = 0
+            else:
+                size = 0
 
         self._symbols.append({
             'Type': type,
@@ -57,12 +64,11 @@ class SymbolTable():
         total_size = 0
         for symbol in self._symbols:
             if symbol['ID'] not in cacheID or symbol['Scope'] not in cacheScope:
-                print(symbol['ID'] + ' = ' + symbol['Scope'])
-                print(symbol['size'])
+                # print(symbol['ID'] + ' = ' + symbol['Scope'])
+                # print(symbol['size'])
                 cacheID.add(symbol['ID'])
                 cacheScope.add(symbol['Scope'])
                 total_size += symbol['size']
-        print('Total', total_size)
         return total_size
     
     def totable(self):
@@ -193,8 +199,8 @@ class MethodTable():
     def update(self, ID, method_table):
         for method in self._methods:
             if method['ID'] == ID and method['Scope'] == method_table['Scope']:
-                print('Updating method: ' + method['ID'] + ' in scope: ' + method['Scope'])
-                print('size: ' + str(method_table['size']))
+                # print('Updating method: ' + method['ID'] + ' in scope: ' + method['Scope'])
+                # print('size: ' + str(method_table['size']))
                 method['Parameters'] = method_table['Parameters']
                 method['Scope'] = method_table['Scope']
                 method['Address'] = method_table['Address']
