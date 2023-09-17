@@ -6,7 +6,20 @@ class SymbolTable():
         self._symbols = []
         print('Iniciando nuevo ambito/scope')
     
-    def add(self, type, id, scope, value, position, address, isParameter, isInherited):
+    def add(self, type, id, scope, value, position, address, isParameter, isInherited, size = 0):
+
+        if type.lower() == 'int':
+            size = 4
+        elif type.lower() == 'string':
+            if value.startswith('"') or value.startswith("'") and value.endswith('"') or value.endswith("'"):
+                size = 4 * len(value.strip('"').strip("'"))
+            else:
+                size = 4
+        elif type.lower() == 'bool':
+            size = 1
+        else:
+            size = 0
+
         self._symbols.append({
             'Type': type,
             'ID': id,
@@ -15,7 +28,8 @@ class SymbolTable():
             'Position': position,
             'Address': address,
             'IsParameter': isParameter,
-            'IsInherited': isInherited
+            'IsInherited': isInherited,
+            'size': size
         })
     
     def lookup(self, id):
@@ -38,10 +52,20 @@ class SymbolTable():
         return 0
 
     def getsize(self):
-        return sum(symbol['size'] for symbol in self._symbols)
+        cacheID = set()
+        cacheScope = set()
+        total_size = 0
+        for symbol in self._symbols:
+            if symbol['ID'] not in cacheID or symbol['Scope'] not in cacheScope:
+                # print(symbol['ID'] + ' ' + symbol['Scope'])
+                cacheID.add(symbol['ID'])
+                cacheScope.add(symbol['Scope'])
+                total_size += symbol['size']
+
+        return total_size
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Value','Position', 'Address', 'IsParameter', 'IsInherited']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Value','Position', 'Address', 'IsParameter', 'IsInherited', 'size']
         for i in self._symbols:
             self.pretty_table.add_row(list(i.values()))
 
@@ -60,25 +84,44 @@ class SymbolTable():
         for symbol in self._symbols:
             if symbol['ID'] == ID:
                 symbol['Value'] = value
+                if symbol['Type'].lower() =='string':
+                    if value.startswith('"') or value.startswith("'") and value.endswith('"') or value.endswith("'"):
+                        symbol['size'] = 4 * len(value.strip('"').strip("'"))
+                    else:
+                        symbol['size'] = 4
+                elif symbol['Type'].lower() =='int':
+                    symbol['size'] = 4
+                elif symbol['Type'].lower() =='bool':
+                    symbol['size'] = 1
     
     def update_global(self, ID, value, scope):
         for symbol in self._symbols:
             if symbol['ID'] == ID and symbol['Scope'] == scope:
                 symbol['Value'] = value
+                if symbol['Type'].lower() =='string':
+                    if value.startswith('"') or value.startswith("'") and value.endswith('"') or value.endswith("'"):
+                        symbol['size'] = 4 * len(value.strip('"').strip("'"))
+                    else:
+                        symbol['size'] = 4
+                elif symbol['Type'].lower() =='int':
+                    symbol['size'] = 4
+                elif symbol['Type'].lower() =='bool':
+                    symbol['size'] = 1
 
 class ClassTable():
     def __init__(self) -> None:
         self.pretty_table = PrettyTable()
         self._classes = []
         print(" -- Iniciando nuevo ambito/scope -- ")
-    def add(self,type, id, scope, position, inheritance, address):
+    def add(self,type, id, scope, position, inheritance, address, size=0):
         self._classes.append({
             'Type': type,
             'ID': id,
             'Scope': scope,
             'Inheritance': inheritance,
             'Position': position,
-            'Memory Address': address
+            'Memory Address': address,
+            'size': size
         })
     def lookup(self, type):
         for _class in self._classes:
@@ -87,7 +130,7 @@ class ClassTable():
         return 0
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Inheritance', 'Position', 'Memory Address']
+        self.pretty_table.field_names = ['Type', 'ID', 'Scope', 'Inheritance', 'Position', 'Memory Address', 'size']
         for i in self._classes:
             self.pretty_table.add_row(list(i.values()))
 
@@ -103,7 +146,7 @@ class MethodTable():
         self._methods = []
         print(" -- Iniciando nuevo ambito/scope -- ")
 
-    def add(self, type, id, parameters, scope, address, position, isInherited = False):
+    def add(self, type, id, parameters, scope, address, position, isInherited = False, size = 0):
         self._methods.append({
             'Type': type,
             'ID': id,
@@ -111,7 +154,8 @@ class MethodTable():
             'Scope': scope,
             'Address': address,
             'Position': position,
-            'IsInherited': isInherited
+            'IsInherited': isInherited,
+            'size': size
         })
     
     def lookup(self, variable):
@@ -137,13 +181,23 @@ class MethodTable():
                 self._methods.remove(method)        
     
     def totable(self):
-        self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Address', 'Position', 'IsInherited']
+        self.pretty_table.field_names = ['Type', 'ID', 'Parameters', 'Scope', 'Address', 'Position', 'IsInherited', 'size']
         for i in self._methods:
             self.pretty_table.add_row(list(i.values()))
 
         print(" -- Metodos -- ")
         print(self.pretty_table)
         self.pretty_table.clear_rows()
+
+    def update(self, ID, method_table):
+        for method in self._methods:
+            if method['ID'] == ID and method['Scope'] == method_table['Scope']:
+                method['Parameters'] = method_table['Parameters']
+                method['Scope'] = method_table['Scope']
+                method['Address'] = method_table['Address']
+                method['Position'] = method_table['Position']
+                method['IsInherited'] = method_table['IsInherited']
+                method['size'] = method_table['size']
 
 class MethodCallTable():
     def __init__(self) -> None:

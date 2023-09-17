@@ -59,6 +59,7 @@ class YAPLPrinter(YAPLListener):
         self.current_scope = None
         self.current_scope_statement = []
         self.current_scope_class = None
+        self.sizeOf_scope = 0
         # self.type_table = TypeTable()
         self.global_symbol_table = SymbolTable()
         self.errors = SemanticError()
@@ -188,7 +189,7 @@ class YAPLPrinter(YAPLListener):
         tipo = ctx.type_().getText()
         address = hex(id(ctx))
         position = "Linea: " + str(ctx.type_().start.line) + " Columna: " + str(ctx.type_().start.column)
-        
+
         value = ctx.expr().pop().getText() if len(ctx.expr()) > 0 else None
 
         copy_global_symbol_table = self.global_symbol_table._symbols.copy()
@@ -513,7 +514,6 @@ class YAPLPrinter(YAPLListener):
                         line = ctx.type_().start.line
                         col = ctx.type_().start.column
                         self.errors.add(line, col, "Variable duplicada: " + ctx_id)
-                
     
     def exitAttribute_definition(self, ctx: YAPLParser.Attribute_definitionContext):
         print('Saliendo de la declaracion de atributo: ' + ctx.ID().getText())
@@ -587,8 +587,13 @@ class YAPLPrinter(YAPLListener):
                     # Check if parameter type is a default data type
                     if formal_type.lower() in self.default_data_types:
                         parameters.append(formal.getText())
-                        self.current_scope.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
-                        self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement[-1], None, position, address, True, False)
+
+                        param_value = None
+                        if formal_type.lower() == self.basic_data_type['string']:
+                            param_value = ""
+
+                        self.current_scope.add(formal_type, formal_name, self.current_scope_statement[-1], param_value, position, address, True, False)
+                        self.global_symbol_table.add(formal_type, formal_name, self.current_scope_statement[-1], param_value, position, address, True, False)
                     else:
                         # Check if parameter type is a valid class
                         if self.class_table.lookup(formal_type) == 0:
@@ -1434,6 +1439,9 @@ class YAPLPrinter(YAPLListener):
                             self.errors.add(line,col,"Variable asignada no es de tipo: " + type + " :" + return_value)
 
 
+        current_method_id = self.method_table._methods[0]['ID']
+        self.method_table._methods[0]['size'] = self.current_scope.getsize()
+        self.global_method_table.update(current_method_id, self.method_table._methods[0])
 
 
         # print("Exited method definition", self.current_scope._symbols)

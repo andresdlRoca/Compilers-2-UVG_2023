@@ -2,16 +2,12 @@ class Circle {
 
     radius : int;
     color : string;
+    ant : string <- "Hola";
 
     init() : void {
         radius  <- 100;
         color <- "Red";
 
-        return void;
-    };
-
-    draw_circle(g:int) : void {
-        draw_circle(5);
         return void;
     };
 
