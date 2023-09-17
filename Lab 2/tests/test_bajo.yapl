@@ -1,5 +1,6 @@
 class Circle {
 
+    radius : int;
     color : string;
 
     init() : void {
@@ -10,7 +11,7 @@ class Circle {
     };
 
     draw_circle(g:int) : void {
-        draw_circle();
+        draw_circle(5);
         return void;
     };
 

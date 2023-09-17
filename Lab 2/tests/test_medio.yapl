@@ -1,0 +1,111 @@
+class Point {
+
+    x : Int <- 5;
+    y : Int <- x;
+    a : String <- "abc";
+    z : Bool <- false;
+    b : Bool <- z;
+    x <- 100;
+
+    init(g : int, z : int) : void {
+        Moab : String;
+        Moab <- "hola";
+        x_holder : Int <- x;
+        Max : String <- a;
+        x : Int <- 1024;
+
+
+        return void;
+    };
+
+
+
+    calculate() : Int {
+
+        return 0;
+    };
+
+    calculate2() : Int {
+
+        return 0;
+    };
+
+
+};
+
+class Circle {
+
+    xander : Int;
+    y : Int;
+
+    init(g : int, z : int) : void {
+
+        return void;
+    };
+
+    calculate() : Int {
+        lal : int;
+        lal <- 10;
+
+        return 0;
+    };
+
+    round() : Int {
+        
+        return 0;
+    };
+
+    getSize() : Int {
+
+        return 0;
+    };
+
+    getID() : Int { 
+
+        return 0;
+    };
+
+};
+
+class Square inherits Circle {
+    abc : string;
+    prueba_string : string <- "Halo";
+    efg : Bool;
+    circulo : Circle;
+    punto : Point;
+    abc_length : int;
+    
+
+    abc <- prueba_string;
+    abc.length();
+
+
+    circulo.init(10, 20);
+    circulo.calculate();
+    punto.init(10, 20);
+    punto.calculate();
+
+};
+
+class Triangle inherits Square {
+    prueba_string <- "Hola desde triangle";
+    out_int(5);
+};
+
+
+class main {
+
+    main_circle : Circle;
+
+    main_circle.init(10, 20);
+
+    main() : void {
+        num_test : int;
+        num_test <- 100;
+        return void;
+    };
+
+    main.main(); // Inicializacion del programa
+
+};
+
